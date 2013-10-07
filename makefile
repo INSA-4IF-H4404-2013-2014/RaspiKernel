@@ -25,6 +25,14 @@ BUILD_DIR = build/
 BUILD_TARGET = $(addprefix $(BUILD_DIR), $(TARGET))
 BUILD_OBJS = $(addprefix $(BUILD_DIR), $(addsuffix .o,$(notdir $(S_FILES) $(C_FILES))))
 
+# read QEMU_MACHINE from qemu-machine.gitlocal
+ifeq ($(wildcard qemu-machine.gitlocal),)
+    QEMU_MACHINE = raspi
+else 
+    QEMU_MACHINE = $(shell sed -n 1p qemu-machine.gitlocal)
+endif
+
+
 
 #------------------------------------------------------------------------------- COMMANDS
 
@@ -57,8 +65,8 @@ clean :
 full : clean update
 
 run : update
-	$(CMD_ECHO) "# running <$(BUILD_TARGET).elf>"
-	@qemu-system-arm -kernel $(BUILD_TARGET).elf -cpu arm1176 -m 512 -M versatilepb -nographic -no-reboot -serial stdio -append "rw earlyprintk loglevel=8 panic=120 keep_bootcon rootwait dma.dmachans=0x7f35 bcm2708_fb.fbwidth=1024 bcm2708_fb.fbheight=768 bcm2708.boardrev=0xf bcm2708.serial=0xcad0eedf smsc95xx.macaddr=B8:27:EB:D0:EE:DF sdhci-bcm2708.emmc_clock_freq=100000000 vc_mem.mem_base=0x1c000000 vc_mem.mem_size=0x20000000  dwc_otg.lpm_enable=0 kgdboc=ttyAMA0,115200 console=ttyS0 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait" -S -s #-device usb-kbd -device usb-mouse
+	$(CMD_ECHO) "# running <$(BUILD_TARGET).elf> ($(QEMU_MACHINE))"
+	@qemu-system-arm -kernel $(BUILD_TARGET).elf -cpu arm1176 -m 512 -M $(QEMU_MACHINE) -nographic -no-reboot -serial stdio -append "rw earlyprintk loglevel=8 panic=120 keep_bootcon rootwait dma.dmachans=0x7f35 bcm2708_fb.fbwidth=1024 bcm2708_fb.fbheight=768 bcm2708.boardrev=0xf bcm2708.serial=0xcad0eedf smsc95xx.macaddr=B8:27:EB:D0:EE:DF sdhci-bcm2708.emmc_clock_freq=100000000 vc_mem.mem_base=0x1c000000 vc_mem.mem_size=0x20000000  dwc_otg.lpm_enable=0 kgdboc=ttyAMA0,115200 console=ttyS0 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait" -S -s #-device usb-kbd -device usb-mouse
 	@reset
 
 gdb : update
