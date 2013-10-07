@@ -20,6 +20,12 @@ Lancer l’emmulateur :
   l’emmulateur.
   > make run
 
+  Si qemu genere des erreurs, cela est peut etre causer
+  si qemu ne connait pas la machine par defaut (-M raspi).
+  Pour contourner ce problem, executez simplement:
+  > echo "versatilepb" > qemu-machine.gitlocal
+  Puis relancez l'emmulateur
+
 Lancer le debugger :
   Pout lancer GDB Vous devez simplement veillez a avoir
   lancer  l’emmulateur (make run) dans un autre terminal
@@ -31,6 +37,3 @@ Command pour nettoyer :
 
 Command pour tout recompiler :
   > make full
-
-
-
