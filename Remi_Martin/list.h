@@ -12,5 +12,6 @@ typedef struct maillon
 
 
 Tmaillon * insert ( Tmaillon * list, pcb_s * pcb );
+Tmaillon * remove ( Tmaillon * toDelete );
 
 #endif
