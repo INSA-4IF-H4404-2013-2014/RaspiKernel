@@ -9,6 +9,7 @@
 /*
  * Methods 
  */
-void switch_to(struct ctx_s* ctx);
+//void switch_to(struct ctx_s* ctx);
+void ctx_switch(struct pcb_s* old_pcb, struct pcb_s* new_pcb);
 
 #endif

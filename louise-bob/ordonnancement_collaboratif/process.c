@@ -2,9 +2,11 @@
 #include "allocateMemory.h"
 
 
-void init_ctx(struct ctx_s* ctx, func_t f, unsigned int stack_size)
+void init_pcb(struct pcb_s* pcb, func_t f, void* args, unsigned int stack_size)
 {
-	ctx->sp = AllocateMemory(stack_size);
-	ctx->sp -= (stack_size - 1) * 4;
-	ctx->lr = f;
+	pcb->sp = AllocateMemory(stack_size);
+	pcb->sp += (stack_size - 1) * 4;
+	pcb->lr = f;
+	pcb->args = args;
+	pcb->running = 0;
 }

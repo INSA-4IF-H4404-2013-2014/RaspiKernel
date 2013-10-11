@@ -1,7 +1,7 @@
 #include "dispatcher.h"
 
 
-void switch_to(struct ctx_s* ctx)
+/*void switch_to(struct ctx_s* ctx)
 {
 	// Saving current context	
 	__asm("mov %0, sp" : "=r"(current_ctx->sp));
@@ -39,4 +39,30 @@ void switch_to(struct ctx_s* ctx)
 	__asm("mov r10, %0" : : "r"(current_ctx->r10));
 	__asm("mov r11, %0" : : "r"(current_ctx->r11));
 	__asm("mov r12, %0" : : "r"(current_ctx->r12));
+}*/
+
+ctx_switch(struct pcb_s* old_pcb, struct pcb_s* new_pcb)
+{
+	if(old_pcb->running)
+	{
+		__asm volatile("push {r0-r12}");
+		__asm("mov %0, lr" : "=r"(old_pcb->lr));
+	}
+	
+	__asm("mov %0, sp" : "=r"(old_pcb->sp));
+	
+	__asm("mov sp, %0" : : "r"(new_pcb->sp));
+	
+	if(new_pcb->running)
+	{
+		__asm volatile("pop {r0-r12}");
+	}
+	else
+	{
+		new_pcb->running = 1;
+	}
+	
+	__asm("mov lr, %0" : : "r"(new_pcb->lr));
+	
+	return;
 }

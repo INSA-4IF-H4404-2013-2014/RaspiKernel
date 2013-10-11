@@ -9,15 +9,15 @@
  */
 typedef void (*func_t) (void);
 
-
 /*
  *  Structures
  */
-struct ctx_s
+struct pcb_s
 {
-	uint32_t* sp; //Stack Pointer
-	unsigned int lr; //Link Register
-	unsigned int r0;
+	uint32_t* sp; // Stack Pointer
+	unsigned int lr; // Link Register
+	
+	/*unsigned int r0;
 	unsigned int r1;
 	unsigned int r2;
 	unsigned int r3;
@@ -30,19 +30,20 @@ struct ctx_s
 	unsigned int r10;
 	unsigned int r11;
 	unsigned int r12;
-	unsigned int r13;
+	unsigned int r13;*/
+	
+	void* args;
+	
+	struct pcb_s* previous; // Pointer to the previous PCB
+	struct pcb_s* next; // Pointer to the next PCB
+	
+	int running;
 };
-
-
-/*
- * Global variables
- */
-struct ctx_s* current_ctx;
 
 
 /*
  * Methods
  */
-void init_ctx(struct ctx_s* ctx, func_t f, unsigned int stack_size);
+void init_pcb(struct pcb_s* ctx, func_t f, void* args, unsigned int stack_size);
 
 #endif
