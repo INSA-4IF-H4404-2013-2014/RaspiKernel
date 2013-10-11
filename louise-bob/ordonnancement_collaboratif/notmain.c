@@ -4,16 +4,16 @@
 
 const unsigned int STACK_SIZE = 128;
 
-struct ctx_s ctx_A;
-struct ctx_s ctx_B;
+//struct ctx_s ctx_A;
+//struct ctx_s ctx_B;
 struct ctx_s ctx_init;
 
 void ping()
 {
   while (1)
   {
-    switch_to(&ctx_B);
-    switch_to(&ctx_B);
+    yield(&ctx_B);
+    yield(&ctx_B);
   }
 }
 
@@ -21,9 +21,9 @@ void pong()
 {
   while (1)
   {
-    switch_to(&ctx_A);
-    switch_to(&ctx_A);
-    switch_to(&ctx_A);
+    yield(&ctx_A);
+    yield(&ctx_A);
+    yield(&ctx_A);
   }
 }
 
@@ -33,7 +33,7 @@ void funcA()
 	while(1) 
 	{
 		cptA ++;
-		switch_to(&ctx_B );
+		yield(&ctx_B );
 	}
 }
 
@@ -43,7 +43,7 @@ void funcB()
 	while(1) 
 	{
 		cptB += 2;
-		switch_to(&ctx_A);
+		yield(&ctx_A);
 	}
 }
 
@@ -55,7 +55,7 @@ int notmain (void)
 
   current_ctx = &ctx_init;
 
-  switch_to(&ctx_A);
+  yield(&ctx_A);
   
   return 0;
 }
