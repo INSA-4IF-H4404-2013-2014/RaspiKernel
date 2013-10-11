@@ -1,9 +1,9 @@
 #ifndef _H_DISPATCHER
 #define _H_DISPATCHER
 
-#include "process.h"
+int create_process(int stack_size, func_t f, void *args);
 
-void switch_to(struct ctx_s* ctx);
+void yield();
 
 #endif
 

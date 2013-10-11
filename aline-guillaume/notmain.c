@@ -1,5 +1,5 @@
 #include "process.h"
-#include "dispatcher.h"
+#include "switch.h"
 
 struct ctx_s ctx_A;
 struct ctx_s ctx_B;
