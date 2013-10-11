@@ -3,7 +3,7 @@
 
 #include "process.h"
 
-void switch_to(struct ctx_s* ctx);
+void ctx_switch(pcb_s * oldPcb, pcb_s * newPcb);
 
 #endif
 
