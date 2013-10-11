@@ -42,8 +42,7 @@ create_process(func_t f, void * args)
 	struct pcb_s * newPcb = (struct pcb_s *) AllocateMemory(sizeof(struct pcb_s));
 
 	init_pcb(newPcb, f, STACK_SIZE);
-
-	*(void **)(newPcb->mSP - 12) = args;
+	newPcb->mR[0] = (unsigned int) args;
 
 	append(&current_pcb, newPcb);
 
