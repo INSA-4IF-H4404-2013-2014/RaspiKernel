@@ -4,7 +4,7 @@
 #define STACK_SIZE 1024 * 32
 #define REGISTER_COUNT 13
 
-typedef void (*func_t)();
+typedef void (*func_t)(void *);
 
 typedef enum {PCB_PAUSE, PCB_READY, PCB_RUN} pcb_state;
 

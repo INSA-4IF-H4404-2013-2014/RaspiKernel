@@ -2,9 +2,9 @@
 #include "dispatcher.h"
 
 void
-ping()
+ping(int * args)
 {
-  int cpt = 1;
+  int cpt = *args;
 
   while (1) {
     cpt++;
@@ -13,9 +13,9 @@ ping()
 }
 
 void
-pong()
+pong(int * args)
 {
-  int cpt = 1;
+  int cpt = *args;
 
   while (1) {
     cpt += 2;
@@ -29,11 +29,14 @@ int
 notmain ( void )
 {
 	// create kernel process
-	create_process((func_t)notmain);
+	create_process((func_t)0, (void *)0);
 
 	// create kernel processes
-	create_process(ping);
-	create_process(pong);
+	int ping_start = 17;
+	int pong_start = 33;
+
+	create_process((func_t)ping, &ping_start);
+	create_process((func_t)pong, &pong_start);
 
 	while ( 1 )
 	{

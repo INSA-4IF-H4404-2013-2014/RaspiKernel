@@ -10,6 +10,6 @@ void init_pcb(struct pcb_s* pcb, func_t f, unsigned int stack_size)
 	pcb->mPID = id++;
 	pcb->mStack = (unsigned int) AllocateMemory(stack_size);
 	pcb->mPC = (unsigned int) f;
-	pcb->mSP = pcb->mStack + stack_size;
+	pcb->mSP = pcb->mStack + stack_size - 8; // <pcb_switch_to+372> add sp, sp, #8
 	pcb->mNext = pcb;
 }

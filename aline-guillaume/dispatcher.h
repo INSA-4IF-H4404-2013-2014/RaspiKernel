@@ -3,7 +3,7 @@
 
 #include "pcb.h"
 
-int create_process(func_t f);
+int create_process(func_t f, void * args);
 
 void yield();
 
