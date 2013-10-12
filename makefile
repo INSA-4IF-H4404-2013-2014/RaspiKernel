@@ -88,9 +88,9 @@ $(BUILD_DIR):
 
 $(BUILD_DIR)%.c.o: $$(call rwildcard,./,*%.c) $(THIS)
 	$(CMD_ECHO) "# file <$<>"
-	$(CMD_CC) $(CC_FLAGS) -x c -S -o $<.s -MMD -MF $(patsubst %.o,%.d, $@) $<
-	$(CMD_AS) $(AS_FLAGS) -o $@ $<.s
-	$(CMD_RM) -f $<.s
+	$(CMD_CC) $(CC_FLAGS) -x c -S -o $(BUILD_DIR)$<.s -MMD -MQ $@ -MF $(patsubst %.o,%.d, $@) $<
+	$(CMD_AS) $(AS_FLAGS) -o $@ $(BUILD_DIR)$<.s
+	$(CMD_RM) -f $(BUILD_DIR)$<.s
 
 $(BUILD_DIR)%.s.o: $$(call rwildcard,./,*%.s) $(THIS)
 	$(CMD_ECHO) "# file <$<>"
@@ -103,7 +103,7 @@ $(BUILD_DIR)%.s.o: $$(call rwildcard,./,*%.s) $(THIS)
 	echo "# running gdb ($@)..." ;                                          \
 	arm-none-eabi-gdb $(BUILD_TARGET).elf -x $@ ;                           \
 	echo "# killing emulator" ;                                             \
-	kill $$QEMU_PID;
+	kill -9 $$QEMU_PID;
 
 
 #------------------------------------------------------------------------------- TARGET RULES
