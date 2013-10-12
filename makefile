@@ -88,7 +88,7 @@ $(BUILD_DIR):
 
 $(BUILD_DIR)%.c.o: $$(call rwildcard,./,*%.c) $(THIS)
 	$(CMD_ECHO) "# file <$<>"
-	$(CMD_CC) $(CC_FLAGS) -x c -S -o $(BUILD_DIR)$<.s -MMD -MF $(patsubst %.o,%.d, $@) $<
+	$(CMD_CC) $(CC_FLAGS) -x c -S -o $(BUILD_DIR)$<.s -MMD -MQ $@ -MF $(patsubst %.o,%.d, $@) $<
 	$(CMD_AS) $(AS_FLAGS) -o $@ $(BUILD_DIR)$<.s
 	$(CMD_RM) -f $(BUILD_DIR)$<.s
 
