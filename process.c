@@ -5,17 +5,42 @@
 
 static struct pcb_s * current_pcb = 0;
 
+static void
+process_startup(process_func_t f, void *args) __attribute__ ((noreturn));
+
 uint32_t
-process_create(func_t f, void * args)
+process_create(process_func_t f, void * args)
 {
     struct pcb_s * newPcb = (struct pcb_s *) AllocateMemory(sizeof(struct pcb_s));
 
-    pcb_init(newPcb, f, STACK_SIZE);
-    pcb_set_register(newPcb, 0, args);
+    pcb_init(newPcb, (pcb_func_t)process_startup, STACK_SIZE);
+    pcb_set_register(newPcb, 0, (uint32_t)f);
+    pcb_set_register(newPcb, 1, (uint32_t)args);
 
     pcb_cycle_append(&current_pcb, newPcb);
 
     return newPcb->mPID;
+}
+
+uint32_t
+process_start(uint32_t pid)
+{
+    struct pcb_s * pcb = pcb_cycle_by_pid(current_pcb, pid);
+
+    if (pcb == 0)
+    {
+        return 0;
+    }
+
+    if (pcb->mState != PCB_IDLE)
+    {
+        // if pid == pcb->mPID -> pcb->mState == PCB_RUNNING
+        return 0;
+    }
+
+    pcb->mState = PCB_READY;
+
+    return 1;
 }
 
 uint32_t
@@ -28,7 +53,7 @@ void
 process_yield()
 {
     struct pcb_s * previous_pcb = current_pcb;
-    struct pcb_s * next_pcb = pbc_cycle_next_ready(previous_pcb);
+    struct pcb_s * next_pcb = pcb_cycle_next_ready(previous_pcb);
 
     if (next_pcb == previous_pcb)
     {
@@ -55,4 +80,12 @@ process_exit()
     pcb_switch_to(0, next_pcb);
 
     __builtin_unreachable();
+}
+
+static void
+process_startup(process_func_t f, void *args)
+{
+    f(args);
+
+    process_exit();
 }

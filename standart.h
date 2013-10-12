@@ -3,4 +3,6 @@
 
 #include <stdint.h>
 
+#define nullptr 0
+
 #endif

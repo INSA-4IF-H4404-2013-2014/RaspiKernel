@@ -16,7 +16,7 @@ pcb_cycle_previous(struct pcb_s* pcb)
 }
 
 struct pcb_s *
-pbc_cycle_next_ready(struct pcb_s * current_pcb)
+pcb_cycle_next_ready(struct pcb_s * current_pcb)
 {
     struct pcb_s * next_pcb = pcb_cycle_next(current_pcb);
 
@@ -31,6 +31,30 @@ pbc_cycle_next_ready(struct pcb_s * current_pcb)
     }
 
     return next_pcb;
+}
+
+struct pcb_s *
+pcb_cycle_by_pid(struct pcb_s * pcb_head, uint32_t pid)
+{
+    if (pcb_head->mPID == pid)
+    {
+        return pcb_head;
+    }
+
+    struct pcb_s * current = pcb_head->mNext;
+
+    while (current != pcb_head)
+    {
+        if (current->mPID == pid)
+        {
+            return current;
+        }
+
+        current = pcb_cycle_next(current);
+    }
+
+    // this PID doesn't exist
+    return nullptr;
 }
 
 void

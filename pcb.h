@@ -12,9 +12,9 @@
 
 // ------------------------------------------------------------------- PCB TYPES
 
-typedef void (*func_t)(void *);
+typedef void (*pcb_func_t)(void);
 
-typedef enum {PCB_PAUSE, PCB_READY, PCB_RUN} pcb_state;
+typedef enum {PCB_IDLE, PCB_PAUSE, PCB_READY, PCB_RUN} pcb_state;
 
 typedef struct pcb_s
 {
@@ -41,7 +41,7 @@ typedef struct pcb_s
 // --------------------------------------------------------------- PCB FUNCTIONS
 
 void
-pcb_init(struct pcb_s* pcb, func_t f, uint32_t stack_size);
+pcb_init(struct pcb_s* pcb, pcb_func_t f, uint32_t stack_size);
 
 void
 pcb_release(struct pcb_s* pcb);

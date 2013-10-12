@@ -2,9 +2,9 @@
 #include "process.h"
 
 void
-ping(int * args)
+ping(uint32_t * args)
 {
-    int cpt = *args;
+    uint32_t cpt = *args;
 
     while (1) {
         cpt++;
@@ -13,9 +13,9 @@ ping(int * args)
 }
 
 void
-pong(int * args)
+pong(uint32_t * args)
 {
-    int cpt = *args;
+    uint32_t cpt = *args;
 
     process_exit();
 
@@ -30,20 +30,23 @@ pong(int * args)
 int
 notmain ( void )
 {
-	// create kernel process
-	process_create((func_t)0, (void *)0);
+    // create kernel process
+    process_create((process_func_t)0, (void *)0);
 
-	// create kernel processes
-	int ping_start = 17;
-	int pong_start = 33;
+    // create kernel processes
+    uint32_t ping_start = 17;
+    uint32_t pong_start = 33;
 
-	process_create((func_t)ping, &ping_start);
-	process_create((func_t)pong, &pong_start);
+    uint32_t ping_pid = process_create((process_func_t)ping, &ping_start);
+    uint32_t pong_pid = process_create((process_func_t)pong, &pong_start);
 
-	while ( 1 )
-	{
-		process_yield();
-	}
+    process_start(ping_pid);
+    process_start(pong_pid);
 
-	return 0;
+    while ( 1 )
+    {
+        process_yield();
+    }
+
+    return 0;
 }
