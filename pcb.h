@@ -31,7 +31,7 @@ typedef struct pcb_s
 	struct pcb_s * mNext;
 } _pcb_s;
 
-void init_pcb(struct pcb_s* pcb, func_t f, uint32_t stack_size);
+void pcb_init(struct pcb_s* pcb, func_t f, uint32_t stack_size);
 
 void pcb_switch_to(struct pcb_s* oldPcb, struct pcb_s* newPcb);
 

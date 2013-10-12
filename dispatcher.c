@@ -22,7 +22,7 @@ static struct pcb_s *
 cycle_next(struct pcb_s * current_pcb)
 {
 	struct pcb_s * next_pcb = current_pcb->mNext;
-	
+
 	while (next_pcb->mState != PCB_READY)
 	{
 		if (next_pcb == current_pcb)
@@ -41,7 +41,7 @@ create_process(func_t f, void * args)
 {
 	struct pcb_s * newPcb = (struct pcb_s *) AllocateMemory(sizeof(struct pcb_s));
 
-	init_pcb(newPcb, f, STACK_SIZE);
+	pcb_init(newPcb, f, STACK_SIZE);
 	pcb_set_register(newPcb, 0, args);
 
 	append(&current_pcb, newPcb);

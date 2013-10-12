@@ -2,7 +2,7 @@
 #include "pcb.h"
 #include "allocateMemory.h"
 
-void init_pcb(struct pcb_s* pcb, func_t f, uint32_t stack_size)
+void pcb_init(struct pcb_s* pcb, func_t f, uint32_t stack_size)
 {
 	static uint32_t id = 0;
 
