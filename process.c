@@ -1,6 +1,6 @@
 
 #include "pcb_cycle.h"
-#include "dispatcher.h"
+#include "process.h"
 #include "allocateMemory.h"
 
 static struct pcb_s * current_pcb = 0;

@@ -1,5 +1,5 @@
 
-#include "dispatcher.h"
+#include "process.h"
 
 void
 ping(int * args)
