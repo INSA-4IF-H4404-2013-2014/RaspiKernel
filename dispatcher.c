@@ -60,8 +60,9 @@ process_exit()
     struct pcb_s * previous_pcb = pcb_cycle_rm_current(&current_pcb);
     struct pcb_s * next_pcb = current_pcb;
 
-    previous_pcb->mState = PCB_READY;
     next_pcb->mState = PCB_RUN;
+
+    FreeAllocatedMemory((uint32_t*)previous_pcb);
 
     pcb_switch_to(0, next_pcb);
 
