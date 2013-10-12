@@ -18,6 +18,12 @@ process_create(func_t f, void * args)
     return newPcb->mPID;
 }
 
+uint32_t
+process_get_pid()
+{
+    return current_pcb->mPID;
+}
+
 void
 process_yield()
 {

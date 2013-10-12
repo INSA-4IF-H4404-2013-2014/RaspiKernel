@@ -6,6 +6,9 @@
 uint32_t
 process_create(func_t f, void * args);
 
+uint32_t
+process_get_pid();
+
 void
 process_yield();
 
