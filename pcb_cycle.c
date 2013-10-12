@@ -16,13 +16,13 @@ pcb_cycle_previous(struct pcb_s* pcb)
 }
 
 struct pcb_s *
-pcb_cycle_next_ready(struct pcb_s * current_pcb)
+pcb_cycle_next_ready(struct pcb_s * pcb)
 {
-    struct pcb_s * next_pcb = pcb_cycle_next(current_pcb);
+    struct pcb_s * next_pcb = pcb_cycle_next(pcb);
 
     while (next_pcb->mState != PCB_READY)
     {
-        if (next_pcb == current_pcb)
+        if (next_pcb == pcb)
         {
             break;
         }
