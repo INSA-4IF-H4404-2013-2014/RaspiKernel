@@ -1,7 +1,7 @@
 #ifndef ALLOCATEMEMORY_H
 #define ALLOCATEMEMORY_H
 
-#include <stdint.h>
+#include "standart.h"
 
 typedef uint32_t memory_element_t;
 
