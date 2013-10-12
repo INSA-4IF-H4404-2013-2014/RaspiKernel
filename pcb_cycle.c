@@ -9,10 +9,28 @@ pcb_cycle_previous(struct pcb_s* pcb)
 
     while (current->mNext != pcb)
     {
-        current = current->mNext;
+        current = pcb_cycle_next(current);
     }
 
     return current;
+}
+
+struct pcb_s *
+pbc_cycle_next_ready(struct pcb_s * current_pcb)
+{
+    struct pcb_s * next_pcb = pcb_cycle_next(current_pcb);
+
+    while (next_pcb->mState != PCB_READY)
+    {
+        if (next_pcb == current_pcb)
+        {
+            break;
+        }
+
+        next_pcb = pcb_cycle_next(next_pcb);
+    }
+
+    return next_pcb;
 }
 
 void

@@ -12,6 +12,9 @@
 struct pcb_s*
 pcb_cycle_previous(struct pcb_s* pcb);
 
+struct pcb_s *
+pbc_cycle_next_ready(struct pcb_s * current_pcb);
+
 void
 pcb_cycle_append(struct pcb_s ** pcb_cycle, struct pcb_s * pcb);
 

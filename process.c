@@ -5,24 +5,6 @@
 
 static struct pcb_s * current_pcb = 0;
 
-static struct pcb_s *
-cycle_next(struct pcb_s * current_pcb)
-{
-    struct pcb_s * next_pcb = pcb_cycle_next(current_pcb);
-
-    while (next_pcb->mState != PCB_READY)
-    {
-        if (next_pcb == current_pcb)
-        {
-            break;
-        }
-
-        next_pcb = pcb_cycle_next(next_pcb);
-    }
-
-    return next_pcb;
-}
-
 uint32_t
 process_create(func_t f, void * args)
 {
@@ -40,7 +22,7 @@ void
 process_yield()
 {
     struct pcb_s * previous_pcb = current_pcb;
-    struct pcb_s * next_pcb = cycle_next(previous_pcb);
+    struct pcb_s * next_pcb = pbc_cycle_next_ready(previous_pcb);
 
     if (next_pcb == previous_pcb)
     {
