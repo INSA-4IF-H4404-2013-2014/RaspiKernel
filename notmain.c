@@ -1,42 +1,47 @@
-#include "process.h"
+
 #include "dispatcher.h"
 
-struct ctx_s ctx_A;
-struct ctx_s ctx_B;
-struct ctx_s ctx_init;
-
 void
-ping()
+ping(int * args)
 {
-  int cpt = 1;
+  int cpt = *args;
 
   while (1) {
     cpt++;
-    switch_to(&ctx_B);
+    yield();
   }
 }
 
 void
-pong()
+pong(int * args)
 {
-  int cpt = 1;
+  int cpt = *args;
 
   while (1) {
     cpt += 2;
-    switch_to(&ctx_A);
+    yield();
   }
 }
+
 
 //------------------------------------------------------------------------
 int
 notmain ( void )
 {
-  init_ctx(&ctx_A, ping, STACK_SIZE);
-  init_ctx(&ctx_B, pong, STACK_SIZE);
+	// create kernel process
+	create_process((func_t)0, (void *)0);
 
-  current_ctx = &ctx_init;
+	// create kernel processes
+	int ping_start = 17;
+	int pong_start = 33;
 
-  switch_to(&ctx_A);
+	create_process((func_t)ping, &ping_start);
+	create_process((func_t)pong, &pong_start);
 
-  return 0;
+	while ( 1 )
+	{
+		yield();
+	}
+
+	return 0;
 }

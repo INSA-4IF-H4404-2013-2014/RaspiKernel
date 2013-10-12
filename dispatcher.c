@@ -1,34 +1,68 @@
 
-#include "process.h"
 #include "dispatcher.h"
+#include "allocateMemory.h"
 
-#define SWITCH_REGISTER(i) \
-        __asm ("mov %0, r" #i : "=r"(current_ctx->mR[i])); \
-        __asm ("mov r" #i ", %0" : : "r"(ctx->mR[i]))
+static struct pcb_s * current_pcb = 0;
 
-
-void switch_to(struct ctx_s* ctx)
+static void
+append(struct pcb_s ** pcb_cycle, struct pcb_s * pcb)
 {
-  __asm ("mov %0, sp" : "=r"(current_ctx->mSP));
-  __asm ("mov %0, lr" : "=r"(current_ctx->mPC));
-
-  SWITCH_REGISTER(0);
-  SWITCH_REGISTER(1);
-  SWITCH_REGISTER(2);
-  SWITCH_REGISTER(3);
-  SWITCH_REGISTER(4);
-  SWITCH_REGISTER(5);
-  SWITCH_REGISTER(6);
-  SWITCH_REGISTER(7);
-  SWITCH_REGISTER(8);
-  SWITCH_REGISTER(9);
-  SWITCH_REGISTER(10);
-  SWITCH_REGISTER(11);
-  SWITCH_REGISTER(12);
-
-  current_ctx = ctx;
-
-  __asm ("mov lr, %0" : : "r"(ctx->mPC));
-  __asm ("mov sp, %0" : : "r"(ctx->mSP));
+	if (*pcb_cycle == 0)
+	{
+		(*pcb_cycle) = pcb;
+	}
+	else
+	{
+		pcb->mNext = (*pcb_cycle)->mNext;
+		(*pcb_cycle)->mNext = pcb;
+	}
 }
 
+static struct pcb_s *
+cycle_next(struct pcb_s * current_pcb)
+{
+	struct pcb_s * next_pcb = current_pcb->mNext;
+	
+	while (next_pcb->mState != PCB_READY)
+	{
+		if (next_pcb == current_pcb)
+		{
+			break;
+		}
+
+		next_pcb = next_pcb->mNext;
+	}
+
+	return next_pcb;
+}
+
+int
+create_process(func_t f, void * args)
+{
+	struct pcb_s * newPcb = (struct pcb_s *) AllocateMemory(sizeof(struct pcb_s));
+
+	init_pcb(newPcb, f, STACK_SIZE);
+	pcb_set_register(newPcb, 0, args);
+
+	append(&current_pcb, newPcb);
+
+	return 1;
+}
+
+void
+yield()
+{
+	struct pcb_s * previous_pcb = current_pcb;
+	struct pcb_s * next_pcb = cycle_next(previous_pcb);
+
+	if (next_pcb == previous_pcb)
+	{
+		return;
+	}
+
+	previous_pcb->mState = PCB_READY;
+	next_pcb->mState = PCB_RUN;
+	current_pcb = next_pcb;
+
+	pcb_switch_to(previous_pcb, next_pcb);
+}

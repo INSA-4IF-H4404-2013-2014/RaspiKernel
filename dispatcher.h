@@ -1,9 +1,11 @@
 #ifndef _H_DISPATCHER
 #define _H_DISPATCHER
 
-#include "process.h"
+#include "pcb.h"
 
-void switch_to(struct ctx_s* ctx);
+int create_process(func_t f, void * args);
+
+void yield();
 
 #endif
 
