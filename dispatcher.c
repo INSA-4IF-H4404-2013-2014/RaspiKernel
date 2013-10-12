@@ -23,8 +23,8 @@ cycle_next(struct pcb_s * current_pcb)
     return next_pcb;
 }
 
-int
-create_process(func_t f, void * args)
+uint32_t
+process_create(func_t f, void * args)
 {
     struct pcb_s * newPcb = (struct pcb_s *) AllocateMemory(sizeof(struct pcb_s));
 
@@ -33,11 +33,11 @@ create_process(func_t f, void * args)
 
     pcb_cycle_append(&current_pcb, newPcb);
 
-    return 1;
+    return newPcb->mPID;
 }
 
 void
-yield()
+process_yield()
 {
     struct pcb_s * previous_pcb = current_pcb;
     struct pcb_s * next_pcb = cycle_next(previous_pcb);

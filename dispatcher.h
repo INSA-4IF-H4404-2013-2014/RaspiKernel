@@ -3,10 +3,13 @@
 
 #include "pcb.h"
 
-int create_process(func_t f, void * args);
+uint32_t
+process_create(func_t f, void * args);
 
-void yield();
+void
+process_yield();
 
-void process_exit() __attribute__ ((noreturn));
+void
+process_exit() __attribute__ ((noreturn));
 
 #endif
