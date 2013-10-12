@@ -54,7 +54,7 @@ CMD_RM = $(HIDE_CMD)rm
 
 #------------------------------------------------------------------------------- STATIC RULES
 
-.PHONY: update clean full run gdb run3
+.PHONY: update clean full run gdb
 
 update : $(BUILD_DIR) $(BUILD_TARGET).hex $(BUILD_TARGET).bin $(BUILD_TARGET).img
 	$(CMD_ECHO) "# build finished"
@@ -64,14 +64,7 @@ clean :
 
 full : clean update
 
-run : update
-	@qemu-system-arm -kernel $(BUILD_TARGET).elf -cpu arm1176 -m 512 -M $(QEMU_MACHINE) -nographic -no-reboot -serial stdio -append "rw earlyprintk loglevel=8 panic=120 keep_bootcon rootwait dma.dmachans=0x7f35 bcm2708_fb.fbwidth=1024 bcm2708_fb.fbheight=768 bcm2708.boardrev=0xf bcm2708.serial=0xcad0eedf smsc95xx.macaddr=B8:27:EB:D0:EE:DF sdhci-bcm2708.emmc_clock_freq=100000000 vc_mem.mem_base=0x1c000000 vc_mem.mem_size=0x20000000  dwc_otg.lpm_enable=0 kgdboc=ttyAMA0,115200 console=ttyS0 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait" -S -s > $(BUILD_DIR)qemu.stdout 2> $(BUILD_DIR)qemu.stderr & \
-	QEMU_PID=$$!;                                                           \
-	echo "# running emulator <$(BUILD_TARGET).elf> (-M $(QEMU_MACHINE)) : PID = $$QEMU_PID" ;\
-	echo "# running gdb..." ;                                               \
-	arm-none-eabi-gdb $(BUILD_TARGET).elf -x gdbinit.gdb ;                  \
-	echo "# killing emulator" ;                                             \
-	kill $$QEMU_PID;
+run : gdbinit.gdb
 
 emu : update
 	$(CMD_ECHO) "# running <$(BUILD_TARGET).elf> ($(QEMU_MACHINE))..."
@@ -102,6 +95,15 @@ $(BUILD_DIR)%.c.o: $$(call rwildcard,./,*%.c) $(THIS)
 $(BUILD_DIR)%.s.o: $$(call rwildcard,./,*%.s) $(THIS)
 	$(CMD_ECHO) "# file <$<>"
 	$(CMD_AS) $(AS_FLAGS) $< -o $@
+
+%.gdb : update
+	@qemu-system-arm -kernel $(BUILD_TARGET).elf -cpu arm1176 -m 512 -M $(QEMU_MACHINE) -nographic -no-reboot -serial stdio -append "rw earlyprintk loglevel=8 panic=120 keep_bootcon rootwait dma.dmachans=0x7f35 bcm2708_fb.fbwidth=1024 bcm2708_fb.fbheight=768 bcm2708.boardrev=0xf bcm2708.serial=0xcad0eedf smsc95xx.macaddr=B8:27:EB:D0:EE:DF sdhci-bcm2708.emmc_clock_freq=100000000 vc_mem.mem_base=0x1c000000 vc_mem.mem_size=0x20000000  dwc_otg.lpm_enable=0 kgdboc=ttyAMA0,115200 console=ttyS0 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait" -S -s > $(BUILD_DIR)qemu.stdout 2> $(BUILD_DIR)qemu.stderr & \
+	QEMU_PID=$$!;                                                           \
+	echo "# running emulator <$(BUILD_TARGET).elf> (-M $(QEMU_MACHINE)) : PID = $$QEMU_PID" ;\
+	echo "# running gdb ($@)..." ;                                          \
+	arm-none-eabi-gdb $(BUILD_TARGET).elf -x $@ ;                           \
+	echo "# killing emulator" ;                                             \
+	kill $$QEMU_PID;
 
 
 #------------------------------------------------------------------------------- TARGET RULES
