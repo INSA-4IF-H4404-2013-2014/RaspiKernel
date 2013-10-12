@@ -1,4 +1,3 @@
 
 source gdbinit.gdb
-b ping
-b pong
+b process_exit

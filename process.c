@@ -70,11 +70,12 @@ process_yield()
 void
 process_exit()
 {
+    struct pcb_s * next_pcb = pcb_cycle_next_ready(current_pcb);
     struct pcb_s * previous_pcb = pcb_cycle_rm_current(&current_pcb);
-    struct pcb_s * next_pcb = current_pcb;
 
     next_pcb->mState = PCB_RUN;
 
+    pcb_release(previous_pcb);
     FreeAllocatedMemory((uint32_t*)previous_pcb);
 
     pcb_switch_to(0, next_pcb);

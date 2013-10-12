@@ -16,12 +16,11 @@ void
 pong(uint32_t * args)
 {
     uint32_t cpt = *args;
+    uint32_t i;
 
-    process_exit();
-
-    while (1) {
-        cpt += 2;
-        process_yield();
+    for (i = 0; i < 16; i++)
+    {
+        cpt *= cpt;
     }
 }
 
