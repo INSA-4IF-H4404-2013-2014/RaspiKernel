@@ -4,23 +4,25 @@
 void
 ping(int * args)
 {
-  int cpt = *args;
+    int cpt = *args;
 
-  while (1) {
-    cpt++;
-    yield();
-  }
+    while (1) {
+        cpt++;
+        yield();
+    }
 }
 
 void
 pong(int * args)
 {
-  int cpt = *args;
+    int cpt = *args;
 
-  while (1) {
-    cpt += 2;
-    yield();
-  }
+    process_exit();
+
+    while (1) {
+        cpt += 2;
+        yield();
+    }
 }
 
 

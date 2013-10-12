@@ -7,5 +7,6 @@ int create_process(func_t f, void * args);
 
 void yield();
 
-#endif
+void process_exit() __attribute__ ((noreturn));
 
+#endif
