@@ -35,9 +35,13 @@ void pcb_switch_to(struct pcb_s* oldPcb, struct pcb_s* newPcb);
 
 void pcb_set_register(struct pcb_s* pcb, unsigned int registerId, unsigned int value);
 
-
+/* ARM documentation on multiple pushes/pops
+ * The registers are stored in sequence, the lowest-numbered register to the
+ * lowest memory address (start_address), through to the highest-numbered
+ * register to the highest memory address (end_address)
+ */
 #define pcb_set_register(pcb,registerId,value) \
-    ((unsigned int *)((pcb)->mSP))[- 1 - (registerId)] = (unsigned int)(value)
+    ((unsigned int *)((pcb)->mSP))[- REGISTER_COUNT + (registerId)] = (unsigned int)(value)
 
 
 #endif
