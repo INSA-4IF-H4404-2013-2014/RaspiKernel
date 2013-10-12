@@ -1,6 +1,8 @@
 #ifndef _H_PCB
 #define _H_PCB
 
+#include "standart.h"
+
 #define STACK_SIZE 1024 * 32
 #define REGISTER_COUNT 13
 
@@ -14,26 +16,25 @@ typedef struct pcb_s
 	pcb_state mState;
 
 	// Process ID
-	unsigned int mPID;
+	uint32_t mPID;
 
 	// stack head
-	unsigned int mStack;
+	uint32_t mStack;
 
 	// PC = program counter
-	unsigned int mPC;
+	uint32_t mPC;
 
 	// SP = stack counter
-	unsigned int mSP;
+	uint32_t mSP;
 
 	// next pcb
 	struct pcb_s * mNext;
 } _pcb_s;
 
-void init_pcb(struct pcb_s* pcb, func_t f, unsigned int stack_size);
+void init_pcb(struct pcb_s* pcb, func_t f, uint32_t stack_size);
 
 void pcb_switch_to(struct pcb_s* oldPcb, struct pcb_s* newPcb);
 
-void pcb_set_register(struct pcb_s* pcb, unsigned int registerId, unsigned int value);
 
 /* ARM documentation on multiple pushes/pops
  * The registers are stored in sequence, the lowest-numbered register to the
@@ -41,7 +42,7 @@ void pcb_set_register(struct pcb_s* pcb, unsigned int registerId, unsigned int v
  * register to the highest memory address (end_address)
  */
 #define pcb_set_register(pcb,registerId,value) \
-    ((unsigned int *)((pcb)->mSP))[- REGISTER_COUNT + (registerId)] = (unsigned int)(value)
+    ((uint32_t *)((pcb)->mSP))[- REGISTER_COUNT + (registerId)] = (uint32_t)(value)
 
 
 #endif
