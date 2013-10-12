@@ -25,9 +25,6 @@ typedef struct pcb_s
 	// SP = stack counter
 	unsigned int mSP;
 
-	// registers
-	unsigned int mR[REGISTER_COUNT];
-
 	// next pcb
 	struct pcb_s * mNext;
 } _pcb_s;
@@ -35,6 +32,13 @@ typedef struct pcb_s
 void init_pcb(struct pcb_s* pcb, func_t f, unsigned int stack_size);
 
 void pcb_switch_to(struct pcb_s* oldPcb, struct pcb_s* newPcb);
+
+void pcb_set_register(struct pcb_s* pcb, unsigned int registerId, unsigned int value);
+
+
+#define pcb_set_register(pcb,registerId,value) \
+    ((unsigned int *)((pcb)->mSP))[- 1 - (registerId)] = (unsigned int)(value)
+
 
 #endif
 
