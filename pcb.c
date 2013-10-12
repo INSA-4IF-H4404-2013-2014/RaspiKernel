@@ -1,13 +1,18 @@
 
 #include "pcb.h"
+#include "allocateMemory.h"
 
-#define SWITCH_REGISTER2(i) \
-        __asm ("mov %0, r" #i : "=r"(oldPcb->mR[i])); \
-        __asm ("mov r" #i ", %0" : : "r"(newPcb->mR[i]))
+void init_pcb(struct pcb_s* pcb, func_t f, uint32_t stack_size)
+{
+	static uint32_t id = 0;
 
-#define SWITCH_REGISTER(i) \
-        __asm ("mov %0, r" #i : "=r"(((unsigned int*)oldPcb->mSP)[-1-i])); \
-        __asm ("mov r" #i ", %0" : : "r"(((unsigned int*)newPcb->mSP)[-1-i]))
+	pcb->mState = PCB_READY;
+	pcb->mPID = id++;
+	pcb->mStack = (uint32_t) AllocateMemory(stack_size);
+	pcb->mPC = (uint32_t) f;
+	pcb->mSP = pcb->mStack + stack_size - 8; // <pcb_switch_to+372> add sp, sp, #8
+	pcb->mNext = pcb;
+}
 
 void pcb_switch_to(struct pcb_s* oldPcb, struct pcb_s* newPcb)
 {
