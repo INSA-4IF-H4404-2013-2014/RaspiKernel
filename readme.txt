@@ -2,10 +2,9 @@
 ——————————————— Tutoriel :
 1) Faite vos modifications, pull, etc …
 2) Compilez (> make).
-3) Lancer l’emmulateur (> make run)
-4) Lancer GDB dans un autre terminal (> make gdb)
+3) Lancer le tout (> make run)
 5) Enjoy…
-6) Quitez l’emmulateur et GDB
+6) Quitez GDB
 
 
 Command pour compiler :
@@ -15,10 +14,18 @@ Command pour compiler :
   sont alors dans ./build/ invisible dans “git status”.
   > make
 
-Lancer l’emmulateur :
+Lancer le tout :
+  Re-compile automatiquement au besoin avant
+  > make run
+
+  Ceci lance l'emulateur en background suivit de GDB.
+  L'emulateur est automatiquement arreter des la fermeture
+  de GDB.
+
+Lancer l’emmulateur separement :
   Re-compile automatiquement au besoin avant de lancer
   l’emmulateur.
-  > make run
+  > make emu
 
   Si qemu genere des erreurs, cela est peut etre causer
   si qemu ne connait pas la machine par defaut (-M raspi).
@@ -26,7 +33,7 @@ Lancer l’emmulateur :
   > echo "versatilepb" > qemu-machine.gitlocal
   Puis relancez l'emmulateur
 
-Lancer le debugger :
+Lancer le debugger separement :
   Pout lancer GDB Vous devez simplement veillez a avoir
   lancer  l’emmulateur (make run) dans un autre terminal
   avant.
