@@ -24,6 +24,7 @@ typedef struct _pcb_s
   unsigned int mSP;
 
   // registers
+  // PLUS UTILISES !
   unsigned int mR[REGISTER_COUNT];
 } pcb_s;
 

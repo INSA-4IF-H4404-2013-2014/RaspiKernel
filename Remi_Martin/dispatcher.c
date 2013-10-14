@@ -18,6 +18,7 @@ void ctx_switch(pcb_s * oldPcb, pcb_s * newPcb)
   //Saving old context
   __asm volatile ("push {r0-r12}");
   __asm volatile ("mov %0, sp" : "=r"(oldPcb->mSP));
+  //Sachant qu'il y a 2 calls, comment lr peut être valide ?
   __asm volatile ("mov %0, lr" : "=r"(oldPcb->mPC));
 
   //TODO : gerer les args
