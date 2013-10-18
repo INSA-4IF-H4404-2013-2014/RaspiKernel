@@ -2,6 +2,7 @@
 #include "pcb_cycle.h"
 #include "process.h"
 #include "allocateMemory.h"
+#include "hw.h"
 
 static struct pcb_s * current_pcb = 0;
 
@@ -90,3 +91,32 @@ process_startup(process_func_t f, void *args)
 
     process_exit();
 }
+
+
+void __attribute__ ((naked)) ctx_switch ()
+{
+    DISABLE_IRQ();
+
+    __asm("sub lr, lr, #4");
+    __asm("srsdb sp!, #13");
+    __asm("cps #0x13");
+
+    __asm ("push {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
+    __asm ("add sp, #52");
+    __asm ("mov %0, sp" : "=r"(current_pcb->mSP));
+    __asm ("mov %0, lr" : "=r"(current_pcb->mPC));
+    // bouge la tete de pile pour ne pas ecraser la sauvegarde des registres qu on vient juste de faire lors de l appel de  pcb_cyce_next_ready
+    __asm ("sub sp, #52");
+
+    current_pcb = pcb_cycle_next_ready(current_pcb);
+
+     // pas besoin de remanipuler la pile car current_pcb est globale
+    __asm ("mov lr, %0" : : "r"(current_pcb->mPC));
+    __asm ("mov sp, %0" : : "r"(current_pcb->mSP));
+    __asm ("sub sp, #52");
+    __asm ("pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
+
+    set_next_tick_and_enable_timer_irq();
+    ENABLE_IRQ();
+}
+

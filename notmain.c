@@ -1,5 +1,6 @@
 
 #include "process.h"
+#include "hw.h"
 
 void
 ping(uint32_t * args)
@@ -8,7 +9,6 @@ ping(uint32_t * args)
 
     while (1) {
         cpt++;
-        process_yield();
     }
 }
 
@@ -24,6 +24,14 @@ pong(uint32_t * args)
     }
 }
 
+void
+start_sched ()
+{
+    init_hw();
+    
+    //set_next_tick_and_enable_timer_irq();
+    ENABLE_IRQ();
+}
 
 //------------------------------------------------------------------------
 int
@@ -42,9 +50,11 @@ notmain ( void )
     process_start(ping_pid);
     process_start(pong_pid);
 
+    start_sched();
+
     while ( 1 )
     {
-        process_yield();
+        //process_yield();
     }
 
     return 0;

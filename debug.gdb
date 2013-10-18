@@ -1,3 +1,3 @@
 
 source gdbinit.gdb
-b process_exit
+b ctx_switch
