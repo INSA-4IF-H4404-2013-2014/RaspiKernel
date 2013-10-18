@@ -12,7 +12,7 @@ void ctx_switch(pcb_s * oldPcb, pcb_s * newPcb)
 {
   if(oldPcb != newPcb)
   {
-    oldPcb->state = READY;
+    oldPcb->state = PCB_READY;
   }
 
   //Saving old context
@@ -27,12 +27,12 @@ void ctx_switch(pcb_s * oldPcb, pcb_s * newPcb)
   __asm volatile ("mov sp, %0" : : "r"(newPcb->mSP));
   __asm volatile ("pop {r0-r12}");
 
-  if(newPcb->state == NEW)
+  if(newPcb->state == PCB_NEW)
   {
-    newPcb->state = RUNNING;
+    newPcb->state = PCB_RUNNING;
     start_current_process();
   }
 
-  newPcb->state = RUNNING;
+  newPcb->state = PCB_RUNNING;
 }
 

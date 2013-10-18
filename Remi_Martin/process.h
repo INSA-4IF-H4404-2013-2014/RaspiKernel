@@ -7,7 +7,7 @@
 #include "allocateMemory.h"
 
 //Process states for the scheduler
-typedef enum {NEW, READY, RUNNING, WAITING, TERMINATED} processState;
+typedef enum {PCB_NEW, PCB_READY, PCB_RUNNING, PCB_WAITING, PCB_TERMINATED} processState;
 
 typedef void (*func_t)();
 
@@ -26,7 +26,7 @@ typedef struct _pcb_s
   uint32_t * mSP;
 } pcb_s;
 
-void init_pcb(pcb_s* pcb, func_t f, unsigned int stack_size, void * args);
+void init_pcb(pcb_s** pcb, func_t f, unsigned int stack_size, void * args);
 
 #endif
 

@@ -6,7 +6,7 @@
 void create_process(func_t f, void * args)
 {
   pcb_s * pcb = 0;
-  init_pcb(pcb, f, STACK_SIZE, args);
+  init_pcb(&pcb, f, STACK_SIZE, args);
   next_running = insert(next_running, pcb);
 }
 
@@ -14,7 +14,7 @@ void yield()
 {
 	if(next_running)
 	{
-		while(next_running->previous->pcb->state == TERMINATED)
+		while(next_running->previous->pcb->state == PCB_TERMINATED)
 		{
 			next_running = remove(next_running->previous);
 		}
