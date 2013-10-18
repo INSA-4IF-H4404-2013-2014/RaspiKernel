@@ -28,7 +28,7 @@ void pong()
 void funcA()
 {
 	int cptA = 0;
-	while(1) 
+	while(cptA < 2) 
 	{
 		cptA ++;
 		yield();

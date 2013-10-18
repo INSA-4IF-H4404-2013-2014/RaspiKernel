@@ -9,6 +9,7 @@
 /*
  * Methods 
  */
+void start_current_ctx();
 void ctx_switch();
 
 #endif

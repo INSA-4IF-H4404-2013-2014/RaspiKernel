@@ -26,16 +26,25 @@ void create_process(func_t f, void* args)
 
 void yield()
 {
-	// Attribute the new current_process
-	current_process = current_process->next;
-	
-	// Switch context
-	ctx_switch();
+	if(current_process->next == current_process) // if only one process is running
+	{
+		start_current_ctx();
+	}
+	else
+	{
+		// Attribute the new current_process
+		current_process = current_process->next;
+		
+		// Switch context
+		ctx_switch();
+	}
 }
 
 void exit()
-{
-	if(current_process->next == current_process)
+{	
+	current_process->running = TERMINATED;
+	
+	if(current_process->next == current_process) // if only one process is running
 	{
 		free_pcb(current_process);
 		current_process = 0;
@@ -51,5 +60,7 @@ void exit()
 	
 		// Attribute the new current_process
 		current_process = current_process->next;
+		
+		start_current_ctx();
 	}
 }
