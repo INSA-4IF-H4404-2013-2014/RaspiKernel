@@ -97,10 +97,6 @@ void __attribute__ ((naked)) ctx_switch ()
 {
     DISABLE_IRQ();
 
-    __asm("sub lr, lr, #4");
-    __asm("srsdb sp!, #13");
-    __asm("cps #0x13");
-
     __asm ("push {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
     __asm ("add sp, #52");
     __asm ("mov %0, sp" : "=r"(current_pcb->mSP));
@@ -109,6 +105,7 @@ void __attribute__ ((naked)) ctx_switch ()
     __asm ("sub sp, #52");
 
     current_pcb = pcb_cycle_next_ready(current_pcb);
+    set_next_tick_and_enable_timer_irq();
 
      // pas besoin de remanipuler la pile car current_pcb est globale
     __asm ("mov lr, %0" : : "r"(current_pcb->mPC));
@@ -116,7 +113,9 @@ void __attribute__ ((naked)) ctx_switch ()
     __asm ("sub sp, #52");
     __asm ("pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
 
-    set_next_tick_and_enable_timer_irq();
     ENABLE_IRQ();
+
+    //return de bourrin parce que naked le fait pas
+    __asm ("mov pc, lr");
 }
 
