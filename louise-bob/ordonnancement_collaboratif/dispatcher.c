@@ -41,9 +41,9 @@
 	__asm("mov r12, %0" : : "r"(current_ctx->r12));
 }*/
 
-ctx_switch(/*struct pcb_s* old_pcb, struct pcb_s* new_pcb*/)
+ctx_switch()
 {
-	if((current_process->previous)->running)
+	if((current_process->previous)->running == RUNNING)
 	{
 		__asm volatile("push {r0-r12}");
 		__asm("mov %0, lr" : "=r"((current_process->previous)->lr));
@@ -53,13 +53,13 @@ ctx_switch(/*struct pcb_s* old_pcb, struct pcb_s* new_pcb*/)
 	
 	__asm("mov sp, %0" : : "r"(current_process->sp)); // put in sp new_pcb->sp
 	
-	if(current_process->running)
+	if(current_process->running == RUNNING)
 	{
 		__asm volatile("pop {r0-r12}");
 	}
-	else
+	else if(current_process->running == READY)
 	{
-		current_process->running = 1;
+		current_process->running = RUNNING;
 	}
 	
 	__asm("mov lr, %0" : : "r"(current_process->lr));

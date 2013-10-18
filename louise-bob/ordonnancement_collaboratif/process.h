@@ -10,6 +10,10 @@
 typedef void (*func_t) (void);
 
 /*
+ * Enums
+ */
+typedef enum {READY, RUNNING, TERMINATED} PCB_STATE;
+/*
  *  Structures
  */
 struct pcb_s
@@ -37,7 +41,7 @@ struct pcb_s
 	struct pcb_s* previous; // Pointer to the previous PCB
 	struct pcb_s* next; // Pointer to the next PCB
 	
-	int running;
+	PCB_STATE running;
 };
 
 /*
@@ -48,6 +52,7 @@ struct pcb_s* current_process;
 /*
  * Methods
  */
-void init_pcb(struct pcb_s* ctx, func_t f, void* args, unsigned int stack_size);
+void init_pcb(struct pcb_s* pcb, func_t f, void* args, unsigned int stack_size);
+void free_pcb(struct pcb_s* pcb);
 
 #endif

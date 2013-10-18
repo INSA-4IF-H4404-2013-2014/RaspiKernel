@@ -26,22 +26,30 @@ void create_process(func_t f, void* args)
 
 void yield()
 {
+	// Attribute the new current_process
 	current_process = current_process->next;
 	
-	//if(!current_process->running)
-	//{
-	//	start_current_process();
-	//}
-	//else
-	//{
-		ctx_switch(/*current_process->previous, current_process*/);
-	//}
+	// Switch context
+	ctx_switch();
 }
 
-/*
-void start_current_process()
+void exit()
 {
-	current_process->running = 1;
-	__asm("mov lr, %0" : : "r"(current_process->lr));
+	if(current_process->next == current_process)
+	{
+		free_pcb(current_process);
+		current_process = 0;
+	}
+	else
+	{
+		// Remove the current_process from the list of processes
+		(current_process->previous)->next = current_process->next;
+		(current_process->next)->previous = current_process->previous;
+	
+		// Free the stack associated to the current_process
+		free_pcb(current_process);
+	
+		// Attribute the new current_process
+		current_process = current_process->next;
+	}
 }
-*/
