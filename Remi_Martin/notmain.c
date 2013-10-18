@@ -5,10 +5,9 @@ void ping()
 {
   int cpt = 1;
 
-  while (cpt < 2)
+  while (cpt < 4)
   {
     cpt++;
-    ctx_switch();
   }
   exit_process();
 }
@@ -17,10 +16,9 @@ void pong()
 {
   int cpt = 1;
 
-  while (cpt < 3)
+  while (cpt < 5)
   {
     cpt += 2;
-    ctx_switch();
   }
   exit_process();
 }
@@ -28,10 +26,15 @@ void pong()
 //------------------------------------------------------------------------
 int notmain ( void )
 {
-  create_process(ping, 0);
-  create_process(pong, 0);
+  create_process(STACK_SIZE, ping, 0);
+  create_process(STACK_SIZE, pong, 0);
 
-  ctx_switch();
+  start_sched();
+
+  for ( ; ; )
+  {
+	
+  }
 
   return 0;
 }

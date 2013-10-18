@@ -3,7 +3,7 @@
 
 #include "process.h"
 
-void ctx_switch();
+void __attribute__((naked)) ctx_switch();
 
 void exit_process();
 

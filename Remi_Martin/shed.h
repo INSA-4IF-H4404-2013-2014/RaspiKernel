@@ -7,9 +7,11 @@
 Tmaillon * next_running;
 
 //Create a new ready process
-void create_process(func_t f, void * args);
+int create_process(int stack_size, func_t f, void * args);
 
 
 void start_current_process();
+
+void start_sched();
 
 #endif
