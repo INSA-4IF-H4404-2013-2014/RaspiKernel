@@ -3,7 +3,9 @@
 
 #include "process.h"
 
-void ctx_switch(pcb_s * oldPcb, pcb_s * newPcb);
+void ctx_switch();
+
+void exit_process();
 
 #endif
 

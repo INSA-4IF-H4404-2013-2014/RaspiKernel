@@ -9,9 +9,6 @@ Tmaillon * next_running;
 //Create a new ready process
 void create_process(func_t f, void * args);
 
-//Ask for a context switch
-void yield();
-
 
 void start_current_process();
 

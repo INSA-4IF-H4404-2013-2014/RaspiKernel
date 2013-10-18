@@ -10,24 +10,7 @@ void create_process(func_t f, void * args)
   next_running = insert(next_running, pcb);
 }
 
-void yield()
-{
-	if(next_running)
-	{
-		while(next_running->previous->pcb->state == PCB_TERMINATED)
-		{
-			next_running = remove(next_running->previous);
-		}
-
-		pcb_s * newPcb = next_running->pcb;
-		pcb_s * oldPcb = next_running->previous->pcb;
-
-		next_running = next_running->next;
-		ctx_switch(oldPcb, newPcb);
-	}
-}
-
 void start_current_process()
 {
-  ((func_t)next_running->pcb->mPC) (next_running->pcb->args);
+  ((func_t)next_running->previous->pcb->mPC) (next_running->pcb->args);
 }

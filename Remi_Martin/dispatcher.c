@@ -8,31 +8,53 @@
         __asm ("mov r" #i ", %0" : : "r"(pcb->mR[i]))
 */
 
-void ctx_switch(pcb_s * oldPcb, pcb_s * newPcb)
+void ctx_switch()
 {
-  if(oldPcb != newPcb)
-  {
-    oldPcb->state = PCB_READY;
-  }
+	if(next_running->previous->pcb->state == PCB_TERMINATED)
+	{
+		next_running = remove(next_running->previous);
+	}
+	else
+	{
+		if(next_running->previous->pcb->state == PCB_RUNNING)
+		{
+			//Saving old context
+			__asm volatile ("push {r0-r12, lr}");
+		}
 
-  //Saving old context
-  __asm volatile ("push {r0-r12}");
-  __asm volatile ("mov %0, sp" : "=r"(oldPcb->mSP));
-  __asm volatile ("mov %0, lr" : "=r"(oldPcb->mPC));
+		if(next_running->previous->pcb->state == PCB_TERMINATED)
+		{
+			next_running = remove(next_running->previous);
+		}
+		__asm volatile ("mov %0, sp" : "=r"(next_running->previous->pcb->mSP));
+	}
 
-  //TODO : gerer les args ?
 
-  //Restoring new context
-  __asm volatile ("mov lr, %0" : : "r"(newPcb->mPC));
-  __asm volatile ("mov sp, %0" : : "r"(newPcb->mSP));
-  __asm volatile ("pop {r0-r12}");
+	//Restoring new context
+	if(next_running)
+	{
+		__asm volatile ("mov sp, %0" : : "r"(next_running->pcb->mSP));
 
-  if(newPcb->state == PCB_NEW)
-  {
-    newPcb->state = PCB_RUNNING;
-    start_current_process();
-  }
+		if(next_running->pcb->state == PCB_RUNNING)
+		{
+			__asm volatile ("pop {r0-r12, lr}");
+		}
+	
+		if(next_running->pcb->state == PCB_NEW)
+		{
+			next_running->pcb->state = PCB_RUNNING;
+			next_running = next_running->next;
+			start_current_process();
+		}
 
-  newPcb->state = PCB_RUNNING;
+		next_running->pcb->state = PCB_RUNNING;
+		next_running = next_running->next;
+	}
+}
+
+void exit_process()
+{
+	next_running->previous->pcb->state = PCB_TERMINATED;
+	ctx_switch();
 }
 
