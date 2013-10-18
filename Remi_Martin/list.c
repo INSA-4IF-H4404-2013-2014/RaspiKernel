@@ -1,5 +1,6 @@
 #include "list.h"
 #include "allocateMemory.h"
+#include "process.h"
 
 Tmaillon * insert ( Tmaillon * list, struct _pcb_s * pcb )
 {
@@ -35,16 +36,9 @@ Tmaillon * remove ( Tmaillon * toDelete )
 			toDelete->next->previous = toDelete->previous;
 		}
 
-		pcb_s * e = toDelete->pcb;
-		unsigned int d = e->mSP;
-		unsigned int f = (unsigned int) e->mSP;
-		unsigned int a = (toDelete->pcb)->mSP;		
-		b = (memory_element_t *)a;
-		c =  (memory_element_t )a;
-
-		FreeAllocatedMemory ( (memory_element_t *) toDelete->pcb->mSP );
-		FreeAllocatedMemory ( ( uint32_t ) toDelete->pcb );
-		FreeAllocatedMemory ( ( uint32_t ) toDelete );
+		FreeAllocatedMemory ( toDelete->pcb->mSP );
+		FreeAllocatedMemory ( (uint32_t *) toDelete->pcb );
+		FreeAllocatedMemory ( (uint32_t *) toDelete );
 	}
 
 	return list;

@@ -14,8 +14,14 @@ void yield()
 {
 	if(next_running)
 	{
+		while(next_running->previous->pcb->state == TERMINATED)
+		{
+			next_running = remove(next_running->previous);
+		}
+
 		pcb_s * newPcb = next_running->pcb;
 		pcb_s * oldPcb = next_running->previous->pcb;
+
 		next_running = next_running->next;
 		ctx_switch(oldPcb, newPcb);
 	}

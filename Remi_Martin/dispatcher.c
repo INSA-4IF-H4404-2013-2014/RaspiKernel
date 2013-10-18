@@ -20,7 +20,7 @@ void ctx_switch(pcb_s * oldPcb, pcb_s * newPcb)
   __asm volatile ("mov %0, sp" : "=r"(oldPcb->mSP));
   __asm volatile ("mov %0, lr" : "=r"(oldPcb->mPC));
 
-  //TODO : gerer les args
+  //TODO : gerer les args ?
 
   //Restoring new context
   __asm volatile ("mov lr, %0" : : "r"(newPcb->mPC));
