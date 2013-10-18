@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "dispatcher.h"
+#include "hw.h"
 
 
 /*
@@ -18,5 +19,6 @@ static const unsigned int STACK_SIZE = 128;
 void create_process(func_t f, void* args);
 void yield();
 void exit();
+void start_sched();
 
 #endif

@@ -9,7 +9,7 @@
 /*
  * Methods 
  */
-void start_current_ctx();
+void __attribute__((naked)) start_current_ctx();
 void ctx_switch();
 
 #endif

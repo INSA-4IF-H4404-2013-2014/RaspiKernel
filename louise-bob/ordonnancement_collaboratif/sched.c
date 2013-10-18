@@ -64,3 +64,9 @@ void exit()
 		start_current_ctx();
 	}
 }
+
+void start_sched()
+{
+	init_hw();
+	ENABLE_IRQ();
+}

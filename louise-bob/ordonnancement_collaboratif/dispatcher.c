@@ -56,11 +56,14 @@ void start_current_ctx()
 	
 	__asm("mov lr, %0" : : "r"(current_process->lr)); // put in lr current_process->lr
 	
+	set_tick_and_enable_timer();
+	ENABLE_IRQ();
+	
 	return;
 }
 
 
-void ctx_switch()
+void __attribute__((naked)) ctx_switch()
 {
 	if((current_process->previous)->running == RUNNING)
 	{
