@@ -40,6 +40,10 @@ struct pcb_s
 	int running;
 };
 
+/*
+ * Static variables
+ */
+struct pcb_s* current_process;
 
 /*
  * Methods

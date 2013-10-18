@@ -11,10 +11,6 @@
  */
 static const unsigned int STACK_SIZE = 128;
 
-/*
- * Static variables
- */
-static struct pcb_s* current_process;
 
 /*
  * Methods

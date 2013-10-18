@@ -9,6 +9,10 @@ void create_process(func_t f, void* args)
 		pcb->next = current_process;
 		pcb->previous = current_process->previous;
 		current_process->previous = pcb;
+		if(current_process->next == current_process)
+		{
+			current_process->next = pcb;
+		}
 	}
 	else // if no process is running
 	{
@@ -30,7 +34,7 @@ void yield()
 	//}
 	//else
 	//{
-		ctx_switch(current_process->previous, current_process);
+		ctx_switch(/*current_process->previous, current_process*/);
 	//}
 }
 
