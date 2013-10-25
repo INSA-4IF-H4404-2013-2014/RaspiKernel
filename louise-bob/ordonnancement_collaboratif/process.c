@@ -1,12 +1,12 @@
 #include "process.h"
-#include "allocateMemory.h"
+
 
 
 void init_pcb(struct pcb_s* pcb, func_t f, void* args, unsigned int stack_size)
 {
 	pcb->sp = AllocateMemory(stack_size);
 	pcb->sp = &((pcb->sp)[stack_size-1]);
-	pcb->lr = f;
+	pcb->lr = (unsigned int) f;
 	pcb->args = args;
 	pcb->running = READY;
 }

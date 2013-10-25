@@ -42,8 +42,9 @@ void yield()
 
 void exit()
 {	
+	DISABLE_IRQ();
 	current_process->running = TERMINATED;
-	
+	/*
 	if(current_process->next == current_process) // if only one process is running
 	{
 		free_pcb(current_process);
@@ -61,12 +62,16 @@ void exit()
 		// Attribute the new current_process
 		current_process = current_process->next;
 		
-		start_current_ctx();
+		ctx_switch();
 	}
+	*/
+	ENABLE_IRQ();
 }
 
 void start_sched()
 {
 	init_hw();
-	ENABLE_IRQ();
+	//set_next_tick_and_enable_timer_irq();
+	//ENABLE_IRQ();
+	ctx_switch();
 }

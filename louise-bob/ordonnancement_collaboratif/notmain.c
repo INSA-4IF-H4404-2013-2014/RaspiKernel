@@ -31,7 +31,7 @@ void funcA()
 	while(cptA < 2) 
 	{
 		cptA ++;
-		yield();
+		//yield();
 	}
 	exit();
 }
@@ -42,9 +42,9 @@ void funcB()
 	while(1) 
 	{
 		cptB += 2;
-		yield();
+		//yield();
 	}
-	exit();
+	//exit();
 }
 
 //------------------------------------------------------------------------
@@ -53,7 +53,7 @@ int notmain (void)
   create_process(funcA, 0);
   create_process(funcB, 0);
 
-  yield();
+  start_sched();
   
   return 0;
 }

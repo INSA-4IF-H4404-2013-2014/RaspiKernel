@@ -41,7 +41,7 @@
 	__asm("mov r12, %0" : : "r"(current_ctx->r12));
 }*/
 
-void start_current_ctx()
+void __attribute__((naked)) start_current_ctx()
 {
 	__asm("mov sp, %0" : : "r"(current_process->sp)); // put in sp new_pcb->sp
 	
@@ -56,8 +56,10 @@ void start_current_ctx()
 	
 	__asm("mov lr, %0" : : "r"(current_process->lr)); // put in lr current_process->lr
 	
-	set_tick_and_enable_timer();
+	set_next_tick_and_enable_timer_irq();
 	ENABLE_IRQ();
+	
+	//__asm("rfefd sp!");
 	
 	return;
 }
@@ -65,6 +67,47 @@ void start_current_ctx()
 
 void __attribute__((naked)) ctx_switch()
 {
+	DISABLE_IRQ();
+	
+	/*__asm("sub lr, lr, #4");
+	__asm("srsdb sp!, #0x13");
+	__asm("cps #0x13");*/
+	
+	if(current_process->next == current_process) // if only one process is running
+	{
+		if(current_process->running == TERMINATED)
+		{
+			free_pcb(current_process);
+			current_process = 0;
+			return;
+		}
+		else
+		{
+			start_current_ctx();
+		}
+	}
+	else
+	{
+		// If current process is TERMINATED
+		if(current_process->running == TERMINATED)
+		{
+			// Remove the current_process from the list of processes
+			(current_process->previous)->next = current_process->next;
+			(current_process->next)->previous = current_process->previous;
+		
+			// Free the stack associated to the current_process
+			free_pcb(current_process);
+			
+			// Attribute the new current_process
+			current_process = current_process->next;
+			
+			start_current_ctx();
+		}
+		
+		// Attribute the new current_process
+		current_process = current_process->next;
+	}
+	
 	if((current_process->previous)->running == RUNNING)
 	{
 		__asm volatile("push {r0-r12}");

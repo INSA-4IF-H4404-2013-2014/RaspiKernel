@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "process.h"
+#include "hw.h"
 
 
 /*
