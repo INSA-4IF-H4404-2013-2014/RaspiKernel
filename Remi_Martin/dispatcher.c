@@ -30,10 +30,6 @@ void __attribute__((naked)) ctx_switch()
 			__asm volatile ("push {r0-r12, lr}");
 		}
 
-		if(next_running->previous->pcb->state == PCB_TERMINATED)
-		{
-			next_running = remove(next_running->previous);
-		}
 		__asm volatile ("mov %0, sp" : "=r"(next_running->previous->pcb->mSP));
 	}
 
@@ -43,10 +39,7 @@ void __attribute__((naked)) ctx_switch()
 	{
 		__asm volatile ("mov sp, %0" : : "r"(next_running->pcb->mSP));
 
-		if(next_running->pcb->state == PCB_RUNNING)
-		{
-			__asm volatile ("pop {r0-r12, lr}");
-		}
+		__asm volatile ("pop {r0-r12, lr}");
 	
 		if(next_running->pcb->state == PCB_NEW)
 		{
