@@ -1,7 +1,7 @@
-#ifndef _H_PCB_CYCLE
-#define _H_PCB_CYCLE
+#ifndef _H_KERNEL_PCB_CYCLE
+#define _H_KERNEL_PCB_CYCLE
 
-#include "pcb.h"
+#include "kernel_pcb.h"
 
 
 // --------------------------------------------------------- PCB CYCLE FUNCTIONS

@@ -1,7 +1,9 @@
-#ifndef _H_DISPATCHER
-#define _H_DISPATCHER
+#ifndef _H_KERNEL_DISPATCHER
+#define _H_KERNEL_DISPATCHER
 
-#include "pcb.h"
+// --------------------------------------------------------------- PROCESS TYPES
+
+#include "standart.h"
 
 
 // --------------------------------------------------------------- PROCESS TYPES

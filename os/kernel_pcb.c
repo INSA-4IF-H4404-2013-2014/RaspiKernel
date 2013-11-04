@@ -1,5 +1,5 @@
 
-#include "pcb.h"
+#include "kernel_pcb.h"
 #include "allocateMemory.h"
 
 void

@@ -1,5 +1,5 @@
 
-#include "pcb_cycle.h"
+#include "kernel_pcb_cycle.h"
 #include "allocateMemory.h"
 
 struct pcb_s*

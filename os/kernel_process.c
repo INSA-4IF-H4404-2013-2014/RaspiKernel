@@ -1,6 +1,6 @@
 
-#include "pcb_cycle.h"
-#include "process.h"
+#include "kernel_pcb_cycle.h"
+#include "kernel_process.h"
 #include "allocateMemory.h"
 #include "hw.h"
 

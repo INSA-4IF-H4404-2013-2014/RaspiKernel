@@ -1,5 +1,5 @@
-#ifndef _H_PCB
-#define _H_PCB
+#ifndef _H_KERNEL_PCB
+#define _H_KERNEL_PCB
 
 #include "standart.h"
 
