@@ -34,14 +34,6 @@ pong(uint32_t * args)
     }
 }
 
-void
-start_sched()
-{
-    init_hw();
-
-    //set_next_tick_and_enable_timer_irq();
-    ENABLE_IRQ();
-}
 
 //------------------------------------------------------------------------
 int
@@ -64,7 +56,9 @@ kernel_main(void)
     process_start(ping_pid);
     process_start(pong_pid);
 
-    start_sched();
+    init_hw();
+
+    ENABLE_IRQ();
 
     while ( 1 )
     {
