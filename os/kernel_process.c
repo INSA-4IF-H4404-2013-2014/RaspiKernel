@@ -51,24 +51,6 @@ process_get_pid()
 }
 
 void
-process_yield()
-{
-    struct pcb_s * previous_pcb = current_pcb;
-    struct pcb_s * next_pcb = pcb_cycle_next_ready(previous_pcb);
-
-    if (next_pcb == previous_pcb)
-    {
-        return;
-    }
-
-    previous_pcb->mState = PCB_READY;
-    next_pcb->mState = PCB_RUN;
-    current_pcb = next_pcb;
-
-    pcb_switch_to(previous_pcb, next_pcb);
-}
-
-void
 process_exit()
 {
     struct pcb_s * next_pcb = pcb_cycle_next_ready(current_pcb);

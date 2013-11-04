@@ -14,7 +14,7 @@ typedef void (*process_func_t)(void *);
 // ----------------------------------------------------------- PROCESS FUNCTIONS
 
 /*
- * @infos : create an idle process
+ * @infos : create process in the PAUSE state
  *
  * @param <f> : process function to call
  * @param <args> : process arguments' pointer
@@ -48,12 +48,6 @@ process_start(uint32_t pid);
  */
 uint32_t
 process_get_pid();
-
-/*
- * @infos : give back the CPU to other processes
- */
-void
-process_yield();
 
 /*
  * @infos : stop and delete the process
