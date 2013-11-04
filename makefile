@@ -11,6 +11,8 @@ TARGET = kernel
 CC_FLAGS = -Wall -Wextra -Werror -nostdlib -fomit-frame-pointer -mno-apcs-frame -nostartfiles -ffreestanding -g -march=armv6z -marm
 AS_FLAGS = -g -march=armv6z
 
+GDB_DEFAULT = gdb/default.gdb
+
 
 #------------------------------------------------------------------------------- AUTOMATED
 
@@ -28,7 +30,7 @@ BUILD_OBJS = $(addprefix $(BUILD_DIR), $(addsuffix .o,$(notdir $(S_FILES) $(C_FI
 # read QEMU_MACHINE from qemu-machine.gitlocal
 ifeq ($(wildcard qemu-machine.gitlocal),)
     QEMU_MACHINE = raspi
-else 
+else
     QEMU_MACHINE = $(shell sed -n 1p qemu-machine.gitlocal)
 endif
 
@@ -64,7 +66,7 @@ clean :
 
 full : clean update
 
-run : gdbinit.gdb
+run : $(GDB_DEFAULT)
 
 emu : update
 	$(CMD_ECHO) "# running <$(BUILD_TARGET).elf> ($(QEMU_MACHINE))..."
