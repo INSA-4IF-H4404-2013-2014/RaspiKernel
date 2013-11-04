@@ -22,10 +22,11 @@ S_FILES = $(call rwildcard,./,*.s)
 D_FILES = $(call rwildcard,./,*.d)
 
 SD_CARD_DIR = SD_Card/
+MEMORY_MAP_FILE = os/memmap
 
 BUILD_DIR = build/
 BUILD_TARGET = $(addprefix $(BUILD_DIR), $(TARGET))
-BUILD_OBJS = $(addprefix $(BUILD_DIR), $(addsuffix .o,$(notdir $(S_FILES) $(C_FILES))))
+BUILD_OBJS = $(addprefix $(BUILD_DIR), $(notdir $(addsuffix .o,$(notdir $(S_FILES) $(C_FILES)))))
 
 # read QEMU_MACHINE from qemu-machine.gitlocal
 ifeq ($(wildcard qemu-machine.gitlocal),)
@@ -44,7 +45,6 @@ BUILD_PREFIX ?= $(HIDE_CMD)arm-none-eabi-
 CMD_LD = $(BUILD_PREFIX)ld
 CMD_AS = $(BUILD_PREFIX)as
 CMD_CC = $(BUILD_PREFIX)gcc
-CMD_LD = $(BUILD_PREFIX)ld
 CMD_OBJDUMP = $(BUILD_PREFIX)objdump
 CMD_OBJCOPY = $(BUILD_PREFIX)objcopy
 
@@ -90,9 +90,9 @@ $(BUILD_DIR):
 
 $(BUILD_DIR)%.c.o: $$(call rwildcard,./,*%.c) $(THIS)
 	$(CMD_ECHO) "# file <$<>"
-	$(CMD_CC) $(CC_FLAGS) -x c -S -o $(BUILD_DIR)$<.s -MMD -MQ $@ -MF $(patsubst %.o,%.d, $@) $<
-	$(CMD_AS) $(AS_FLAGS) -o $@ $(BUILD_DIR)$<.s
-	$(CMD_RM) -f $(BUILD_DIR)$<.s
+	$(CMD_CC) $(CC_FLAGS) -x c -S -o $(BUILD_DIR)$(notdir $<.s) -MMD -MQ $@ -MF $(patsubst %.o,%.d, $@) $<
+	$(CMD_AS) $(AS_FLAGS) -o $@ $(BUILD_DIR)$(notdir $<.s)
+	$(CMD_RM) -f $(BUILD_DIR)$(notdir $<.s)
 
 $(BUILD_DIR)%.s.o: $$(call rwildcard,./,*%.s) $(THIS)
 	$(CMD_ECHO) "# file <$<>"
@@ -110,9 +110,9 @@ $(BUILD_DIR)%.s.o: $$(call rwildcard,./,*%.s) $(THIS)
 
 #------------------------------------------------------------------------------- TARGET RULES
 
-$(BUILD_TARGET).elf : memmap $(BUILD_OBJS)
+$(BUILD_TARGET).elf : $(MEMORY_MAP_FILE) $(BUILD_OBJS)
 	$(CMD_ECHO) "# file <$@>"
-	$(CMD_LD) $(BUILD_OBJS) -T memmap -o $@
+	$(CMD_LD) -o $@ -T $< $(BUILD_OBJS)
 	$(CMD_OBJDUMP) -D $@ > $(BUILD_TARGET).list
 
 $(BUILD_TARGET).bin : $(BUILD_TARGET).elf
