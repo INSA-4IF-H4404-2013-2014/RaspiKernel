@@ -1,2 +1,2 @@
 source gdb/init.gdb
-b notmain
+b kernel_main

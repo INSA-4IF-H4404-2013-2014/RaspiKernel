@@ -25,17 +25,17 @@ pong(uint32_t * args)
 }
 
 void
-start_sched ()
+start_sched()
 {
     init_hw();
-    
+
     //set_next_tick_and_enable_timer_irq();
     ENABLE_IRQ();
 }
 
 //------------------------------------------------------------------------
 int
-notmain ( void )
+kernel_main(void)
 {
     // create kernel process
     process_create((process_func_t)0, (void *)0);

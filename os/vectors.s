@@ -49,7 +49,7 @@ reset:
     ;@mov r0,#0x53
     ;@msr cpsr_c, r0
 
-    bl notmain
+    bl kernel_main
 hang: b hang
 undefined:	 b undefined
 swi:	 b swi
