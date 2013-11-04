@@ -33,7 +33,7 @@ process_start(uint32_t pid)
         return 0;
     }
 
-    if (pcb->mState != PCB_IDLE)
+    if (pcb->mState != PCB_PAUSE)
     {
         // if pid == pcb->mPID -> pcb->mState == PCB_RUNNING
         return 0;

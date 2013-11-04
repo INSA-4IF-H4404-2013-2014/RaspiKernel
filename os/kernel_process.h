@@ -1,7 +1,7 @@
 #ifndef _H_KERNEL_DISPATCHER
 #define _H_KERNEL_DISPATCHER
 
-// --------------------------------------------------------------- PROCESS TYPES
+// -------------------------------------------------------------------- INCLUDES
 
 #include "standart.h"
 

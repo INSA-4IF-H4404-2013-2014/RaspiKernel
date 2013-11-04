@@ -7,7 +7,7 @@ pcb_init(struct pcb_s* pcb, pcb_func_t f, uint32_t stack_size)
 {
     static uint32_t id = 0;
 
-    pcb->mState = PCB_IDLE;
+    pcb->mState = PCB_PAUSE;
     pcb->mPID = id++;
     pcb->mStack = (uint32_t *) AllocateMemory(stack_size);
     pcb->mPC = (uint32_t) f;

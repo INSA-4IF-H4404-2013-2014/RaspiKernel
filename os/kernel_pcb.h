@@ -14,7 +14,7 @@
 
 typedef void (*pcb_func_t)(void);
 
-typedef enum {PCB_IDLE, PCB_PAUSE, PCB_READY, PCB_RUN} pcb_state;
+typedef enum {PCB_PAUSE, PCB_READY, PCB_RUN} pcb_state;
 
 typedef struct pcb_s
 {
@@ -42,7 +42,7 @@ typedef struct pcb_s
 
 /*
  * @infos : Init a PCB :
- *  - the pcb's state will be set to PCB_IDLE
+ *  - the pcb's state will be set to PCB_PAUSE
  *  - mPID will be assigned (0 is reserved for the kernel)
  *  - alloc the stack
  *  - pcb->mNext == pcb
