@@ -1,4 +1,5 @@
 
+#include "kernel_scheduler.h"
 #include "kernel_process.h"
 #include "hw.h"
 
