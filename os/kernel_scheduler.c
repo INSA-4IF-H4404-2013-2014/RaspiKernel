@@ -55,21 +55,3 @@ kernel_scheduler_switch_to(struct pcb_s* old_pcb, struct pcb_s* new_pcb)
     __asm ("mov pc, lr");
 }
 
-void __attribute__((noreturn))
-kernel_scheduler_jump(kernel_pcb_t * pcb)
-{
-    kernel_current_pcb = pcb;
-    pcb->mState = PCB_RUN;
-
-    __asm ("mov lr, %0" : : "r"(pcb->mPC));
-    __asm ("mov sp, %0" : : "r"(pcb->mSP));
-    __asm ("sub sp, #52");
-    __asm ("pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
-
-    kernel_scheduler_enable();
-
-    __asm ("mov pc, lr");
-
-    __builtin_unreachable();
-}
-
