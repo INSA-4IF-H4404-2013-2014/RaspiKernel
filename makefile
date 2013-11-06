@@ -6,10 +6,22 @@ rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
 #------------------------------------------------------------------------------- CONFIGURATIONS
 
+MUSIC_ROOT=.
+PLATFORM = RASPBERRY_PI
+
 TARGET = kernel
 
-CC_FLAGS = -Wall -Wextra -Werror -nostdlib -fomit-frame-pointer -mno-apcs-frame -nostartfiles -ffreestanding -g -march=armv6z -marm
+####################################
+# TODO: add -Werror flag in CC_FLAGS
+####################################
+
+CC_FLAGS = -std=c99 -Wall -Wextra -nostdlib -fomit-frame-pointer -mno-apcs-frame -nostartfiles -ffreestanding -g -march=armv6z -marm
 AS_FLAGS = -g -march=armv6z
+INCLUDES_FLAGS = -Imusic -Ios -Imusic/includes -Imusic/includes/posix -D$(PLATFORM)
+
+CC_FLAGS += $(INCLUDES_FLAGS)
+
+
 
 GDB_DEFAULT = gdb/default.gdb
 
@@ -60,6 +72,9 @@ CMD_RM = $(HIDE_CMD)rm
 
 update : $(BUILD_DIR) $(BUILD_TARGET).hex $(BUILD_TARGET).bin $(BUILD_TARGET).img
 	$(CMD_ECHO) "# build finished"
+
+music :
+	cd music && make
 
 clean :
 	$(CMD_RM) -rf $(BUILD_DIR)
