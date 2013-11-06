@@ -2,7 +2,7 @@
 #define HW_H
 
 #define ENABLE_IRQ()				\
-  asm("\tpush {r0}\n\t"				\
+  __asm("\tpush {r0}\n\t"				\
       "mrs r0,cpsr\n\t"				\
       "bic r0,r0,#0x80\n\t"			\
       "msr cpsr_c,r0\n\t"			\
@@ -12,7 +12,7 @@
       : "r0");
 
 #define DISABLE_IRQ()				\
-  asm("\tpush {r0}\n\t"				\
+  __asm("\tpush {r0}\n\t"				\
       "mrs r0,cpsr\n\t"				\
       "orr r0,r0,#0x80\n\t"			\
       "msr cpsr_c,r0\n\t"			\
