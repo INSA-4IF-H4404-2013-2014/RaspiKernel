@@ -12,6 +12,7 @@ typedef enum { LED_OFF, LED_ON } led_state;
  * @return
  *  VOID
  */
-void led_process ( led_state ledState );
+void led_process ( led_state * ledState );
+void launch_led_process();
 
 #endif
