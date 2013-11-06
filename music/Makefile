@@ -16,7 +16,8 @@ PLATFORM_OBJS = $(PLATFORM_SRC:.c=.o)
 POSIX_SRC = $(wildcard includes/posix/*.c)
 POSIX_OBJS = $(POSIX_SRC:.c=.o)
 
-clean : common_clean
+#clean : common_clean
+clean :
 	rm -f includes/*.o includes/*/*.o
 	make -C plugins clean
 

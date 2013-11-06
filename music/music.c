@@ -15,15 +15,13 @@
 
 Lv2World* lv2_world;
 
-void
-music_init()
+void music_init()
 {
   int32_t samplerate = audio_init();
   lv2_world = lv2_init(samplerate);
 }
 
-void
-play_music()
+void play_music()
 {
     uint32_t counter=0;
     LV2_Atom_Forge_Frame midi_seq_frame;
@@ -50,10 +48,11 @@ play_music()
     
     while (1) {
 
-    DISABLE_IRQ();
+		DISABLE_IRQ();
 
-        if (!buffer_processed) {
-	  forge_midi_input();
+        if (!buffer_processed) 
+        {
+			forge_midi_input();
 
 
             lv2_atom_forge_pop(&forge, &midi_seq_frame);
@@ -67,11 +66,12 @@ play_music()
             buffer_processed = 1;
         }
 
-        if (buffer_processed && audio_buffer_free_space() > LV2_AUDIO_BUFFER_SIZE * 2) {
+        if (buffer_processed && audio_buffer_free_space() > LV2_AUDIO_BUFFER_SIZE * 2) 
+        {
             audio_buffer_write(output_left->buffer, output_right->buffer, output_left->buffer_sz);
             buffer_processed = 0;
             counter++;
         }
-	ENABLE_IRQ();
+		ENABLE_IRQ();
     }
 }

@@ -10,7 +10,8 @@
 #include "../descriptors.h"
 
 
-typedef struct urid_map_entry {
+typedef struct urid_map_entry 
+{
     const char* uri;
     uint32_t id;
     struct urid_map_entry* next;
@@ -18,10 +19,12 @@ typedef struct urid_map_entry {
 
 static urid_map_entry* urid_table;
 
-static LV2_URID urid_map_func(LV2_URID_Map_Handle handle, const char* uri) {
+static LV2_URID urid_map_func(LV2_URID_Map_Handle handle, const char* uri) 
+{
     static LV2_URID id = 1;
     urid_map_entry* next;
-    if (urid_table == NULL) {
+    if (urid_table == NULL) 
+    {
         urid_table = malloc(sizeof(urid_map_entry));
         urid_table->uri = "http://www.joebutton.co.uk/pitracker/urid-map-error";
         urid_table->id = 0;
@@ -30,11 +33,14 @@ static LV2_URID urid_map_func(LV2_URID_Map_Handle handle, const char* uri) {
 
     urid_map_entry* cur = urid_table;
 
-    while (1) {
-        if (!strcmp(cur->uri, uri)) {
+    while (1) 
+    {
+        if (!strcmp(cur->uri, uri)) 
+        {
             return cur->id;
         }
-        if (cur->next == NULL) {
+        if (cur->next == NULL) 
+        {
             next = malloc(sizeof(urid_map_entry));
             next->uri = uri;
             next->id = id++;
@@ -45,13 +51,17 @@ static LV2_URID urid_map_func(LV2_URID_Map_Handle handle, const char* uri) {
     }
 }
 
-static const char *urid_unmap_func(LV2_URID_Unmap_Handle handle, LV2_URID urid) {
+static const char *urid_unmap_func(LV2_URID_Unmap_Handle handle, LV2_URID urid) 
+{
     urid_map_entry* cur = urid_table;
-    while (1) {
-        if (cur->id == urid) {
+    while (1) 
+    {
+        if (cur->id == urid) 
+        {
             return cur->uri;
         }
-        if (cur->next == NULL) {
+        if (cur->next == NULL) 
+        {
             return NULL;
         }
         cur = cur->next;
