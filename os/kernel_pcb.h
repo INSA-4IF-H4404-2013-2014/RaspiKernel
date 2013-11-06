@@ -35,7 +35,10 @@ typedef struct pcb_s
 
 	// next pcb
 	struct pcb_s * mNext;
-} _pcb_s;
+
+        // next (fifos)
+        struct pcb_s * mNextFifo;
+} kernel_pcb_t;
 
 
 // --------------------------------------------------------------- PCB FUNCTIONS
