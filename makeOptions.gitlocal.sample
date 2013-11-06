@@ -1,0 +1,12 @@
+#Please select the OS for which you want to compile
+#Default value: OS_LINUX
+#OS=OS_LINUX
+#OS=OS_RASP
+
+
+
+#Please select the squeduler you want to use in the OS
+#Default value: KERNEL_STRATEGY_ROUNDROBIN_MONO
+#SQUEDULER=KERNEL_STRATEGY_ROUNDROBIN_MONO
+#SQUEDULER=KERNEL_STRATEGY_ROUNDROBIN_MULTI
+#SQUEDULER=KERNEL_STRATEGY_COLLABO
