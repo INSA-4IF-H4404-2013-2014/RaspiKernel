@@ -15,6 +15,9 @@ extern struct pcb_s * kernel_current_pcb;
 #define kernel_scheduler_begin() DISABLE_IRQ()
 #define kernel_scheduler_end() ENABLE_IRQ()
 
+#define kernel_scheduler_disable() DISABLE_IRQ()
+#define kernel_scheduler_enable() ENABLE_IRQ()
+
 
 
 #endif
