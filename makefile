@@ -14,12 +14,8 @@ AS_FLAGS = -g -march=armv6z
 GDB_DEFAULT = gdb/default.gdb
 
 -include makeOptions.gitlocal
-ifndef $(SQUEDULER)
-    SQUEDULER=KERNEL_STRATEGY_ROUNDROBIN_ONE
-endif
-ifndef $(OS)
-    OS=OS_RASP
-endif
+SQUEDULER ?= KERNEL_STRATEGY_ROUNDROBIN_ONE
+OS ?= OS_RASP
 
 CC_FLAGS+=$(addprefix -D, $(OS) $(SQUEDULER))
 
