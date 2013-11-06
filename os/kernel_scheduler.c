@@ -5,7 +5,7 @@
 
 struct pcb_s * kernel_current_pcb = 0;
 
-void __attribute__((naked))
+void
 kernel_scheduler_handler()
 {
     kernel_pause_scheduler();
