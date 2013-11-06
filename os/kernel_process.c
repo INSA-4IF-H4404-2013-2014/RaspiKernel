@@ -9,12 +9,20 @@
 uint32_t
 process_create(process_func_t f, void * args)
 {
-    return kernel_pcb_create((void *) f, args)->mPID;
+    kernel_pause_scheduler();
+
+    uint32_t pid = kernel_pcb_create((void *) f, args)->mPID;
+
+    kernel_resume_scheduler();
+
+    return pid;
 }
 
 uint32_t
 process_start(uint32_t pid)
 {
+    kernel_pause_scheduler();
+
     struct pcb_s * pcb = pcb_cycle_by_pid(kernel_current_pcb, pid);
 
     if (pcb == 0)
@@ -22,7 +30,11 @@ process_start(uint32_t pid)
         return 0;
     }
 
-    return kernel_pcb_start(pcb);
+    uint32_t status = kernel_pcb_start(pcb);
+
+    kernel_resume_scheduler();
+
+    return status;
 }
 
 uint32_t
@@ -34,6 +46,8 @@ process_get_pid()
 void
 process_exit()
 {
+    kernel_pause_scheduler();
+
     kernel_pcb_destroy(kernel_current_pcb);
 
     __builtin_unreachable();

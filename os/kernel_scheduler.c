@@ -8,7 +8,7 @@ struct pcb_s * kernel_current_pcb = 0;
 void __attribute__((naked))
 kernel_scheduler_handler()
 {
-    kernel_scheduler_begin();
+    kernel_pause_scheduler();
 
     __asm ("push {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
     __asm ("add sp, #52");
@@ -26,7 +26,7 @@ kernel_scheduler_handler()
     __asm ("sub sp, #52");
     __asm ("pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
 
-    kernel_scheduler_end();
+    kernel_resume_scheduler();
 
     //return de bourrin parce que naked le fait pas
     __asm ("mov pc, lr");
@@ -35,7 +35,7 @@ kernel_scheduler_handler()
 void __attribute__((naked))
 kernel_scheduler_switch_to(struct pcb_s* old_pcb, struct pcb_s* new_pcb)
 {
-    kernel_scheduler_begin();
+    kernel_pause_scheduler();
 
     if (old_pcb)
     {
@@ -50,7 +50,7 @@ kernel_scheduler_switch_to(struct pcb_s* old_pcb, struct pcb_s* new_pcb)
     __asm ("sub sp, #52");
     __asm ("pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
 
-    kernel_scheduler_end();
+    kernel_resume_scheduler();
 
     __asm ("mov pc, lr");
 }
@@ -66,7 +66,7 @@ kernel_scheduler_jump(kernel_pcb_t * pcb)
     __asm ("sub sp, #52");
     __asm ("pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
 
-    kernel_scheduler_enable();
+    kernel_resume_scheduler();
 
     __asm ("mov pc, lr");
 

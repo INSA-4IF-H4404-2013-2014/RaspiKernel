@@ -12,8 +12,6 @@ kernel_pcb_startup(process_func_t f, void * args);
 kernel_pcb_t *
 kernel_pcb_create(void * f, void * args)
 {
-    kernel_scheduler_disable();
-
     kernel_pcb_t * pcb = (kernel_pcb_t *) AllocateMemory(sizeof(struct pcb_s));
 
     pcb_init(pcb, (pcb_func_t)kernel_pcb_startup, STACK_SIZE);
@@ -22,16 +20,12 @@ kernel_pcb_create(void * f, void * args)
 
     pcb_cycle_append(&kernel_current_pcb, pcb);
 
-    kernel_scheduler_enable();
-
     return pcb;
 }
 
 uint32_t
 kernel_pcb_start(kernel_pcb_t * pcb)
 {
-    kernel_scheduler_disable();
-
     if (pcb->mState != PCB_PAUSE)
     {
         return 0;
@@ -39,26 +33,20 @@ kernel_pcb_start(kernel_pcb_t * pcb)
 
     pcb->mState = PCB_READY;
 
-    kernel_scheduler_enable();
-
     return 1;
 }
 
 uint32_t
 kernel_pcb_pause(kernel_pcb_t * pcb)
 {
-    kernel_scheduler_disable();
-
     if (pcb->mState == PCB_READY)
     {
         pcb->mState = PCB_PAUSE;
-        kernel_scheduler_enable();
         return 1;
     }
 
     if (pcb->mState != PCB_RUN)
     {
-        kernel_scheduler_enable();
         return 0;
     }
 
@@ -72,16 +60,12 @@ kernel_pcb_pause(kernel_pcb_t * pcb)
 void
 kernel_pcb_destroy(kernel_pcb_t * pcb)
 {
-    kernel_scheduler_disable();
-
     if (pcb->mState != PCB_RUN)
     {
         kernel_cycle_remove(&kernel_current_pcb, pcb);
 
         pcb_release(pcb);
         FreeAllocatedMemory((uint32_t*)pcb);
-
-        kernel_scheduler_enable();
 
         return;
     }
