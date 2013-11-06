@@ -4,6 +4,7 @@
 
 // --------------------------------------------------------------- INCLUDE
 
+#include "kernel_pcb.h"
 #include "hw.h"
 
 
@@ -11,6 +12,9 @@
 
 extern struct pcb_s * kernel_current_pcb;
 
+
+void __attribute__((noreturn))
+kernel_scheduler_jump(kernel_pcb_t * pcb);
 
 #define kernel_scheduler_begin() DISABLE_IRQ()
 #define kernel_scheduler_end() ENABLE_IRQ()
