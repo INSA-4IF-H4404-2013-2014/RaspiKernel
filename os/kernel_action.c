@@ -37,7 +37,7 @@ kernel_pcb_start(kernel_pcb_t * pcb)
 }
 
 uint32_t
-kernel_pcb_pause(kernel_pcb_t * pcb)
+kernel_pcb_pause_other(kernel_pcb_t * pcb)
 {
     if (pcb->mState == PCB_READY)
     {
@@ -45,16 +45,18 @@ kernel_pcb_pause(kernel_pcb_t * pcb)
         return 1;
     }
 
-    if (pcb->mState != PCB_RUN)
-    {
-        return 0;
-    }
+    return 0;
+}
 
-    pcb->mState = PCB_PAUSE;
+void
+kernel_pcb_self_pause()
+{
+    kernel_pcb_t * current = kernel_current_pcb;
+    kernel_pcb_t * next = pcb_cycle_next_ready(kernel_current_pcb);
 
-    // kernel_scheduler_switch_to
+    current->mState = PCB_PAUSE;
 
-    return 1;
+    kernel_scheduler_switch_to(current, next);
 }
 
 void
