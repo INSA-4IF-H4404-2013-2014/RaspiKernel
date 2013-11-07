@@ -1,9 +1,9 @@
 
 #include "kernel_scheduler.h"
 #include "kernel_pcb_cycle.h"
-#include "kernel_process.h"
 #include "kernel_action.h"
 #include "allocateMemory.h"
+#include "api_process.h"
 
 static void
 kernel_pcb_startup(process_func_t f, void * args);

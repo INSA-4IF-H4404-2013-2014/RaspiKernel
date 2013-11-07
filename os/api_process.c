@@ -2,9 +2,7 @@
 #include "kernel_scheduler.h"
 #include "kernel_pcb_cycle.h"
 #include "kernel_action.h"
-#include "kernel_process.h"
-#include "allocateMemory.h"
-#include "hw.h"
+#include "api_process.h"
 
 uint32_t
 process_create(process_func_t f, void * args)
