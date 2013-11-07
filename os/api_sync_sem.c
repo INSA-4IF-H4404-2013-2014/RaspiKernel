@@ -4,9 +4,9 @@
 #include "api_sync_sem.h"
 
 void
-sync_sem_init(sync_sem_t * semaphore)
+sync_sem_init(sync_sem_t * semaphore, uint32_t coins)
 {
-    semaphore->mCoins = 0;
+    semaphore->mCoins = coins;
     semaphore->mFifoStart = nullptr;
 }
 
