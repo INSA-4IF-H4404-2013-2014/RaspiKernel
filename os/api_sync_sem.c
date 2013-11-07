@@ -1,7 +1,7 @@
 
 #include "kernel_scheduler.h"
 #include "kernel_action.h"
-#include "sync_semaphore.h"
+#include "api_sync_sem.h"
 
 void
 sync_sem_init(sync_sem_t * semaphore)

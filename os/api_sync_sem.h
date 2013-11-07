@@ -1,12 +1,8 @@
-#ifndef _H_KERNEL_SEMAPHORE
-#define _H_KERNEL_SEMAPHORE
-
-// -------------------------------------------------------------------- INCLUDES
+#ifndef _H_API_SYNC_SEM
+#define _H_API_SYNC_SEM
 
 #include "kernel_pcb.h"
 
-
-// ----------------------------------------------------------- PROCESS FUNCTIONS
 
 typedef struct sync_sem_s
 {
