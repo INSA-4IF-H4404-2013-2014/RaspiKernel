@@ -18,7 +18,7 @@ typedef enum {PCB_PAUSE, PCB_READY, PCB_RUN} pcb_state;
 /*
  * @infos: PCB structure
  */
-struct pcb_s
+struct kernel_pcb_s
 {
 	// State
 	pcb_state mState;
@@ -33,10 +33,10 @@ struct pcb_s
 	uint32_t * mSP;
 
 	// next pcb
-	struct pcb_s * mNext;
+	kernel_pcb_t * mNext;
 
         // next (fifos)
-        struct pcb_s * mNextFifo;
+        kernel_pcb_t * mNextFifo;
 };
 
 /* Stack storage when PCB is not running:

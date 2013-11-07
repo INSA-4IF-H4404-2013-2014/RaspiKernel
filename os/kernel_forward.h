@@ -3,7 +3,7 @@
 
 #include "standart.h"
 
-typedef struct pcb_s kernel_pcb_t;
+typedef struct kernel_pcb_s kernel_pcb_t;
 
 
 #endif
