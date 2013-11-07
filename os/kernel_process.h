@@ -29,6 +29,18 @@ uint32_t
 process_create(process_func_t f, void * args);
 
 /*
+ * @infos : pause a process
+ *
+ * @param <pid> : the process's PID
+ *
+ * @return
+ *  - 1 if succed (the process has just been created before)
+ *  - 0 elsewhere
+ */
+uint32_t
+process_pause(uint32_t pid);
+
+/*
  * @infos : start a process
  *
  * @param <pid> : the process's PID

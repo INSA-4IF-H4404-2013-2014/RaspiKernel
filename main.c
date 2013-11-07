@@ -23,6 +23,8 @@ main_process(void)
 
     process_start(PID);
 
+    process_pause(process_get_pid());
+
     for ( ; ; )
     {
         i += 3;

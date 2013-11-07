@@ -13,7 +13,7 @@ sync_sem_init(sync_sem_t * semaphore)
 void
 sync_sem_post(sync_sem_t * semaphore, uint32_t coins)
 {
-    kernel_scheduler_disable();
+    kernel_pause_scheduler();
 
     while (coins)
     {
@@ -32,19 +32,19 @@ sync_sem_post(sync_sem_t * semaphore, uint32_t coins)
 
     semaphore->mCoins += coins;
 
-    kernel_scheduler_enable();
+    kernel_resume_scheduler();
 }
 
 void
 sync_sem_wait(sync_sem_t * semaphore)
 {
-    kernel_scheduler_disable();
+    kernel_pause_scheduler();
 
     if (semaphore->mCoins > 0)
     {
         semaphore->mCoins--;
 
-        kernel_scheduler_disable();
+        kernel_pause_scheduler();
         return;
     }
 
@@ -62,6 +62,6 @@ sync_sem_wait(sync_sem_t * semaphore)
     current->mNextFifo = nullptr;
     semaphore->mFifoEnd = current;
 
-    kernel_scheduler_enable();
+    kernel_resume_scheduler();
 }
 

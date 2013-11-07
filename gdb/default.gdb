@@ -1,2 +1,2 @@
 source gdb/init.gdb
-b kernel_main
+b main_process

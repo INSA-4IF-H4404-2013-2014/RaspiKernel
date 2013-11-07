@@ -69,19 +69,15 @@ void
 pcb_cycle_append(struct pcb_s ** pcb_cycle, struct pcb_s * pcb);
 
 /*
- * @infos : remove the cycle head
+ * @infos : remove in cycle
  *
  * @param <pcb_cycle> : a PCB cycle
+ * @param <pcb> : a PCB
  *
  * @asserts
- *  - <pcb_cycle> != 0
- *  - <*pcb_cycle> != 0
- *
- * @returns
- *  - an alone PCB
+ *  - <pcb> in <*pcb_cycle> != 0
  */
-struct pcb_s *
-pcb_cycle_rm_current(struct pcb_s ** pcb_cycle);
-
+void
+kernel_cycle_remove(kernel_pcb_t ** pcb_cycle, kernel_pcb_t * pcb);
 
 #endif

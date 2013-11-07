@@ -71,25 +71,25 @@ pcb_cycle_append(struct pcb_s ** pcb_cycle, struct pcb_s * pcb)
     }
 }
 
-struct pcb_s *
-pcb_cycle_rm_current(struct pcb_s ** pcb_cycle)
+void
+kernel_cycle_remove(kernel_pcb_t ** pcb_cycle, kernel_pcb_t * pcb)
 {
-    struct pcb_s * current = *pcb_cycle;
+    kernel_pcb_t * current = *pcb_cycle;
 
-    if (current->mNext == current)
+    if (current == pcb)
     {
-        *pcb_cycle = 0;
-    }
-    else
-    {
-        struct pcb_s * previous = pcb_cycle_previous(current);
+        if (current->mNext == current)
+        {
+            *pcb_cycle = 0;
+            return;
+        }
 
         *pcb_cycle = current->mNext;
-
-        previous->mNext = current->mNext;
     }
 
-    current->mNext = current;
+    kernel_pcb_t * previous = pcb_cycle_previous(pcb);
 
-    return current;
+    previous->mNext = pcb->mNext;
+
+    pcb->mNext = pcb;
 }
