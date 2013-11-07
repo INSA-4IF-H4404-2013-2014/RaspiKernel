@@ -18,7 +18,7 @@ kernel_pcb_create(void * f, void * args)
     kernel_pcb_set_rN(pcb, 0, f);
     kernel_pcb_set_rN(pcb, 1, args);
 
-    pcb_cycle_append(&kernel_current_pcb, pcb);
+    kernel_cycle_append(&kernel_current_pcb, pcb);
 
     return pcb;
 }
@@ -52,7 +52,7 @@ void
 kernel_pcb_self_pause()
 {
     kernel_pcb_t * current = kernel_current_pcb;
-    kernel_pcb_t * next = pcb_cycle_next_ready(kernel_current_pcb);
+    kernel_pcb_t * next = kernel_cycle_next_ready(kernel_current_pcb);
 
     current->mState = PCB_PAUSE;
 
@@ -74,7 +74,7 @@ kernel_pcb_destroy(kernel_pcb_t * pcb)
 
     pcb->mState = PCB_PAUSE;
 
-    kernel_current_pcb = pcb_cycle_next_ready(kernel_current_pcb);
+    kernel_current_pcb = kernel_cycle_next_ready(kernel_current_pcb);
     kernel_current_pcb->mState = PCB_RUN;
 
     kernel_cycle_remove(&kernel_current_pcb, pcb);
