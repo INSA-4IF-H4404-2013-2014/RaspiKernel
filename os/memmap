@@ -9,7 +9,7 @@ SECTIONS
     _text_start = .;
     .text :
     {
-        *vectors.s.o (.text)
+        *kernel_boot.s.o (.text)
         KEEP(*(.text.boot))
         *(.text)
     }

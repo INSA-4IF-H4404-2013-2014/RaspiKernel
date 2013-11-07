@@ -28,8 +28,7 @@ kernel_scheduler_handler()
     // switch back to Supervisor mode
     kernel_arm_set_mode(KERNEL_ARM_MODE_SVC);
 
-    __asm("push {lr}");
-    __asm("push {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
+    __asm("push {r0 - r12, lr}");
     __asm("mov %0, sp" : "=r"(kernel_current_pcb->mSP));
 
     kernel_current_pcb->mState = PCB_READY;
@@ -40,8 +39,7 @@ kernel_scheduler_handler()
     kernel_current_pcb->mState = PCB_RUN;
 
     __asm("mov sp, %0" : : "r"(kernel_current_pcb->mSP));
-    __asm("pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
-    __asm("pop {lr}");
+    __asm("pop {r0 - r12, lr}");
     __asm("add sp, #8");
 
     kernel_resume_scheduler();
@@ -55,16 +53,14 @@ kernel_scheduler_switch_to(kernel_pcb_t * old_pcb, kernel_pcb_t * new_pcb)
     //__asm("push {cpsr}");
     //__asm("push {lr}");
     __asm("srsdb sp!, #0x13");
-    __asm("push {lr}");
-    __asm("push {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
+    __asm("push {r0 - r12, lr}");
     __asm("mov %0, sp" : "=r"(old_pcb->mSP));
 
     kernel_current_pcb = new_pcb;
     new_pcb->mState = PCB_RUN;
 
     __asm("mov sp, %0" : : "r"(kernel_current_pcb->mSP));
-    __asm("pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
-    __asm("pop {lr}");
+    __asm("pop {r0 - r12, lr}");
     __asm("add sp, #8");
 
     kernel_resume_scheduler();
@@ -79,8 +75,7 @@ kernel_scheduler_jump(kernel_pcb_t * pcb)
     pcb->mState = PCB_RUN;
 
     __asm("mov sp, %0" : : "r"(kernel_current_pcb->mSP));
-    __asm("pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
-    __asm("pop {lr}");
+    __asm("pop {r0 - r12, lr}");
     __asm("add sp, #8");
 
     kernel_resume_scheduler();
