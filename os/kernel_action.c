@@ -12,7 +12,7 @@ kernel_pcb_startup(process_func_t f, void * args);
 kernel_pcb_t *
 kernel_pcb_create(void * f, void * args)
 {
-    kernel_pcb_t * pcb = (kernel_pcb_t *) AllocateMemory(sizeof(struct pcb_s));
+    kernel_pcb_t * pcb = (kernel_pcb_t *) AllocateMemory(sizeof(kernel_pcb_t));
 
     kernel_pcb_init(pcb, (uint32_t)kernel_pcb_startup, STACK_SIZE);
     kernel_pcb_set_rN(pcb, 0, f);

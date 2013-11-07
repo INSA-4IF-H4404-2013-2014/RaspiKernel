@@ -2,10 +2,10 @@
 #include "kernel_pcb_cycle.h"
 #include "allocateMemory.h"
 
-struct pcb_s*
-pcb_cycle_previous(struct pcb_s* pcb)
+kernel_pcb_t*
+pcb_cycle_previous(kernel_pcb_t* pcb)
 {
-    struct pcb_s* current = pcb;
+    kernel_pcb_t* current = pcb;
 
     while (current->mNext != pcb)
     {
@@ -15,10 +15,10 @@ pcb_cycle_previous(struct pcb_s* pcb)
     return current;
 }
 
-struct pcb_s *
-pcb_cycle_next_ready(struct pcb_s * pcb)
+kernel_pcb_t *
+pcb_cycle_next_ready(kernel_pcb_t * pcb)
 {
-    struct pcb_s * next_pcb = pcb_cycle_next(pcb);
+    kernel_pcb_t * next_pcb = pcb_cycle_next(pcb);
 
     while (next_pcb->mState != PCB_READY)
     {
@@ -33,15 +33,15 @@ pcb_cycle_next_ready(struct pcb_s * pcb)
     return next_pcb;
 }
 
-struct pcb_s *
-pcb_cycle_by_pid(struct pcb_s * pcb_head, uint32_t pid)
+kernel_pcb_t *
+pcb_cycle_by_pid(kernel_pcb_t * pcb_head, uint32_t pid)
 {
     if (pcb_head->mPID == pid)
     {
         return pcb_head;
     }
 
-    struct pcb_s * current = pcb_head->mNext;
+    kernel_pcb_t * current = pcb_head->mNext;
 
     while (current != pcb_head)
     {
@@ -58,7 +58,7 @@ pcb_cycle_by_pid(struct pcb_s * pcb_head, uint32_t pid)
 }
 
 void
-pcb_cycle_append(struct pcb_s ** pcb_cycle, struct pcb_s * pcb)
+pcb_cycle_append(kernel_pcb_t ** pcb_cycle, kernel_pcb_t * pcb)
 {
     if (*pcb_cycle == 0)
     {

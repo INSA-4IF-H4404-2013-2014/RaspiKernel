@@ -25,8 +25,8 @@
  * @asserts
  *  - <pcb> != 0
  */
-struct pcb_s*
-pcb_cycle_previous(struct pcb_s* pcb);
+kernel_pcb_t*
+pcb_cycle_previous(kernel_pcb_t* pcb);
 
 /*
  * @infos : get the next pcb that has the ready state
@@ -36,8 +36,8 @@ pcb_cycle_previous(struct pcb_s* pcb);
  * @asserts
  *  - <pcb> != 0
  */
-struct pcb_s *
-pcb_cycle_next_ready(struct pcb_s * pcb);
+kernel_pcb_t *
+pcb_cycle_next_ready(kernel_pcb_t * pcb);
 
 /*
  * @infos : get pcb by the PID in a pcbs' cycle
@@ -52,8 +52,8 @@ pcb_cycle_next_ready(struct pcb_s * pcb);
  *  - 0: if any pcb match PID
  *  - the associated PCB struct for the given <pid>
  */
-struct pcb_s *
-pcb_cycle_by_pid(struct pcb_s * pcb_head, uint32_t pid);
+kernel_pcb_t *
+pcb_cycle_by_pid(kernel_pcb_t * pcb_head, uint32_t pid);
 
 /*
  * @infos : append a alone PCB in a PCB cycle
@@ -66,7 +66,7 @@ pcb_cycle_by_pid(struct pcb_s * pcb_head, uint32_t pid);
  *  - <pcb> is alone (pcb = pcb->mNext)
  */
 void
-pcb_cycle_append(struct pcb_s ** pcb_cycle, struct pcb_s * pcb);
+pcb_cycle_append(kernel_pcb_t ** pcb_cycle, kernel_pcb_t * pcb);
 
 /*
  * @infos : remove in cycle

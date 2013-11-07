@@ -13,7 +13,7 @@
 /*
  * @infos : cycle head of all PCBs
  */
-extern struct pcb_s * kernel_current_pcb;
+extern kernel_pcb_t * kernel_current_pcb;
 
 /*
  * @infos : switch to another PCB. Sets :

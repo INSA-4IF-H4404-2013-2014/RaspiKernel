@@ -4,7 +4,7 @@
 #include "kernel_pcb_cycle.h"
 #include "hw.h"
 
-struct pcb_s * kernel_current_pcb = 0;
+kernel_pcb_t * kernel_current_pcb = 0;
 
 /* INTERUPTION ASSERTS
  *
