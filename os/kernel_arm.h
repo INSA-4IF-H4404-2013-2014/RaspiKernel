@@ -1,11 +1,37 @@
 #ifndef _H_KERNEL_ARM
 #define _H_KERNEL_ARM
 
+#include "standart.h"
 
 // doc1 : doc_arm_specs.pdf
 
+//------------------------------------------------------------------------------ REGISTERS
+
+/* Register (doc1, chapter A2.3)
+ *
+ *  - r0 - r7: unbanked general registers
+ *  - r8 - r12: banked registers (not fiq, fiq)
+ *  - r13 = sp: stack pointer
+ *  - r14 = lr: parent caller address
+ *  - r15 = pc: program counter
+ *  - cpsr: status register
+ *  - spsr: copy of cpsr before interuption
+ *      this register is hidden, bancked and only available in interuption
+ *      modes (SVC, ABT, UND, IRQ and FIQ).
+ *
+ * r13 and r14 are also banked for modes:
+ *  - USR and SYS
+ *  - SVC
+ *  - ABT
+ *  - UND
+ *  - IRQ
+ *  - FIQ
+ */
+
+
+//------------------------------------------------------------------------------ MODES
 /*
- * Modes (doc1, chapter A2.2) :
+ * Modes (doc1, chapter A2.2):
  *  - User (0b10000) Normal program execution mode (can't change mode)
  *  - FIQ  (0b10001) Supports a high-speed data transfer or channel process
  *  - IRQ  (0b10010) Used for general-purpose interrupt handling
