@@ -28,6 +28,13 @@
  *  - FIQ
  */
 
+/* Multiple push/pop
+ *  http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0204j/Babefbce.html
+ *
+ *  "Registers are stored on the stack in numerical order, with the lowest
+ *  numbered register at the lowest address."
+ */
+
 
 //------------------------------------------------------------------------------ MODES
 /*
