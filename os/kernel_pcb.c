@@ -10,7 +10,8 @@ kernel_pcb_init(kernel_pcb_t * pcb, pcb_func_t f, uint32_t stack_size)
     pcb->mState = PCB_PAUSE;
     pcb->mPID = id++;
     pcb->mStack = (uint32_t *) AllocateMemory(stack_size);
-    pcb->mSP = pcb->mStack + stack_size - 8; // <pcb_switch_to+372> add sp, sp, #8
+    pcb->mSP = pcb->mStack + (stack_size - 1);
+    pcb->mSP[0] = 0;
     pcb->mSP -= 16 * 4;
     pcb->mNext = pcb;
 
