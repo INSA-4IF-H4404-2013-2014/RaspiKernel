@@ -1,56 +1,71 @@
 
+#include "kernel_arm.h"
 #include "kernel_scheduler.h"
 #include "kernel_pcb_cycle.h"
 #include "hw.h"
 
 struct pcb_s * kernel_current_pcb = 0;
 
-void
+/* INTERUPTION ASSERTS
+ *
+ * lr_irq == PC{before interuption} + 4
+ * lr_svc == original lr values before interuption
+ * r0 - r12 == original registers values
+ * SPSR = CPSR{before interuption}
+ * kernel_arm_mode() == KERNEL_ARM_MODE_IRQ
+ * kernel_pause_scheduler() already done !
+ */
+void __attribute__((naked))
 kernel_scheduler_handler()
 {
-    kernel_pause_scheduler();
+    // correct lr_irq to = PC{before interuption}
+    __asm("sub lr, lr, #4");
 
-    __asm ("push {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
-    __asm ("add sp, #52");
-    __asm ("mov %0, sp" : "=r"(kernel_current_pcb->mSP));
-    __asm ("mov %0, lr" : "=r"(kernel_current_pcb->mPC));
-    // bouge la tete de pile pour ne pas ecraser la sauvegarde des registres qu on vient juste de faire lors de l appel de  pcb_cyce_next_ready
-    __asm ("sub sp, #52");
+    // str spsr, [sp_svc, #-4]! (push {spsr} in sp_svc)
+    // str lr(lr_irq), [sp_svc, #-4]! (push {lr} in sp_svc)
+    __asm("srsdb sp!, #0x13");
+
+    // switch back to Supervisor mode
+    kernel_arm_set_mode(KERNEL_ARM_MODE_SVC);
+
+    __asm("push {r0 - r12, lr}");
+    __asm("mov %0, sp" : "=r"(kernel_current_pcb->mSP));
+
+    kernel_current_pcb->mState = PCB_READY;
 
     kernel_current_pcb = pcb_cycle_next_ready(kernel_current_pcb);
     set_next_tick_and_enable_timer_irq();
 
-     // pas besoin de remanipuler la pile car current_pcb est globale
-    __asm ("mov lr, %0" : : "r"(kernel_current_pcb->mPC));
-    __asm ("mov sp, %0" : : "r"(kernel_current_pcb->mSP));
-    __asm ("sub sp, #52");
-    __asm ("pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
+    kernel_current_pcb->mState = PCB_RUN;
+
+    __asm("mov sp, %0" : : "r"(kernel_current_pcb->mSP));
+    __asm("pop {r0 - r12, lr}");
+    __asm("add sp, #8");
 
     kernel_resume_scheduler();
 
-    //return de bourrin parce que naked le fait pas
-    __asm ("mov pc, lr");
+    __asm("ldr pc, [sp, #-8]");
 }
 
 void
 kernel_scheduler_switch_to(kernel_pcb_t * old_pcb, kernel_pcb_t * new_pcb)
 {
-    __asm ("push {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
-    __asm ("add sp, #52");
-    __asm ("mov %0, sp" : "=r"(old_pcb->mSP));
-    __asm ("mov %0, lr" : "=r"(old_pcb->mPC));
+    //__asm("push {cpsr}");
+    //__asm("push {lr}");
+    __asm("srsdb sp!, #0x13");
+    __asm("push {r0 - r12, lr}");
+    __asm("mov %0, sp" : "=r"(old_pcb->mSP));
 
     kernel_current_pcb = new_pcb;
     new_pcb->mState = PCB_RUN;
 
-    __asm ("mov lr, %0" : : "r"(new_pcb->mPC));
-    __asm ("mov sp, %0" : : "r"(new_pcb->mSP));
-    __asm ("sub sp, #52");
-    __asm ("pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
+    __asm("mov sp, %0" : : "r"(kernel_current_pcb->mSP));
+    __asm("pop {r0 - r12, lr}");
+    __asm("add sp, #8");
 
     kernel_resume_scheduler();
 
-    __asm ("mov pc, lr");
+    __asm("ldr pc, [sp, #-8]");
 }
 
 void __attribute__((noreturn))
@@ -59,14 +74,13 @@ kernel_scheduler_jump(kernel_pcb_t * pcb)
     kernel_current_pcb = pcb;
     pcb->mState = PCB_RUN;
 
-    __asm ("mov lr, %0" : : "r"(pcb->mPC));
-    __asm ("mov sp, %0" : : "r"(pcb->mSP));
-    __asm ("sub sp, #52");
-    __asm ("pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12}");
+    __asm("mov sp, %0" : : "r"(kernel_current_pcb->mSP));
+    __asm("pop {r0 - r12, lr}");
+    __asm("add sp, #8");
 
     kernel_resume_scheduler();
 
-    __asm ("mov pc, lr");
+    __asm("ldr pc, [sp, #-8]");
 
     __builtin_unreachable();
 }
