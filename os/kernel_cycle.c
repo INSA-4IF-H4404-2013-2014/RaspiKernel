@@ -1,5 +1,5 @@
 
-#include "kernel_pcb_cycle.h"
+#include "kernel_cycle.h"
 #include "allocateMemory.h"
 
 kernel_pcb_t*

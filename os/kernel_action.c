@@ -1,6 +1,6 @@
 
 #include "kernel_scheduler.h"
-#include "kernel_pcb_cycle.h"
+#include "kernel_cycle.h"
 #include "kernel_action.h"
 #include "allocateMemory.h"
 #include "api_process.h"

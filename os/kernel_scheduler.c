@@ -1,7 +1,7 @@
 
 #include "kernel_arm.h"
 #include "kernel_scheduler.h"
-#include "kernel_pcb_cycle.h"
+#include "kernel_cycle.h"
 #include "hw.h"
 
 kernel_pcb_t * kernel_current_pcb = 0;
