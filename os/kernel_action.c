@@ -15,8 +15,8 @@ kernel_pcb_create(void * f, void * args)
     kernel_pcb_t * pcb = (kernel_pcb_t *) AllocateMemory(sizeof(struct pcb_s));
 
     pcb_init(pcb, (pcb_func_t)kernel_pcb_startup, STACK_SIZE);
-    pcb_set_register(pcb, 0, (uint32_t)f);
-    pcb_set_register(pcb, 1, (uint32_t)args);
+    kernel_pcb_set_rN(pcb, 0, f);
+    kernel_pcb_set_rN(pcb, 1, args);
 
     pcb_cycle_append(&kernel_current_pcb, pcb);
 

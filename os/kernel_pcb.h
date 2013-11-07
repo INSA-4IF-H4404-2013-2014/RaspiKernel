@@ -16,6 +16,11 @@ typedef void (*pcb_func_t)(void);
 
 typedef enum {PCB_PAUSE, PCB_READY, PCB_RUN} pcb_state;
 
+
+
+/*
+ * @infos: PCB structure
+ */
 typedef struct pcb_s
 {
 	// State
@@ -23,9 +28,6 @@ typedef struct pcb_s
 
 	// Process ID
 	uint32_t mPID;
-
-	// PC = program counter
-	uint32_t mPC;
 
 	// stack head
 	uint32_t * mStack;
@@ -39,6 +41,29 @@ typedef struct pcb_s
         // next (fifos)
         struct pcb_s * mNextFifo;
 } kernel_pcb_t;
+
+/* Stack storage when PCB is not running:
+ *
+ * mSP ->   r0
+ *          r1
+ *          r2
+ *          r3
+ *          r4
+ *          r5
+ *          r6
+ *          r7
+ *          r8
+ *          r9
+ *          r10
+ *          r11
+ *          r12
+ *          r14 (lr)
+ *          r15 (pc)
+ *          cpsr
+ *          . CALL STACK...
+ *          .
+ *          .
+ */
 
 
 // --------------------------------------------------------------- PCB FUNCTIONS
@@ -76,35 +101,44 @@ void
 pcb_release(struct pcb_s* pcb);
 
 /*
- * @infos : Switch to another PCB :
- *  - save the current execution in <oldPcb> and switch to the <newPcb>
+ * @infos : Accesses a non-running pcb's register's value
  *
- * @param <old_pcb> : the pcb to save the current execution
- * @param <new_pcb> : the pcb to switch to
+ * @param <pcb> : the non-running pcb
+ * @param <N> : the register's id
+ *
+ * @return: uint32_t reference
  *
  * @asserts
- *  - <new_pcb> != 0
+ *  - <pcb> != 0
+ *  - 0 <= <N> < REGISTER_COUNT
  */
-void
-pcb_switch_to(struct pcb_s* old_pcb, struct pcb_s* new_pcb);
+#define kernel_pcb_rN(pcb,N) \
+    ((pcb)->mSP[(N)])
+
+#define kernel_pcb_lr(pcb) \
+    ((pcb)->mSP[13])
+
+#define kernel_pcb_pc(pcb) \
+    ((pcb)->mSP[14])
 
 /*
  * @infos : Set a non-running pcb's register's value
  *
  * @param <pcb> : the non-running pcb
- * @param <register_id> : the register's id
+ * @param <N> : the register's id
  * @param <value> : the register's value to set
  *
  * @asserts
  *  - <pcb> != 0
- *  - 0 <= <register_id> < REGISTER_COUNT
- *
- * @external : ARM documentation on multiple pushes/pops
- *  The registers are stored in sequence, the lowest-numbered register to the
- *  lowest memory address (start_address), through to the highest-numbered
- *  register to the highest memory address (end_address)
+ *  - 0 <= <N> < REGISTER_COUNT
  */
-#define pcb_set_register(pcb,register_id,value) \
-    (pcb)->mSP[- REGISTER_COUNT + (register_id)] = (uint32_t)(value)
+#define kernel_pcb_set_rN(pcb,N,value) \
+    kernel_pcb_rN(pcb,N) = (uint32_t)(value)
+
+#define kernel_pcb_set_lr(pcb,value) \
+    kernel_pcb_lr(pcb) = (uint32_t)(value)
+
+#define kernel_pcb_set_pc(pcb,value) \
+    kernel_pcb_pc(pcb) = (uint32_t)(value)
 
 #endif
