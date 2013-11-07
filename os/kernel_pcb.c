@@ -3,7 +3,7 @@
 #include "allocateMemory.h"
 
 void
-kernel_pcb_init(kernel_pcb_t * pcb, pcb_func_t f, uint32_t stack_size)
+kernel_pcb_init(kernel_pcb_t * pcb, uint32_t f, uint32_t stack_size)
 {
     static uint32_t id = 0;
 
