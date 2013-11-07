@@ -1,13 +1,13 @@
 
 #include "kernel_scheduler.h"
-#include "sync_semaphore.h"
+#include "kernel_action.h"
+#include "api_sync_sem.h"
 
 void
-sync_sem_init(sync_sem_t * semaphore)
+sync_sem_init(sync_sem_t * semaphore, uint32_t coins)
 {
-    semaphore->mCoins = 0;
+    semaphore->mCoins = coins;
     semaphore->mFifoStart = nullptr;
-    semaphore->mFifoEnd = nullptr;
 }
 
 void
@@ -15,16 +15,18 @@ sync_sem_post(sync_sem_t * semaphore, uint32_t coins)
 {
     kernel_pause_scheduler();
 
-    while (coins)
+    while (semaphore->mFifoStart)
     {
-        if (semaphore->mFifoStart == nullptr)
+        if (!coins)
         {
-            break;
+            kernel_resume_scheduler();
+            return;
         }
 
         kernel_pcb_t * pcb = semaphore->mFifoStart;
 
-        pcb->mState = PCB_READY;
+        kernel_pcb_start(pcb);
+
         semaphore->mFifoStart = pcb->mNextFifo;
 
         coins--;
@@ -44,7 +46,7 @@ sync_sem_wait(sync_sem_t * semaphore)
     {
         semaphore->mCoins--;
 
-        kernel_pause_scheduler();
+        kernel_resume_scheduler();
         return;
     }
 
@@ -59,9 +61,11 @@ sync_sem_wait(sync_sem_t * semaphore)
         semaphore->mFifoStart = current;
     }
 
-    current->mNextFifo = nullptr;
     semaphore->mFifoEnd = current;
+    current->mNextFifo = nullptr;
 
-    kernel_resume_scheduler();
+    kernel_pcb_self_pause();
+
+    // kernel_pcb_self_pause call kernel_resume_scheduler();
 }
 
