@@ -1,7 +1,7 @@
 #ifndef _H_API_SYNC_SEM
 #define _H_API_SYNC_SEM
 
-#include "kernel_pcb.h"
+#include "kernel_forward.h"
 
 
 /*

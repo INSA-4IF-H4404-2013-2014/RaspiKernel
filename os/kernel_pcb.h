@@ -1,7 +1,7 @@
 #ifndef _H_KERNEL_PCB
 #define _H_KERNEL_PCB
 
-#include "standart.h"
+#include "kernel_forward.h"
 
 
 // ----------------------------------------------------------------- PCB DEFINES
@@ -18,7 +18,7 @@ typedef enum {PCB_PAUSE, PCB_READY, PCB_RUN} pcb_state;
 /*
  * @infos: PCB structure
  */
-typedef struct pcb_s
+struct pcb_s
 {
 	// State
 	pcb_state mState;
@@ -37,7 +37,7 @@ typedef struct pcb_s
 
         // next (fifos)
         struct pcb_s * mNextFifo;
-} kernel_pcb_t;
+};
 
 /* Stack storage when PCB is not running:
  *
