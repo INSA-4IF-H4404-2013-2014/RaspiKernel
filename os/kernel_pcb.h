@@ -85,7 +85,7 @@ typedef struct pcb_s
  *  - <stack_size> != 0
  */
 void
-pcb_init(struct pcb_s* pcb, pcb_func_t f, uint32_t stack_size);
+kernel_pcb_init(kernel_pcb_t * pcb, pcb_func_t f, uint32_t stack_size);
 
 /*
  * @infos : Release a PCB :
@@ -98,7 +98,7 @@ pcb_init(struct pcb_s* pcb, pcb_func_t f, uint32_t stack_size);
  *  - <has> been initialized before
  */
 void
-pcb_release(struct pcb_s* pcb);
+kernel_pcb_release(kernel_pcb_t * pcb);
 
 /*
  * @infos : Accesses a non-running pcb's register's value

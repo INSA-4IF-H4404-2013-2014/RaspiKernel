@@ -3,7 +3,7 @@
 #include "allocateMemory.h"
 
 void
-pcb_init(struct pcb_s* pcb, pcb_func_t f, uint32_t stack_size)
+kernel_pcb_init(kernel_pcb_t * pcb, pcb_func_t f, uint32_t stack_size)
 {
     static uint32_t id = 0;
 
@@ -18,7 +18,7 @@ pcb_init(struct pcb_s* pcb, pcb_func_t f, uint32_t stack_size)
 }
 
 void
-pcb_release(struct pcb_s* pcb)
+kernel_pcb_release(kernel_pcb_t * pcb)
 {
     FreeAllocatedMemory(pcb->mStack);
 }

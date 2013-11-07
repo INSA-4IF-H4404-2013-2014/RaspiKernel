@@ -14,7 +14,7 @@ kernel_pcb_create(void * f, void * args)
 {
     kernel_pcb_t * pcb = (kernel_pcb_t *) AllocateMemory(sizeof(struct pcb_s));
 
-    pcb_init(pcb, (pcb_func_t)kernel_pcb_startup, STACK_SIZE);
+    kernel_pcb_init(pcb, (pcb_func_t)kernel_pcb_startup, STACK_SIZE);
     kernel_pcb_set_rN(pcb, 0, f);
     kernel_pcb_set_rN(pcb, 1, args);
 
@@ -66,7 +66,7 @@ kernel_pcb_destroy(kernel_pcb_t * pcb)
     {
         kernel_cycle_remove(&kernel_current_pcb, pcb);
 
-        pcb_release(pcb);
+        kernel_pcb_release(pcb);
         FreeAllocatedMemory((uint32_t*)pcb);
 
         return;
@@ -79,7 +79,7 @@ kernel_pcb_destroy(kernel_pcb_t * pcb)
 
     kernel_cycle_remove(&kernel_current_pcb, pcb);
 
-    pcb_release(pcb);
+    kernel_pcb_release(pcb);
     FreeAllocatedMemory((uint32_t*)pcb);
 
     kernel_scheduler_jump(kernel_current_pcb);
