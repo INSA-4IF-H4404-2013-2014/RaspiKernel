@@ -37,9 +37,6 @@ struct kernel_pcb_s
 
     // next pcb
     kernel_pcb_t * mNext;
-
-    // next (fifos)
-    kernel_pcb_t * mNextMeta;
 };
 
 /* Stack storage when PCB is not running:

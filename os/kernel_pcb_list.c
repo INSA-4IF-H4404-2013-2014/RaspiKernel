@@ -6,18 +6,18 @@ kernel_pcb_list_remove(kernel_pcb_list_t * list, kernel_pcb_t * pcb)
 {
     if (list->mFirst == pcb)
     {
-        list->mFirst = pcb->mNextMeta;
+        list->mFirst = pcb->mNext;
         return;
     }
 
     kernel_pcb_t * parent = list->mFirst;
 
-    while (parent->mNextMeta != pcb)
+    while (parent->mNext != pcb)
     {
-        parent = parent->mNextMeta;
+        parent = parent->mNext;
     }
 
-    parent->mNextMeta = nullptr;
+    parent->mNext = nullptr;
 
     if (pcb == list->mLast)
     {

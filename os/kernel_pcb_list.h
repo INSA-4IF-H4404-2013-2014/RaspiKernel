@@ -28,14 +28,14 @@
     { \
         if ((list)->mFirst) \
         { \
-            (list)->mLast->mNextMeta = (pcb); \
+            (list)->mLast->mNext = (pcb); \
         } \
         else \
         { \
             (list)->mFirst = (pcb); \
         } \
         (list)->mLast = (pcb); \
-        (pcb)->mNextMeta = nullptr; \
+        (pcb)->mNext = nullptr; \
     }
 
 /*
@@ -44,7 +44,7 @@
 #define kernel_pcb_list_popf(list,first_pcb) \
     { \
         (first_pcb) = (list)->mFirst; \
-        (list)->mFirst = (first_pcb)->mNextMeta; \
+        (list)->mFirst = (first_pcb)->mNext; \
     }
 
 /*
@@ -52,10 +52,10 @@
  */
 #define kernel_pcb_list_rotatel(list) \
     { \
-        (list)->mLast->mNextMeta = (list)->mFirst; \
+        (list)->mLast->mNext = (list)->mFirst; \
         (list)->mLast = (list)->mFirst; \
-        (list)->mFirst = (list)->mFirst->mNextMeta; \
-        (list)->mLast->mNextMeta = nullptr; \
+        (list)->mFirst = (list)->mFirst->mNext; \
+        (list)->mLast->mNext = nullptr; \
     }
 
 /*
