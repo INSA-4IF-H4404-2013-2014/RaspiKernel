@@ -1,5 +1,5 @@
 
-#include "kernel_pcb.h"
+#include "kernel_pcb_list.h"
 #include "kernel_scheduler.h"
 #include "kernel_action.h"
 #include "api_sync_sem.h"
