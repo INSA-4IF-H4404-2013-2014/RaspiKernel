@@ -20,7 +20,7 @@ process_pause(uint32_t pid)
 {
     kernel_pause_scheduler();
 
-    if (pid == kernel_ready_pcb.mFirst->mPID)
+    if (pid == kernel_running_pcb->mPID)
     {
         kernel_pcb_self_pause();
 
@@ -65,7 +65,7 @@ process_start(uint32_t pid)
 uint32_t
 process_get_pid()
 {
-    return kernel_ready_pcb.mFirst->mPID;
+    return kernel_running_pcb->mPID;
 }
 
 void
@@ -73,7 +73,7 @@ process_exit()
 {
     kernel_pause_scheduler();
 
-    kernel_pcb_destroy(kernel_ready_pcb.mFirst);
+    kernel_pcb_destroy(kernel_running_pcb);
 
     __builtin_unreachable();
 }

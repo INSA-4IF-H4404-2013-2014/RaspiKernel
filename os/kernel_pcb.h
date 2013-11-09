@@ -35,8 +35,11 @@ struct kernel_pcb_s
     // next in list containing all PCBs
     kernel_pcb_t * mGlobalNext;
 
-    // next pcb
+    // next pcb in a list
     kernel_pcb_t * mNext;
+
+    // ptr on the list where it is
+    kernel_pcb_list_t * mParentList;
 };
 
 /* Stack storage when PCB is not running:

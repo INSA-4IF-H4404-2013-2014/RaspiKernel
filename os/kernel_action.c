@@ -71,22 +71,15 @@ kernel_pcb_self_pause()
 void
 kernel_pcb_destroy(kernel_pcb_t * pcb)
 {
-    if (pcb->mState != PCB_RUN)
-    {
-        // to do
-
-        kernel_pcb_release(pcb);
-        FreeAllocatedMemory((uint32_t*)pcb);
-
-        return;
-    }
-
-    kernel_pcb_list_popf(&kernel_ready_pcb, pcb);
+    kernel_pcb_list_remove(pcb->mParentList, pcb);
 
     kernel_pcb_release(pcb);
     FreeAllocatedMemory((uint32_t*)pcb);
 
-    kernel_scheduler_yield_noreturn();
+    if (pcb == kernel_running_pcb)
+    {
+        kernel_scheduler_yield_noreturn();
+    }
 }
 
 static void

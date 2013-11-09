@@ -8,13 +8,20 @@
 #include "hw.h"
 
 
-// --------------------------------------------------------------- PROCESS TYPES
+// --------------------------------------------------------------- GLOBAL VARS
 
 /*
  * @infos : cycle head of all PCBs
  */
 extern kernel_pcb_list_t kernel_ready_pcb;
 extern kernel_pcb_list_t kernel_pause_pcb;
+
+#ifndef _C_KERNEL_SCHEDULER
+extern kernel_pcb_t * const kernel_running_pcb;
+#endif
+
+
+// --------------------------------------------------------------- FUNCTIONS
 
 /*
  * @infos : switch to another PCB. Sets :

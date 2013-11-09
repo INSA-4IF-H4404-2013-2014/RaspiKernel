@@ -39,6 +39,7 @@
         } \
         (list)->mLast = (pcb); \
         (pcb)->mNext = nullptr; \
+        (pcb)->mParentList = (list); \
     }
 
 /*
