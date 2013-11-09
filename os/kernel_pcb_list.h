@@ -73,6 +73,19 @@
     }
 
 /*
+ * @infos: find a PCB in a <list> by a given <pid>
+ *
+ * @param <list>: list to search
+ * @param <pid>: the PID to search in the list
+ *
+ * @return:
+ *  - nullptr: if <pid> not in <list>
+ *  - the PCB for the given <pid>
+ */
+kernel_pcb_t *
+kernel_pcb_list_search(kernel_pcb_list_t * list, uint32_t pid);
+
+/*
  * @infos: remove a <pcb> in a <list>
  *
  * @param <list>: a PCB list

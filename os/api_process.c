@@ -48,7 +48,7 @@ process_start(uint32_t pid)
 {
     kernel_pause_scheduler();
 
-    kernel_pcb_t * pcb = kernel_pcb_global_by_pid(pid);
+    kernel_pcb_t * pcb = kernel_pcb_list_search(&kernel_pause_pcb, pid);
 
     if (pcb == 0)
     {
