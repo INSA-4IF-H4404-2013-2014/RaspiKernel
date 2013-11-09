@@ -30,7 +30,7 @@ process_pause(uint32_t pid)
         return 1;
     }
 
-    kernel_pcb_t * pcb = kernel_cycle_by_pid(kernel_current_pcb, pid);
+    kernel_pcb_t * pcb = kernel_pcb_global_by_pid(pid);
 
     if (pcb == 0)
     {
@@ -49,7 +49,7 @@ process_start(uint32_t pid)
 {
     kernel_pause_scheduler();
 
-    kernel_pcb_t * pcb = kernel_cycle_by_pid(kernel_current_pcb, pid);
+    kernel_pcb_t * pcb = kernel_pcb_global_by_pid(pid);
 
     if (pcb == 0)
     {
