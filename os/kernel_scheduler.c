@@ -4,7 +4,11 @@
 #include "kernel_cycle.h"
 #include "hw.h"
 
-kernel_pcb_t * kernel_current_pcb = 0;
+kernel_pcb_list_t kernel_ready_pcb;
+kernel_pcb_list_t kernel_pause_pcb;
+
+static kernel_pcb_t * kernel_current_pcb = nullptr;
+
 
 /* INTERUPTION ASSERTS
  *
@@ -31,12 +35,13 @@ kernel_scheduler_handler()
     __asm("push {r0 - r12, lr}");
     __asm("mov %0, sp" : "=r"(kernel_current_pcb->mSP));
 
+    kernel_pcb_list_rotatel(&kernel_ready_pcb);
+
     kernel_current_pcb->mState = PCB_READY;
-
-    kernel_current_pcb = kernel_cycle_next_ready(kernel_current_pcb);
-    set_next_tick_and_enable_timer_irq();
-
+    kernel_current_pcb = kernel_ready_pcb.mFirst;
     kernel_current_pcb->mState = PCB_RUN;
+
+    set_next_tick_and_enable_timer_irq();
 
     __asm("mov sp, %0" : : "r"(kernel_current_pcb->mSP));
     __asm("pop {r0 - r12, lr}");
@@ -48,16 +53,17 @@ kernel_scheduler_handler()
 }
 
 void
-kernel_scheduler_switch_to(kernel_pcb_t * old_pcb, kernel_pcb_t * new_pcb)
+kernel_scheduler_yield()
 {
     //__asm("push {cpsr}");
     //__asm("push {lr}");
     __asm("srsdb sp!, #0x13");
     __asm("push {r0 - r12, lr}");
-    __asm("mov %0, sp" : "=r"(old_pcb->mSP));
+    __asm("mov %0, sp" : "=r"(kernel_current_pcb->mSP));
 
-    kernel_current_pcb = new_pcb;
-    new_pcb->mState = PCB_RUN;
+    kernel_current_pcb->mState = PCB_READY;
+    kernel_current_pcb = kernel_ready_pcb.mFirst;
+    kernel_current_pcb->mState = PCB_RUN;
 
     __asm("mov sp, %0" : : "r"(kernel_current_pcb->mSP));
     __asm("pop {r0 - r12, lr}");
@@ -69,10 +75,10 @@ kernel_scheduler_switch_to(kernel_pcb_t * old_pcb, kernel_pcb_t * new_pcb)
 }
 
 void __attribute__((noreturn))
-kernel_scheduler_jump(kernel_pcb_t * pcb)
+kernel_scheduler_yield_noreturn()
 {
-    kernel_current_pcb = pcb;
-    pcb->mState = PCB_RUN;
+    kernel_current_pcb = kernel_ready_pcb.mFirst;
+    kernel_current_pcb->mState = PCB_RUN;
 
     __asm("mov sp, %0" : : "r"(kernel_current_pcb->mSP));
     __asm("pop {r0 - r12, lr}");

@@ -47,5 +47,22 @@
         (list)->mFirst = (first_pcb)->mNextMeta; \
     }
 
+/*
+ * @infos: rotate to the left (the first became last)
+ */
+#define kernel_pcb_list_rotatel(list) \
+    { \
+        (list)->mLast->mNextMeta = (list)->mFirst; \
+        (list)->mLast = (list)->mFirst; \
+        (list)->mFirst = (list)->mFirst->mNextMeta; \
+        (list)->mLast->mNextMeta = nullptr; \
+    }
+
+/*
+ * @infos: remove a pcb in a list
+ */
+void
+kernel_pcb_list_remove(kernel_pcb_list_t * list, kernel_pcb_t * pcb);
+
 
 #endif
