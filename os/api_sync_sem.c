@@ -8,7 +8,7 @@ void
 sync_sem_init(sync_sem_t * semaphore, uint32_t coins)
 {
     semaphore->mCoins = coins;
-    semaphore->mFifoStart = nullptr;
+    kernel_pcb_list_init(&semaphore->mFifo);
 }
 
 void
@@ -16,7 +16,7 @@ sync_sem_post(sync_sem_t * semaphore, uint32_t coins)
 {
     kernel_pause_scheduler();
 
-    while (semaphore->mFifoStart)
+    while (kernel_pcb_list_first(&semaphore->mFifo))
     {
         if (!coins)
         {
@@ -24,11 +24,11 @@ sync_sem_post(sync_sem_t * semaphore, uint32_t coins)
             return;
         }
 
-        kernel_pcb_t * pcb = semaphore->mFifoStart;
+        kernel_pcb_t * pcb;
+
+        kernel_pcb_list_popf(&semaphore->mFifo, pcb);
 
         kernel_pcb_start(pcb);
-
-        semaphore->mFifoStart = pcb->mNextMeta;
 
         coins--;
     }
@@ -51,19 +51,7 @@ sync_sem_wait(sync_sem_t * semaphore)
         return;
     }
 
-    kernel_pcb_t * current = kernel_current_pcb;
-
-    if (semaphore->mFifoStart)
-    {
-        semaphore->mFifoEnd->mNextMeta = current;
-    }
-    else
-    {
-        semaphore->mFifoStart = current;
-    }
-
-    semaphore->mFifoEnd = current;
-    current->mNextMeta = nullptr;
+    kernel_pcb_list_pushb(&semaphore->mFifo, kernel_current_pcb);
 
     kernel_pcb_self_pause();
 

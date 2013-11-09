@@ -9,9 +9,8 @@
  */
 typedef struct sync_sem_s
 {
+    kernel_pcb_list_t mFifo;
     uint32_t mCoins;
-    kernel_pcb_t * mFifoStart;
-    kernel_pcb_t * mFifoEnd;
 } sync_sem_t;
 
 
