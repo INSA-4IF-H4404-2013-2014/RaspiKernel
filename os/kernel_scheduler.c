@@ -1,7 +1,6 @@
 
 #include "kernel_arm.h"
 #include "kernel_scheduler.h"
-#include "kernel_cycle.h"
 #include "hw.h"
 
 kernel_pcb_list_t kernel_ready_pcb;

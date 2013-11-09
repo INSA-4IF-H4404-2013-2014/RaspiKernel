@@ -1,6 +1,5 @@
 
 #include "kernel_scheduler.h"
-#include "kernel_cycle.h"
 #include "kernel_action.h"
 #include "allocateMemory.h"
 #include "api_process.h"
@@ -74,7 +73,7 @@ kernel_pcb_destroy(kernel_pcb_t * pcb)
 {
     if (pcb->mState != PCB_RUN)
     {
-        kernel_cycle_remove(&kernel_ready_pcb.mFirst, pcb);
+        // to do
 
         kernel_pcb_release(pcb);
         FreeAllocatedMemory((uint32_t*)pcb);

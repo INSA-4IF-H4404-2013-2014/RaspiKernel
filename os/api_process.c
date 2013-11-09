@@ -1,6 +1,5 @@
 
 #include "kernel_scheduler.h"
-#include "kernel_cycle.h"
 #include "kernel_action.h"
 #include "api_process.h"
 
