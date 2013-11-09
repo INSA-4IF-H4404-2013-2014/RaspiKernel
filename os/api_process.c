@@ -1,6 +1,6 @@
 
 #include "kernel_scheduler.h"
-#include "kernel_pcb_cycle.h"
+#include "kernel_cycle.h"
 #include "kernel_action.h"
 #include "api_process.h"
 
@@ -30,7 +30,7 @@ process_pause(uint32_t pid)
         return 1;
     }
 
-    struct pcb_s * pcb = pcb_cycle_by_pid(kernel_current_pcb, pid);
+    kernel_pcb_t * pcb = kernel_cycle_by_pid(kernel_current_pcb, pid);
 
     if (pcb == 0)
     {
@@ -49,7 +49,7 @@ process_start(uint32_t pid)
 {
     kernel_pause_scheduler();
 
-    struct pcb_s * pcb = pcb_cycle_by_pid(kernel_current_pcb, pid);
+    kernel_pcb_t * pcb = kernel_cycle_by_pid(kernel_current_pcb, pid);
 
     if (pcb == 0)
     {

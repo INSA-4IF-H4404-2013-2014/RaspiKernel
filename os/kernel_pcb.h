@@ -1,7 +1,7 @@
 #ifndef _H_KERNEL_PCB
 #define _H_KERNEL_PCB
 
-#include "standart.h"
+#include "kernel_forward.h"
 
 
 // ----------------------------------------------------------------- PCB DEFINES
@@ -18,7 +18,7 @@ typedef enum {PCB_PAUSE, PCB_READY, PCB_RUN} pcb_state;
 /*
  * @infos: PCB structure
  */
-typedef struct pcb_s
+struct kernel_pcb_s
 {
 	// State
 	pcb_state mState;
@@ -33,11 +33,11 @@ typedef struct pcb_s
 	uint32_t * mSP;
 
 	// next pcb
-	struct pcb_s * mNext;
+	kernel_pcb_t * mNext;
 
         // next (fifos)
-        struct pcb_s * mNextFifo;
-} kernel_pcb_t;
+        kernel_pcb_t * mNextMeta;
+};
 
 /* Stack storage when PCB is not running:
  *
@@ -137,5 +137,52 @@ kernel_pcb_release(kernel_pcb_t * pcb);
 
 #define kernel_pcb_set_pc(pcb,value) \
     kernel_pcb_pc(pcb) = (uint32_t)(value)
+
+
+// --------------------------------------------------------------- PCB META LISTS
+
+/*
+ * @infos: init a pcb list
+ */
+#define kernel_pcb_list_init(list) \
+    (list)->mFirst = nullptr
+
+/*
+ * @infos: get first element
+ *
+ * @return:
+ *  - nullptr if list is empty
+ *  - a pointer on the first element
+ */
+#define kernel_pcb_list_first(list) \
+    (list)->mFirst
+
+/*
+ * @infos: insert in a meta lists
+ */
+#define kernel_pcb_list_pushb(list,pcb) \
+    { \
+        if ((list)->mFirst) \
+        { \
+            (list)->mLast->mNextMeta = (pcb); \
+        } \
+        else \
+        { \
+            (list)->mFirst = (pcb); \
+        } \
+        (list)->mLast = (pcb); \
+        (pcb)->mNextMeta = nullptr; \
+    }
+
+/*
+ * @infos: pop front a meta list
+ */
+#define kernel_pcb_list_popf(list,first_pcb) \
+    { \
+        (first_pcb) = (list)->mFirst; \
+        (list)->mFirst = (first_pcb)->mNextMeta; \
+    }
+
+
 
 #endif

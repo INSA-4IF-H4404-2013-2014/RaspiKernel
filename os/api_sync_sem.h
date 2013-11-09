@@ -1,7 +1,7 @@
 #ifndef _H_API_SYNC_SEM
 #define _H_API_SYNC_SEM
 
-#include "kernel_pcb.h"
+#include "kernel_forward.h"
 
 
 /*
@@ -9,9 +9,8 @@
  */
 typedef struct sync_sem_s
 {
+    kernel_pcb_list_t mFifo;
     uint32_t mCoins;
-    kernel_pcb_t * mFifoStart;
-    kernel_pcb_t * mFifoEnd;
 } sync_sem_t;
 
 

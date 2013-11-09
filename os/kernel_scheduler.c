@@ -1,10 +1,10 @@
 
 #include "kernel_arm.h"
 #include "kernel_scheduler.h"
-#include "kernel_pcb_cycle.h"
+#include "kernel_cycle.h"
 #include "hw.h"
 
-struct pcb_s * kernel_current_pcb = 0;
+kernel_pcb_t * kernel_current_pcb = 0;
 
 /* INTERUPTION ASSERTS
  *
@@ -33,7 +33,7 @@ kernel_scheduler_handler()
 
     kernel_current_pcb->mState = PCB_READY;
 
-    kernel_current_pcb = pcb_cycle_next_ready(kernel_current_pcb);
+    kernel_current_pcb = kernel_cycle_next_ready(kernel_current_pcb);
     set_next_tick_and_enable_timer_irq();
 
     kernel_current_pcb->mState = PCB_RUN;

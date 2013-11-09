@@ -1,5 +1,5 @@
-#ifndef _H_KERNEL_PCB_CYCLE
-#define _H_KERNEL_PCB_CYCLE
+#ifndef _H_KERNEL_kernel_cycle
+#define _H_KERNEL_kernel_cycle
 
 #include "kernel_pcb.h"
 
@@ -14,7 +14,7 @@
  * @asserts
  *  - <pcb> != 0
  */
-#define pcb_cycle_next(pcb) \
+#define kernel_cycle_next(pcb) \
     (pcb)->mNext
 
 /*
@@ -25,8 +25,8 @@
  * @asserts
  *  - <pcb> != 0
  */
-struct pcb_s*
-pcb_cycle_previous(struct pcb_s* pcb);
+kernel_pcb_t*
+kernel_cycle_previous(kernel_pcb_t* pcb);
 
 /*
  * @infos : get the next pcb that has the ready state
@@ -36,8 +36,8 @@ pcb_cycle_previous(struct pcb_s* pcb);
  * @asserts
  *  - <pcb> != 0
  */
-struct pcb_s *
-pcb_cycle_next_ready(struct pcb_s * pcb);
+kernel_pcb_t *
+kernel_cycle_next_ready(kernel_pcb_t * pcb);
 
 /*
  * @infos : get pcb by the PID in a pcbs' cycle
@@ -52,32 +52,32 @@ pcb_cycle_next_ready(struct pcb_s * pcb);
  *  - 0: if any pcb match PID
  *  - the associated PCB struct for the given <pid>
  */
-struct pcb_s *
-pcb_cycle_by_pid(struct pcb_s * pcb_head, uint32_t pid);
+kernel_pcb_t *
+kernel_cycle_by_pid(kernel_pcb_t * pcb_head, uint32_t pid);
 
 /*
  * @infos : append a alone PCB in a PCB cycle
  *
- * @param <pcb_cycle> : a PCB cycle head pointer
+ * @param <kernel_cycle> : a PCB cycle head pointer
  *
  * @asserts
- *  - <pcb_cycle> != 0
+ *  - <kernel_cycle> != 0
  *  - <pcb> != 0
  *  - <pcb> is alone (pcb = pcb->mNext)
  */
 void
-pcb_cycle_append(struct pcb_s ** pcb_cycle, struct pcb_s * pcb);
+kernel_cycle_append(kernel_pcb_t ** kernel_cycle, kernel_pcb_t * pcb);
 
 /*
  * @infos : remove in cycle
  *
- * @param <pcb_cycle> : a PCB cycle
+ * @param <kernel_cycle> : a PCB cycle
  * @param <pcb> : a PCB
  *
  * @asserts
- *  - <pcb> in <*pcb_cycle> != 0
+ *  - <pcb> in <*kernel_cycle> != 0
  */
 void
-kernel_cycle_remove(kernel_pcb_t ** pcb_cycle, kernel_pcb_t * pcb);
+kernel_cycle_remove(kernel_pcb_t ** kernel_cycle, kernel_pcb_t * pcb);
 
 #endif
