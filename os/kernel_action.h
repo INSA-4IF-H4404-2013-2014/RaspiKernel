@@ -6,6 +6,9 @@
 kernel_pcb_t *
 kernel_pcb_create(void * f, void * args);
 
+process_state_t
+kernel_pcb_get_state(kernel_pcb_t * pcb);
+
 uint32_t
 kernel_pcb_start(kernel_pcb_t * pcb);
 

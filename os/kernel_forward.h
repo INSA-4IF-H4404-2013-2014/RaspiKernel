@@ -18,5 +18,15 @@ typedef struct kernel_pcb_list_s
     kernel_pcb_t * mLast;
 } kernel_pcb_list_t;
 
+/*
+ * @infos: Process status
+ */
+typedef enum
+{
+    API_STATE_UNKNOWN,
+    API_STATE_PAUSE,
+    API_STATE_READY,
+    API_STATE_RUNNING
+} process_state_t;
 
 #endif

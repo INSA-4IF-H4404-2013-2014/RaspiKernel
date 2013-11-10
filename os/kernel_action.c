@@ -22,6 +22,22 @@ kernel_pcb_create(void * f, void * args)
     return pcb;
 }
 
+process_state_t
+kernel_pcb_get_state(kernel_pcb_t * pcb)
+{
+    if (pcb == kernel_running_pcb)
+    {
+        return API_STATE_RUNNING;
+    }
+
+    if (pcb->mParentList == &kernel_ready_pcb)
+    {
+        return API_STATE_READY;
+    }
+
+    return API_STATE_PAUSE;
+}
+
 uint32_t
 kernel_pcb_start(kernel_pcb_t * pcb)
 {
