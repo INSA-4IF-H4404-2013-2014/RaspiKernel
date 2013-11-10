@@ -1,4 +1,5 @@
 
+#include "kernel_config.h"
 #include "kernel_scheduler.h"
 #include "kernel_action.h"
 #include "allocateMemory.h"
@@ -19,8 +20,8 @@ kernel_pcb_create(void * f, void * args)
     kernel_pcb_t * pcb = (kernel_pcb_t *) AllocateMemory(sizeof(kernel_pcb_t));
 
     pcb->mPID = id++;
-    pcb->mStack = (uint32_t *) AllocateMemory(STACK_SIZE);
-    pcb->mSP = pcb->mStack + (STACK_SIZE - 1);
+    pcb->mStack = (uint32_t *) AllocateMemory(KERNEL_STACK_SIZE);
+    pcb->mSP = pcb->mStack + (KERNEL_STACK_SIZE - 1);
     pcb->mSP[0] = 0;
     pcb->mSP -= 16 * 4;
     pcb->mSchedulerList = &kernel_round_robin_list;
