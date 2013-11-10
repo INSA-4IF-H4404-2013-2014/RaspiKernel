@@ -5,7 +5,7 @@
 // --------------------------------------------------------------- INCLUDE
 
 #include "kernel_pcb_list.h"
-#include "hw.h"
+#include "kernel_arm.h"
 
 
 // --------------------------------------------------------------- GLOBAL VARS
@@ -57,13 +57,13 @@ kernel_scheduler_yield_noreturn();
  * @infos: pause scheduler
  */
 #define kernel_pause_scheduler() \
-    DISABLE_IRQ()
+    kernel_arm_disable_irq()
 
 /*
  * @infos: resume scheduler
  */
 #define kernel_resume_scheduler() \
-    ENABLE_IRQ()
+    kernel_arm_enable_irq()
 
 
 #endif

@@ -122,10 +122,10 @@ struct kernel_pcb_s
  *  - <pcb> != 0
  */
 #define kernel_pcb_enable_irq(pcb) \
-    kernel_pcb_cpsr(pcb) = (~0x80) & kernel_pcb_cpsr(pcb)
+    kernel_pcb_cpsr(pcb) = (~KERNEL_ARM_CPSR_MASK_IRQ) & kernel_pcb_cpsr(pcb)
 
 #define kernel_pcb_disable_irq(pcb) \
-    kernel_pcb_cpsr(pcb) = (0x80) | kernel_pcb_cpsr(pcb)
+    kernel_pcb_cpsr(pcb) = KERNEL_ARM_CPSR_MASK_IRQ | kernel_pcb_cpsr(pcb)
 
 
 #endif

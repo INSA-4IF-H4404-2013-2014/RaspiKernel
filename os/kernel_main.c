@@ -1,6 +1,7 @@
 
 #include "kernel_scheduler.h"
 #include "kernel_action.h"
+#include "hw.h"
 
 
 void
