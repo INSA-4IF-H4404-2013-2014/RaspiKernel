@@ -27,6 +27,17 @@
  * @param <list>: a list to insert to
  * @param <pcb>: the pcb to insert
  */
+#define kernel_pcb_list_pushf(list,pcb) \
+    { \
+        if (!(list)->mFirst) \
+        { \
+            (list)->mLast = (pcb); \
+        } \
+        (pcb)->mNext = (list)->mFirst; \
+        (list)->mFirst = (pcb); \
+        (pcb)->mParentList = (list); \
+    }
+
 #define kernel_pcb_list_pushb(list,pcb) \
     { \
         if ((list)->mFirst) \

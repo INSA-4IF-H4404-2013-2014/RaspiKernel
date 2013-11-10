@@ -74,6 +74,35 @@ kernel_pcb_get_state(kernel_pcb_t * pcb)
 }
 
 void
+kernel_pcb_set_scheduler(kernel_pcb_list_t * scheduler_list, kernel_pcb_t * pcb)
+{
+    if (pcb->mSchedulerList == scheduler_list)
+    {
+        return;
+    }
+
+    if (pcb->mSchedulerList != pcb->mParentList)
+    {
+        pcb->mSchedulerList = scheduler_list;
+        return;
+    }
+
+    kernel_pcb_list_remove(pcb->mSchedulerList, pcb);
+
+    pcb->mSchedulerList = scheduler_list;
+
+    if (pcb != kernel_running_pcb)
+    {
+        kernel_pcb_list_pushb(scheduler_list, pcb);
+        return;
+    }
+
+    kernel_pcb_list_pushf(scheduler_list, pcb);
+
+    kernel_scheduler_yield();
+}
+
+void
 kernel_pcb_start(kernel_pcb_t * pcb)
 {
     kernel_pcb_list_remove(&kernel_pause_pcb, pcb);
