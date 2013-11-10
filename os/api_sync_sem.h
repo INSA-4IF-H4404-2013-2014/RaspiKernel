@@ -35,7 +35,7 @@ sync_sem_post(sync_sem_t * semaphore, uint32_t coins);
 /*
  * @infos: consume one coins in a <semaphore>
  *
- * @param <semaphore> : a non initialised semaphore
+ * @param <semaphore> : an initialised semaphore
  */
 void
 sync_sem_wait(sync_sem_t * semaphore);
