@@ -24,10 +24,7 @@ sync_sem_post(sync_sem_t * semaphore, uint32_t coins)
             return;
         }
 
-        kernel_pcb_t * pcb;
-
-        kernel_pcb_list_popf(&semaphore->mFifo, pcb);
-        kernel_pcb_list_pushb(pcb->mSchedulerList, pcb);
+        kernel_pcb_start(semaphore->mFifo.mFirst);
 
         coins--;
     }
@@ -50,13 +47,8 @@ sync_sem_wait(sync_sem_t * semaphore)
         return;
     }
 
-    kernel_pcb_t * pcb;
+    kernel_pcb_pause(&semaphore->mFifo, kernel_running_pcb);
 
-    kernel_pcb_list_popf(kernel_running_pcb->mSchedulerList, pcb);
-    kernel_pcb_list_pushb(&semaphore->mFifo, pcb);
-
-    kernel_scheduler_yield();
-
-    // kernel_scheduler_yield() call kernel_resume_scheduler();
+    kernel_resume_scheduler();
 }
 

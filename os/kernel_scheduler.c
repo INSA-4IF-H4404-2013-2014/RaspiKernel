@@ -55,7 +55,9 @@ kernel_scheduler_handler()
     __asm("pop {r0 - r12, lr}");
     __asm("add sp, #8");
 
-    kernel_resume_scheduler();
+    __asm("ldr r0, [sp, #-4]");
+    __asm("msr cpsr, r0");
+    __asm("ldr r0, [sp, #-64]");
 
     __asm("ldr pc, [sp, #-8]");
 }
@@ -75,7 +77,9 @@ kernel_scheduler_yield()
     __asm("pop {r0 - r12, lr}");
     __asm("add sp, #8");
 
-    kernel_resume_scheduler();
+    __asm("ldr r0, [sp, #-4]");
+    __asm("msr cpsr, r0");
+    __asm("ldr r0, [sp, #-64]");
 
     __asm("ldr pc, [sp, #-8]");
 }
@@ -89,7 +93,9 @@ kernel_scheduler_yield_noreturn()
     __asm("pop {r0 - r12, lr}");
     __asm("add sp, #8");
 
-    kernel_resume_scheduler();
+    __asm("ldr r0, [sp, #-4]");
+    __asm("msr cpsr, r0");
+    __asm("ldr r0, [sp, #-64]");
 
     __asm("ldr pc, [sp, #-8]");
 

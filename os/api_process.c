@@ -39,27 +39,30 @@ process_pause(uint32_t pid)
 {
     kernel_pause_scheduler();
 
-    if (pid == kernel_running_pcb->mPID)
-    {
-        kernel_pcb_self_pause();
-
-        // kernel_pcb_self_pause call kernel_resume_scheduler()
-
-        return 1;
-    }
-
     kernel_pcb_t * pcb = kernel_pcb_global_by_pid(pid);
 
     if (pcb == 0)
     {
+        kernel_resume_scheduler();
         return 0;
     }
 
-    uint32_t status = kernel_pcb_pause_other(pcb);
+    if (pcb->mParentList != pcb->mSchedulerList)
+    {
+        /*
+         * We don't want to pause a PCB that is not running
+         * because it might be waiting on a sync object
+         * (semaphore, mutex...)
+         */
+        kernel_resume_scheduler();
+        return 0;
+    }
+
+    kernel_pcb_pause(&kernel_pause_pcb, pcb);
 
     kernel_resume_scheduler();
 
-    return status;
+    return 1;
 }
 
 uint32_t
@@ -71,14 +74,25 @@ process_start(uint32_t pid)
 
     if (pcb == 0)
     {
+        kernel_resume_scheduler();
         return 0;
     }
 
-    uint32_t status = kernel_pcb_start(pcb);
+    if (pcb->mParentList != &kernel_pause_pcb)
+    {
+        /*
+         * We don't want to start a PCB that might be waiting
+         * on a sync object (semaphore, mutex...)
+         */
+        kernel_resume_scheduler();
+        return 0;
+    }
+
+    kernel_pcb_start(pcb);
 
     kernel_resume_scheduler();
 
-    return status;
+    return 1;
 }
 
 uint32_t

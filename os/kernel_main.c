@@ -1,6 +1,7 @@
 
 #include "kernel_scheduler.h"
 #include "kernel_action.h"
+#include "hw.h"
 
 
 void
@@ -15,6 +16,8 @@ kernel_main(void)
 
     kernel_pcb_t * pcb = kernel_pcb_create((void *) main_process, nullptr);
 
+    kernel_pcb_enable_irq(pcb);
     kernel_pcb_start(pcb);
+
     kernel_scheduler_yield_noreturn();
 }

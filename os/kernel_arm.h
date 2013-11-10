@@ -81,5 +81,39 @@ kernel_arm_mode();
     _kernel_arm_set_mode(mode)
 
 
+//------------------------------------------------------------------------------ STATUS REGISTER (CPSR)
+
+#define KERNEL_ARM_CPSR_MASK_IRQ 0x80
+
+#define kernel_arm_enable_irq() \
+  asm("mrs r0,cpsr\n\t" \
+      "bic r0,r0,#" macro_value_str(KERNEL_ARM_CPSR_MASK_IRQ) "\n\t" \
+      "msr cpsr_c,r0\n\t" \
+      "pop {r0}" \
+      : \
+      : \
+      : "r0");
+
+#define kernel_arm_disable_irq() \
+  asm("\tpush {r0}\n\t"	\
+      "mrs r0,cpsr\n\t"	\
+      "orr r0,r0,#" macro_value_str(KERNEL_ARM_CPSR_MASK_IRQ) "\n\t" \
+      "msr cpsr_c,r0\n\t" \
+      "pop {r0}" \
+      : \
+      : \
+      : "r0");
+
+
+/*
+ * @infos: get the status register CPSR's value
+ *
+ * @return:
+ *  - the CPSR value
+ */
+uint32_t
+kernel_arm_get_cpsr();
+
+
 #endif
 
