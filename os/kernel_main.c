@@ -9,8 +9,7 @@ main_process(void);
 void __attribute__((noreturn))
 kernel_main(void)
 {
-    kernel_pcb_list_init(&kernel_pause_pcb);
-    kernel_pcb_list_init(&kernel_ready_pcb);
+    kernel_scheduler_init();
 
     init_hw();
 

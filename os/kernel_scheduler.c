@@ -8,7 +8,16 @@
 kernel_pcb_list_t kernel_ready_pcb;
 kernel_pcb_list_t kernel_pause_pcb;
 
-kernel_pcb_t * kernel_running_pcb = nullptr;
+kernel_pcb_t * kernel_running_pcb;
+
+void
+kernel_scheduler_init()
+{
+    kernel_pcb_list_init(&kernel_ready_pcb);
+    kernel_pcb_list_init(&kernel_pause_pcb);
+
+    kernel_running_pcb = nullptr;
+}
 
 
 /* INTERUPTION ASSERTS
