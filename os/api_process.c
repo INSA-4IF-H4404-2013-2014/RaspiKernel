@@ -39,15 +39,6 @@ process_pause(uint32_t pid)
 {
     kernel_pause_scheduler();
 
-    if (pid == kernel_running_pcb->mPID)
-    {
-        kernel_pcb_self_pause(&kernel_pause_pcb);
-
-        kernel_resume_scheduler()
-
-        return 1;
-    }
-
     kernel_pcb_t * pcb = kernel_pcb_global_by_pid(pid);
 
     if (pcb == 0)

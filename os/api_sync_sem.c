@@ -47,7 +47,7 @@ sync_sem_wait(sync_sem_t * semaphore)
         return;
     }
 
-    kernel_pcb_self_pause(&semaphore->mFifo);
+    kernel_pcb_pause(&semaphore->mFifo, kernel_running_pcb);
 
     kernel_resume_scheduler();
 }

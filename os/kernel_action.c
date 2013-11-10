@@ -85,14 +85,11 @@ kernel_pcb_pause(kernel_pcb_list_t * pause_list, kernel_pcb_t * pcb)
 {
     kernel_pcb_list_remove(pcb->mSchedulerList, pcb);
     kernel_pcb_list_pushb(pause_list, pcb);
-}
 
-void
-kernel_pcb_self_pause(kernel_pcb_list_t * pause_list)
-{
-    kernel_pcb_pause(pause_list, kernel_running_pcb);
-
-    kernel_scheduler_yield();
+    if (pcb == kernel_running_pcb)
+    {
+        kernel_scheduler_yield();
+    }
 }
 
 void
