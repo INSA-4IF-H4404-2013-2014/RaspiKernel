@@ -13,7 +13,7 @@
 /*
  * @infos: cycle head of all PCBs
  */
-extern kernel_pcb_list_t kernel_ready_pcb;
+extern kernel_pcb_list_t kernel_round_robin_list;
 extern kernel_pcb_list_t kernel_pause_pcb;
 
 #ifndef _C_KERNEL_SCHEDULER

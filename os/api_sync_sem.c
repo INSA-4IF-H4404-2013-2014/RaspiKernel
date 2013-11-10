@@ -27,7 +27,7 @@ sync_sem_post(sync_sem_t * semaphore, uint32_t coins)
         kernel_pcb_t * pcb;
 
         kernel_pcb_list_popf(&semaphore->mFifo, pcb);
-        kernel_pcb_list_pushb(&kernel_ready_pcb, pcb);
+        kernel_pcb_list_pushb(pcb->mSchedulerList, pcb);
 
         coins--;
     }
@@ -50,10 +50,10 @@ sync_sem_wait(sync_sem_t * semaphore)
         return;
     }
 
-    kernel_pcb_t * current;
+    kernel_pcb_t * pcb;
 
-    kernel_pcb_list_popf(&kernel_ready_pcb, current);
-    kernel_pcb_list_pushb(&semaphore->mFifo, current);
+    kernel_pcb_list_popf(kernel_running_pcb->mSchedulerList, pcb);
+    kernel_pcb_list_pushb(&semaphore->mFifo, pcb);
 
     kernel_scheduler_yield();
 

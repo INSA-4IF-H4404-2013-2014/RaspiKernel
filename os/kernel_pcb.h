@@ -33,6 +33,9 @@ struct kernel_pcb_s
 
     // ptr on the list where it is
     kernel_pcb_list_t * mParentList;
+
+    // scheduler list
+    kernel_pcb_list_t * mSchedulerList;
 };
 
 /* Stack storage when PCB is not running:
