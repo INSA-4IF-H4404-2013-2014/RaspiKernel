@@ -43,7 +43,7 @@ kernel_pcb_get_state(kernel_pcb_t * pcb);
  *
  * @param <pcb>: a PCB to switch state to READY
  */
-uint32_t
+void
 kernel_pcb_start(kernel_pcb_t * pcb);
 
 /*
@@ -51,8 +51,8 @@ kernel_pcb_start(kernel_pcb_t * pcb);
  *
  * @param <pcb>: a PCB to switch state to PAUSE
  */
-uint32_t
-kernel_pcb_pause_other(kernel_pcb_t * pcb);
+void
+kernel_pcb_pause(kernel_pcb_list_t * pause_list, kernel_pcb_t * pcb);
 
 /*
  * @infos: switch the current PCB to PAUSE
@@ -61,7 +61,7 @@ kernel_pcb_pause_other(kernel_pcb_t * pcb);
  *  - automatiquely call kernel_resume_scheduler()
  */
 void
-kernel_pcb_self_pause();
+kernel_pcb_self_pause(kernel_pcb_list_t * pause_list);
 
 /*
  * @infos: destroy a given <pcb>

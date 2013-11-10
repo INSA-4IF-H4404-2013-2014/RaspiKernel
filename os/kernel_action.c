@@ -72,41 +72,24 @@ kernel_pcb_get_state(kernel_pcb_t * pcb)
     return API_STATE_PAUSE;
 }
 
-uint32_t
+void
 kernel_pcb_start(kernel_pcb_t * pcb)
 {
-    if (pcb->mParentList != &kernel_pause_pcb)
-    {
-        return 0;
-    }
-
     kernel_pcb_list_remove(&kernel_pause_pcb, pcb);
     kernel_pcb_list_pushb(pcb->mSchedulerList, pcb);
-
-    return 1;
-}
-
-uint32_t
-kernel_pcb_pause_other(kernel_pcb_t * pcb)
-{
-    if (pcb->mParentList != pcb->mSchedulerList)
-    {
-        return 0;
-    }
-
-    kernel_pcb_list_remove(pcb->mSchedulerList, pcb);
-    kernel_pcb_list_pushb(&kernel_pause_pcb, pcb);
-
-    return 1;
 }
 
 void
-kernel_pcb_self_pause()
+kernel_pcb_pause(kernel_pcb_list_t * pause_list, kernel_pcb_t * pcb)
 {
-    kernel_pcb_t * current;
+    kernel_pcb_list_remove(pcb->mSchedulerList, pcb);
+    kernel_pcb_list_pushb(pause_list, pcb);
+}
 
-    kernel_pcb_list_popf(&kernel_round_robin_list, current);
-    kernel_pcb_list_pushb(&kernel_pause_pcb, current);
+void
+kernel_pcb_self_pause(kernel_pcb_list_t * pause_list)
+{
+    kernel_pcb_pause(pause_list, kernel_running_pcb);
 
     kernel_scheduler_yield();
 }
