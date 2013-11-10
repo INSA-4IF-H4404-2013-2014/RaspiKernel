@@ -27,9 +27,6 @@ sync_sem_post(sync_sem_t * semaphore, uint32_t coins)
         kernel_pcb_t * pcb;
 
         kernel_pcb_list_popf(&semaphore->mFifo, pcb);
-
-        pcb->mState = PCB_READY;
-
         kernel_pcb_list_pushb(&kernel_ready_pcb, pcb);
 
         coins--;
@@ -56,9 +53,6 @@ sync_sem_wait(sync_sem_t * semaphore)
     kernel_pcb_t * current;
 
     kernel_pcb_list_popf(&kernel_ready_pcb, current);
-
-    current->mState = PCB_PAUSE;
-
     kernel_pcb_list_pushb(&semaphore->mFifo, current);
 
     kernel_scheduler_yield();

@@ -38,9 +38,7 @@ kernel_scheduler_handler()
 
     kernel_pcb_list_rotatel(&kernel_ready_pcb);
 
-    kernel_running_pcb->mState = PCB_READY;
     kernel_running_pcb = kernel_ready_pcb.mFirst;
-    kernel_running_pcb->mState = PCB_RUN;
 
     set_next_tick_and_enable_timer_irq();
 
@@ -62,9 +60,7 @@ kernel_scheduler_yield()
     __asm("push {r0 - r12, lr}");
     __asm("mov %0, sp" : "=r"(kernel_running_pcb->mSP));
 
-    kernel_running_pcb->mState = PCB_READY;
     kernel_running_pcb = kernel_ready_pcb.mFirst;
-    kernel_running_pcb->mState = PCB_RUN;
 
     __asm("mov sp, %0" : : "r"(kernel_running_pcb->mSP));
     __asm("pop {r0 - r12, lr}");
@@ -79,7 +75,6 @@ void __attribute__((noreturn))
 kernel_scheduler_yield_noreturn()
 {
     kernel_running_pcb = kernel_ready_pcb.mFirst;
-    kernel_running_pcb->mState = PCB_RUN;
 
     __asm("mov sp, %0" : : "r"(kernel_running_pcb->mSP));
     __asm("pop {r0 - r12, lr}");

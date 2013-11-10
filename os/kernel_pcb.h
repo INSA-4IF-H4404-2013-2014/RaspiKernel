@@ -11,18 +11,11 @@
 
 // ------------------------------------------------------------------- PCB TYPES
 
-typedef enum {PCB_PAUSE, PCB_READY, PCB_RUN} pcb_state;
-
-
-
 /*
  * @infos: PCB structure
  */
 struct kernel_pcb_s
 {
-    // State
-    pcb_state mState;
-
     // Process ID
     uint32_t mPID;
 

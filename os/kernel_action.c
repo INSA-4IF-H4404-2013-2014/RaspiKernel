@@ -41,12 +41,10 @@ kernel_pcb_get_state(kernel_pcb_t * pcb)
 uint32_t
 kernel_pcb_start(kernel_pcb_t * pcb)
 {
-    if (pcb->mState != PCB_PAUSE)
+    if (pcb->mParentList != &kernel_pause_pcb)
     {
         return 0;
     }
-
-    pcb->mState = PCB_READY;
 
     kernel_pcb_list_remove(&kernel_pause_pcb, pcb);
     kernel_pcb_list_pushb(&kernel_ready_pcb, pcb);
@@ -57,12 +55,10 @@ kernel_pcb_start(kernel_pcb_t * pcb)
 uint32_t
 kernel_pcb_pause_other(kernel_pcb_t * pcb)
 {
-    if (pcb->mState != PCB_READY)
+    if (pcb->mParentList != &kernel_ready_pcb)
     {
         return 0;
     }
-
-    pcb->mState = PCB_PAUSE;
 
     kernel_pcb_list_remove(&kernel_ready_pcb, pcb);
     kernel_pcb_list_pushb(&kernel_pause_pcb, pcb);
@@ -76,9 +72,6 @@ kernel_pcb_self_pause()
     kernel_pcb_t * current;
 
     kernel_pcb_list_popf(&kernel_ready_pcb, current);
-
-    current->mState = PCB_PAUSE;
-
     kernel_pcb_list_pushb(&kernel_pause_pcb, current);
 
     kernel_scheduler_yield();
