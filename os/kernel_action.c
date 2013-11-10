@@ -23,7 +23,7 @@ kernel_pcb_create(void * f, void * args)
     pcb->mStack = (uint32_t *) AllocateMemory(KERNEL_STACK_SIZE);
     pcb->mSP = pcb->mStack + (KERNEL_STACK_SIZE - 1);
     pcb->mSP[0] = 0;
-    pcb->mSP -= 16 * 4;
+    pcb->mSP -= 16;
     pcb->mSchedulerList = &kernel_round_robin_list;
 
     kernel_pcb_inherit_cpsr(pcb);
