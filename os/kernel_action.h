@@ -14,6 +14,18 @@ kernel_pcb_t *
 kernel_pcb_create(void * f, void * args);
 
 /*
+ * @infos: find a PCB with a given pid
+ *
+ * @param <pid>: PID to search
+ *
+ * @return:
+ *  - nullptr if this process doesn't exist
+ *  - a pointer on the process found
+ */
+kernel_pcb_t *
+kernel_pcb_global_by_pid(uint32_t pid);
+
+/*
  * @infos: get a <pcb> state
  *
  * @param <pcb>: a PCB
