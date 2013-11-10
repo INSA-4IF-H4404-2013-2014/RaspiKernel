@@ -81,5 +81,15 @@ kernel_arm_mode();
     _kernel_arm_set_mode(mode)
 
 
+/*
+ * @infos: get the status register CPSR's value
+ *
+ * @return:
+ *  - the CPSR value
+ */
+uint32_t
+kernel_arm_get_cpsr();
+
+
 #endif
 

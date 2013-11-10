@@ -2,6 +2,7 @@
 #define _H_KERNEL_PCB
 
 #include "kernel_forward.h"
+#include "kernel_arm.h"
 
 
 // ------------------------------------------------------------------- PCB TYPES
@@ -80,6 +81,9 @@ struct kernel_pcb_s
 #define kernel_pcb_pc(pcb) \
     ((pcb)->mSP[14])
 
+#define kernel_pcb_cpsr(pcb) \
+    ((pcb)->mSP[15])
+
 /*
  * @infos : Set a non-running pcb's register's value
  *
@@ -99,6 +103,29 @@ struct kernel_pcb_s
 
 #define kernel_pcb_set_pc(pcb,value) \
     kernel_pcb_pc(pcb) = (uint32_t)(value)
+
+
+/*
+ * @infos: Inherits the current CPSR's value to the <pcb>'s CPSR
+ *
+ * @asserts
+ *  - <pcb> != 0
+ */
+#define kernel_pcb_inherit_cpsr(pcb) \
+    kernel_pcb_cpsr(pcb) = kernel_arm_get_cpsr()
+
+
+/*
+ * @infos: enables/disables IRQ ona <pcb>
+ *
+ * @asserts
+ *  - <pcb> != 0
+ */
+#define kernel_pcb_enable_irq(pcb) \
+    kernel_pcb_cpsr(pcb) = (~0x80) & kernel_pcb_cpsr(pcb)
+
+#define kernel_pcb_disable_irq(pcb) \
+    kernel_pcb_cpsr(pcb) = (0x80) | kernel_pcb_cpsr(pcb)
 
 
 #endif

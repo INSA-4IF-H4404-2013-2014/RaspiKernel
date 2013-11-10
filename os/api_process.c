@@ -43,7 +43,7 @@ process_pause(uint32_t pid)
     {
         kernel_pcb_self_pause(&kernel_pause_pcb);
 
-        // kernel_pcb_self_pause call kernel_resume_scheduler()
+        kernel_resume_scheduler()
 
         return 1;
     }

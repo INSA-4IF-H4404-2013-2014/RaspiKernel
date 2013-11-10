@@ -26,6 +26,7 @@ kernel_pcb_create(void * f, void * args)
     pcb->mSP -= 16 * 4;
     pcb->mSchedulerList = &kernel_round_robin_list;
 
+    kernel_pcb_inherit_cpsr(pcb);
     kernel_pcb_set_pc(pcb, kernel_pcb_startup);
     kernel_pcb_set_rN(pcb, 0, f);
     kernel_pcb_set_rN(pcb, 1, args);

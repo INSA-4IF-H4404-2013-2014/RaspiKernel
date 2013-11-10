@@ -56,9 +56,6 @@ kernel_pcb_pause(kernel_pcb_list_t * pause_list, kernel_pcb_t * pcb);
 
 /*
  * @infos: switch the current PCB to PAUSE
- *
- * @cautions:
- *  - automatiquely call kernel_resume_scheduler()
  */
 void
 kernel_pcb_self_pause(kernel_pcb_list_t * pause_list);
