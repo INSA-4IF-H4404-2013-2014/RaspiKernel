@@ -52,12 +52,12 @@ kernel_scheduler_handler()
     set_next_tick_and_enable_timer_irq();
 
     __asm("mov sp, %0" : : "r"(kernel_running_pcb->mSP));
-    __asm("pop {r1 - r12, lr}");
-    __asm("add sp, #12");
+    __asm("pop {r0 - r12, lr}");
+    __asm("add sp, #8");
 
     __asm("ldr r0, [sp, #-4]");
     __asm("msr cpsr, r0");
-    __asm("ldr r0, [sp, #-12]");
+    __asm("ldr r0, [sp, #-64]");
 
     __asm("ldr pc, [sp, #-8]");
 }
@@ -74,12 +74,12 @@ kernel_scheduler_yield()
     kernel_running_pcb = kernel_round_robin_list.mFirst;
 
     __asm("mov sp, %0" : : "r"(kernel_running_pcb->mSP));
-    __asm("pop {r1 - r12, lr}");
-    __asm("add sp, #12");
+    __asm("pop {r0 - r12, lr}");
+    __asm("add sp, #8");
 
     __asm("ldr r0, [sp, #-4]");
     __asm("msr cpsr, r0");
-    __asm("ldr r0, [sp, #-12]");
+    __asm("ldr r0, [sp, #-64]");
 
     __asm("ldr pc, [sp, #-8]");
 }
@@ -90,12 +90,12 @@ kernel_scheduler_yield_noreturn()
     kernel_running_pcb = kernel_round_robin_list.mFirst;
 
     __asm("mov sp, %0" : : "r"(kernel_running_pcb->mSP));
-    __asm("pop {r1 - r12, lr}");
-    __asm("add sp, #12");
+    __asm("pop {r0 - r12, lr}");
+    __asm("add sp, #8");
 
     __asm("ldr r0, [sp, #-4]");
     __asm("msr cpsr, r0");
-    __asm("ldr r0, [sp, #-12]");
+    __asm("ldr r0, [sp, #-64]");
 
     __asm("ldr pc, [sp, #-8]");
 
