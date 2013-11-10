@@ -9,10 +9,13 @@ main_process(void);
 void __attribute__((noreturn))
 kernel_main(void)
 {
+    kernel_pcb_list_init(&kernel_pause_pcb);
+    kernel_pcb_list_init(&kernel_ready_pcb);
+
     init_hw();
 
     kernel_pcb_t * pcb = kernel_pcb_create((void *) main_process, nullptr);
 
     kernel_pcb_start(pcb);
-    kernel_scheduler_jump(pcb);
+    kernel_scheduler_yield_noreturn();
 }

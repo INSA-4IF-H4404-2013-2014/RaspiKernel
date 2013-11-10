@@ -1,6 +1,5 @@
 
 #include "kernel_scheduler.h"
-#include "kernel_cycle.h"
 #include "kernel_action.h"
 #include "api_process.h"
 
@@ -21,7 +20,7 @@ process_pause(uint32_t pid)
 {
     kernel_pause_scheduler();
 
-    if (pid == kernel_current_pcb->mPID)
+    if (pid == kernel_running_pcb->mPID)
     {
         kernel_pcb_self_pause();
 
@@ -30,7 +29,7 @@ process_pause(uint32_t pid)
         return 1;
     }
 
-    kernel_pcb_t * pcb = kernel_cycle_by_pid(kernel_current_pcb, pid);
+    kernel_pcb_t * pcb = kernel_pcb_global_by_pid(pid);
 
     if (pcb == 0)
     {
@@ -49,7 +48,7 @@ process_start(uint32_t pid)
 {
     kernel_pause_scheduler();
 
-    kernel_pcb_t * pcb = kernel_cycle_by_pid(kernel_current_pcb, pid);
+    kernel_pcb_t * pcb = kernel_pcb_list_search(&kernel_pause_pcb, pid);
 
     if (pcb == 0)
     {
@@ -66,7 +65,7 @@ process_start(uint32_t pid)
 uint32_t
 process_get_pid()
 {
-    return kernel_current_pcb->mPID;
+    return kernel_running_pcb->mPID;
 }
 
 void
@@ -74,7 +73,7 @@ process_exit()
 {
     kernel_pause_scheduler();
 
-    kernel_pcb_destroy(kernel_current_pcb);
+    kernel_pcb_destroy(kernel_running_pcb);
 
     __builtin_unreachable();
 }

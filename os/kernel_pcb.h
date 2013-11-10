@@ -20,23 +20,26 @@ typedef enum {PCB_PAUSE, PCB_READY, PCB_RUN} pcb_state;
  */
 struct kernel_pcb_s
 {
-	// State
-	pcb_state mState;
+    // State
+    pcb_state mState;
 
-	// Process ID
-	uint32_t mPID;
+    // Process ID
+    uint32_t mPID;
 
-	// stack head
-	uint32_t * mStack;
+    // stack head
+    uint32_t * mStack;
 
-	// SP = stack counter
-	uint32_t * mSP;
+    // SP = stack counter
+    uint32_t * mSP;
 
-	// next pcb
-	kernel_pcb_t * mNext;
+    // next in list containing all PCBs
+    kernel_pcb_t * mGlobalNext;
 
-        // next (fifos)
-        kernel_pcb_t * mNextMeta;
+    // next pcb in a list
+    kernel_pcb_t * mNext;
+
+    // ptr on the list where it is
+    kernel_pcb_list_t * mParentList;
 };
 
 /* Stack storage when PCB is not running:
@@ -83,6 +86,18 @@ struct kernel_pcb_s
  */
 void
 kernel_pcb_init(kernel_pcb_t * pcb, uint32_t f, uint32_t stack_size);
+
+/*
+ * @infos: find a PCB with a given pid
+ *
+ * @param <pid>: PID to search
+ *
+ * @return:
+ *  - nullptr if this process doesn't exist
+ *  - a pointer on the process found
+ */
+kernel_pcb_t *
+kernel_pcb_global_by_pid(uint32_t pid);
 
 /*
  * @infos : Release a PCB :
@@ -137,52 +152,6 @@ kernel_pcb_release(kernel_pcb_t * pcb);
 
 #define kernel_pcb_set_pc(pcb,value) \
     kernel_pcb_pc(pcb) = (uint32_t)(value)
-
-
-// --------------------------------------------------------------- PCB META LISTS
-
-/*
- * @infos: init a pcb list
- */
-#define kernel_pcb_list_init(list) \
-    (list)->mFirst = nullptr
-
-/*
- * @infos: get first element
- *
- * @return:
- *  - nullptr if list is empty
- *  - a pointer on the first element
- */
-#define kernel_pcb_list_first(list) \
-    (list)->mFirst
-
-/*
- * @infos: insert in a meta lists
- */
-#define kernel_pcb_list_pushb(list,pcb) \
-    { \
-        if ((list)->mFirst) \
-        { \
-            (list)->mLast->mNextMeta = (pcb); \
-        } \
-        else \
-        { \
-            (list)->mFirst = (pcb); \
-        } \
-        (list)->mLast = (pcb); \
-        (pcb)->mNextMeta = nullptr; \
-    }
-
-/*
- * @infos: pop front a meta list
- */
-#define kernel_pcb_list_popf(list,first_pcb) \
-    { \
-        (first_pcb) = (list)->mFirst; \
-        (list)->mFirst = (first_pcb)->mNextMeta; \
-    }
-
 
 
 #endif

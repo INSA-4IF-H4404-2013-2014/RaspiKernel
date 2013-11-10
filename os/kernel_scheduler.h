@@ -4,16 +4,24 @@
 
 // --------------------------------------------------------------- INCLUDE
 
-#include "kernel_pcb.h"
+#include "kernel_pcb_list.h"
 #include "hw.h"
 
 
-// --------------------------------------------------------------- PROCESS TYPES
+// --------------------------------------------------------------- GLOBAL VARS
 
 /*
  * @infos : cycle head of all PCBs
  */
-extern kernel_pcb_t * kernel_current_pcb;
+extern kernel_pcb_list_t kernel_ready_pcb;
+extern kernel_pcb_list_t kernel_pause_pcb;
+
+#ifndef _C_KERNEL_SCHEDULER
+extern kernel_pcb_t * const kernel_running_pcb;
+#endif
+
+
+// --------------------------------------------------------------- FUNCTIONS
 
 /*
  * @infos : switch to another PCB. Sets :
@@ -27,8 +35,8 @@ extern kernel_pcb_t * kernel_current_pcb;
  *  - kernel_pause_scheduler() must be called before
  *  - <old_pcb->mState> != PCB_RUN
  */
-void __attribute__((naked))
-kernel_scheduler_switch_to(kernel_pcb_t * old_pcb, kernel_pcb_t * new_pcb);
+void
+kernel_scheduler_yield();
 
 /*
  * @infos : jump to another PCB. Sets :
@@ -41,7 +49,7 @@ kernel_scheduler_switch_to(kernel_pcb_t * old_pcb, kernel_pcb_t * new_pcb);
  *  - kernel_pause_scheduler() must be called before
  */
 void __attribute__((noreturn))
-kernel_scheduler_jump(kernel_pcb_t * pcb);
+kernel_scheduler_yield_noreturn();
 
 /*
  * @infos : pause scheduler
