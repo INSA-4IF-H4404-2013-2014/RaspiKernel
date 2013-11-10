@@ -11,9 +11,9 @@
 // --------------------------------------------------------------- GLOBAL VARS
 
 /*
- * @infos : cycle head of all PCBs
+ * @infos: cycle head of all PCBs
  */
-extern kernel_pcb_list_t kernel_ready_pcb;
+extern kernel_pcb_list_t kernel_round_robin_list;
 extern kernel_pcb_list_t kernel_pause_pcb;
 
 #ifndef _C_KERNEL_SCHEDULER
@@ -24,12 +24,16 @@ extern kernel_pcb_t * const kernel_running_pcb;
 // --------------------------------------------------------------- FUNCTIONS
 
 /*
- * @infos : switch to another PCB. Sets :
- *      <kernel_current_pcb> = <new_pcb>
- *      <new_pcb->mState> = PCB_RUN
+ * @infos: init the kernel_scheduler
+ */
+void
+kernel_scheduler_init();
+
+/*
+ * @infos: yield switch to another PCB
  *
- * @param <old_pcb> : PCB to save to
- * @param <new_pcb> : PCB to switch to
+ * @param <old_pcb>: PCB to save to
+ * @param <new_pcb>: PCB to switch to
  *
  * @asserts
  *  - kernel_pause_scheduler() must be called before
@@ -39,11 +43,9 @@ void
 kernel_scheduler_yield();
 
 /*
- * @infos : jump to another PCB. Sets :
- *      <kernel_current_pcb> = <pcb>
- *      <new_pcb->mState> = PCB_RUN
+ * @infos: final yield of a PCB
  *
- * @param <pcb> : PCB to switch to
+ * @param <pcb>: PCB to switch to
  *
  * @asserts
  *  - kernel_pause_scheduler() must be called before
@@ -52,13 +54,13 @@ void __attribute__((noreturn))
 kernel_scheduler_yield_noreturn();
 
 /*
- * @infos : pause scheduler
+ * @infos: pause scheduler
  */
 #define kernel_pause_scheduler() \
     DISABLE_IRQ()
 
 /*
- * @infos : resume scheduler
+ * @infos: resume scheduler
  */
 #define kernel_resume_scheduler() \
     ENABLE_IRQ()

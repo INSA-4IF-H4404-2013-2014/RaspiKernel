@@ -11,18 +11,11 @@
 
 // ------------------------------------------------------------------- PCB TYPES
 
-typedef enum {PCB_PAUSE, PCB_READY, PCB_RUN} pcb_state;
-
-
-
 /*
  * @infos: PCB structure
  */
 struct kernel_pcb_s
 {
-    // State
-    pcb_state mState;
-
     // Process ID
     uint32_t mPID;
 
@@ -40,6 +33,9 @@ struct kernel_pcb_s
 
     // ptr on the list where it is
     kernel_pcb_list_t * mParentList;
+
+    // scheduler list
+    kernel_pcb_list_t * mSchedulerList;
 };
 
 /* Stack storage when PCB is not running:
@@ -67,50 +63,6 @@ struct kernel_pcb_s
 
 
 // --------------------------------------------------------------- PCB FUNCTIONS
-
-/*
- * @infos : Init a PCB :
- *  - the pcb's state will be set to PCB_PAUSE
- *  - mPID will be assigned (0 is reserved for the kernel)
- *  - alloc the stack
- *  - pcb->mNext == pcb
- *
- * @param <pcb> : a valid pcb pointer
- * @param <f> : the start address
- * @param <stack_size> : stack's size
- *
- * @asserts
- *  - <pcb> != 0
- *  - <pcb> has not been initialized before
- *  - <stack_size> != 0
- */
-void
-kernel_pcb_init(kernel_pcb_t * pcb, uint32_t f, uint32_t stack_size);
-
-/*
- * @infos: find a PCB with a given pid
- *
- * @param <pid>: PID to search
- *
- * @return:
- *  - nullptr if this process doesn't exist
- *  - a pointer on the process found
- */
-kernel_pcb_t *
-kernel_pcb_global_by_pid(uint32_t pid);
-
-/*
- * @infos : Release a PCB :
- *  - release the stack
- *
- * @param <pcb> : the released pcb
- *
- * @asserts
- *  - <pcb> != 0
- *  - <has> been initialized before
- */
-void
-kernel_pcb_release(kernel_pcb_t * pcb);
 
 /*
  * @infos : Accesses a non-running pcb's register's value

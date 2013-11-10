@@ -15,6 +15,25 @@ process_create(process_func_t f, void * args)
     return pid;
 }
 
+process_state_t
+process_get_state(uint32_t pid)
+{
+    kernel_pause_scheduler();
+
+    kernel_pcb_t * pcb = kernel_pcb_global_by_pid(pid);
+
+    if (pcb == nullptr)
+    {
+        return API_STATE_UNKNOWN;
+    }
+
+    process_state_t state = kernel_pcb_get_state(pcb);
+
+    kernel_resume_scheduler();
+
+    return state;
+}
+
 uint32_t
 process_pause(uint32_t pid)
 {
