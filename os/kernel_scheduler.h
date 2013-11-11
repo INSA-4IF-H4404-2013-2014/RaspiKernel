@@ -4,24 +4,66 @@
 
 // --------------------------------------------------------------- INCLUDE
 
-#include "kernel_pcb.h"
-#include "hw.h"
+#include "kernel_pcb_list.h"
+#include "kernel_arm.h"
 
 
-// --------------------------------------------------------------- PROCESS TYPES
+// --------------------------------------------------------------- GLOBAL VARS
 
-extern struct pcb_s * kernel_current_pcb;
+/*
+ * @infos: cycle head of all PCBs
+ */
+extern kernel_pcb_list_t kernel_round_robin_list;
+extern kernel_pcb_list_t kernel_pause_pcb;
+
+#ifndef _C_KERNEL_SCHEDULER
+extern kernel_pcb_t * const kernel_running_pcb;
+#endif
 
 
+// --------------------------------------------------------------- FUNCTIONS
+
+/*
+ * @infos: init the kernel_scheduler
+ */
+void
+kernel_scheduler_init();
+
+/*
+ * @infos: yield switch to another PCB
+ *
+ * @param <old_pcb>: PCB to save to
+ * @param <new_pcb>: PCB to switch to
+ *
+ * @asserts
+ *  - kernel_pause_scheduler() must be called before
+ *  - <old_pcb->mState> != PCB_RUN
+ */
+void
+kernel_scheduler_yield();
+
+/*
+ * @infos: final yield of a PCB
+ *
+ * @param <pcb>: PCB to switch to
+ *
+ * @asserts
+ *  - kernel_pause_scheduler() must be called before
+ */
 void __attribute__((noreturn))
-kernel_scheduler_jump(kernel_pcb_t * pcb);
+kernel_scheduler_yield_noreturn();
 
-#define kernel_scheduler_begin() DISABLE_IRQ()
-#define kernel_scheduler_end() ENABLE_IRQ()
+/*
+ * @infos: pause scheduler
+ */
+#define kernel_pause_scheduler() \
+    kernel_arm_disable_irq()
 
-#define kernel_scheduler_disable() DISABLE_IRQ()
-#define kernel_scheduler_enable() ENABLE_IRQ()
-
+/*
+ * @infos: resume scheduler
+ */
+#define kernel_resume_scheduler() \
+    kernel_arm_enable_irq()
 
 
 #endif
