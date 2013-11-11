@@ -14,7 +14,11 @@ AS_FLAGS = -g -march=armv6z
 
 GDB_DEFAULT = gdb/default.gdb
 
--include makeOptions.gitlocal
+OPTIONSFILE = makeOptions.gitlocal
+-include $(OPTIONSFILE)
+REMOTE_MACHINE = iftpserv2.insa-lyon.fr
+REMOTE = $(REMOTE_USERNAME)@$(REMOTE_MACHINE)
+REMOTE_FOLDER ?= ~/RaspSandbox
 SQUEDULER ?= KERNEL_STRATEGY_ROUNDROBIN_ONE
 OS ?= OS_RASP
 
@@ -83,6 +87,14 @@ gdb : update
 	$(CMD_ECHO) "# running gdb..."
 	$(BUILD_PREFIX_HIDE)gdb $(BUILD_TARGET).elf -x gdbinit.gdb
 
+send :
+	$(CMD_ECHO) "# remote update..."
+ifndef REMOTE_USERNAME
+	$(error "Please first set REMOTE_USERNAME variable in $(OPTIONSFILE)!")
+else
+	@rsync -haPq --exclude=.git --exclude=build --exclude=pdfs --delete . $(REMOTE):$(REMOTE_FOLDER) > /dev/null 2>&1
+	$(CMD_ECHO) "# remote update finished in $(REMOTE):$(REMOTE_FOLDER)!"
+endif
 
 #------------------------------------------------------------------------------- DYNAMIC RULES
 
