@@ -1,3 +1,4 @@
+THIS := $(lastword $(MAKEFILE_LIST)) #This MUST BE at the top of the file!
 
 #------------------------------------------------------------------------------- FUNCTIONS
 
@@ -21,7 +22,6 @@ CC_FLAGS+=$(addprefix -D, $(OS) $(SQUEDULER))
 
 #------------------------------------------------------------------------------- AUTOMATED
 
-THIS = $(lastword $(MAKEFILE_LIST))
 C_FILES = $(call rwildcard,./,*.c)
 S_FILES = $(call rwildcard,./,*.s)
 D_FILES = $(call rwildcard,./,*.d)
