@@ -45,13 +45,14 @@ endif
 #------------------------------------------------------------------------------- COMMANDS
 
 HIDE_CMD =@
-BUILD_PREFIX ?= $(HIDE_CMD)arm-none-eabi-
+BUILD_PREFIX ?= arm-none-eabi-
+BUILD_PREFIX_HIDE = $(HIDE_CMD)$(BUILD_PREFIX)
 
-CMD_LD = $(BUILD_PREFIX)ld
-CMD_AS = $(BUILD_PREFIX)as
-CMD_CC = $(BUILD_PREFIX)gcc
-CMD_OBJDUMP = $(BUILD_PREFIX)objdump
-CMD_OBJCOPY = $(BUILD_PREFIX)objcopy
+CMD_LD = $(BUILD_PREFIX_HIDE)ld
+CMD_AS = $(BUILD_PREFIX_HIDE)as
+CMD_CC = $(BUILD_PREFIX_HIDE)gcc
+CMD_OBJDUMP = $(BUILD_PREFIX_HIDE)objdump
+CMD_OBJCOPY = $(BUILD_PREFIX_HIDE)objcopy
 
 CMD_CP = $(HIDE_CMD)cp
 CMD_ECHO = @echo
@@ -80,7 +81,7 @@ emu : update
 
 gdb : update
 	$(CMD_ECHO) "# running gdb..."
-	arm-none-eabi-gdb $(BUILD_TARGET).elf -x gdbinit.gdb
+	$(BUILD_PREFIX_HIDE)gdb $(BUILD_TARGET).elf -x gdbinit.gdb
 
 
 #------------------------------------------------------------------------------- DYNAMIC RULES
@@ -108,7 +109,7 @@ $(BUILD_DIR)%.s.o: $$(call rwildcard,./,*%.s) $(THIS)
 	QEMU_PID=$$!;                                                           \
 	echo "# running emulator <$(BUILD_TARGET).elf> (-M $(QEMU_MACHINE)) : PID = $$QEMU_PID" ;\
 	echo "# running gdb ($@)..." ;                                          \
-	arm-none-eabi-gdb $(BUILD_TARGET).elf -x $@ ;                           \
+	$(BUILD_PREFIX)gdb $(BUILD_TARGET).elf -x $@ ;                           \
 	echo "# killing emulator" ;                                             \
 	kill -9 $$QEMU_PID;
 
