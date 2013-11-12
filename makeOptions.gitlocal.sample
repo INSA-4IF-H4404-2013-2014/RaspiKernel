@@ -1,8 +1,13 @@
+#Indicate here the remote parameters
+#REMOTE_FOLDER = ~/RaspSandbox
+#REMOTE_USERNAME=yourlogin
+
+
+
 #Please uncomment the OS for which you want to compile
 #Default value: OS_RASP
 #OS = OS_RASP
 #OS = OS_LINUX
-
 
 
 #Please uncomment the squeduler you want the kernel to use
