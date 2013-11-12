@@ -1,4 +1,1 @@
-include ../common.mk
-
-send:
-	make -C ../ send
+../common_app.mk
