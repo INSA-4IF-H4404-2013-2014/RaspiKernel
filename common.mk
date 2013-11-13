@@ -37,6 +37,10 @@ BUILD_DIR = build/
 BUILD_TARGET = $(addprefix $(BUILD_DIR), $(TARGET))
 BUILD_OBJS = $(addprefix $(BUILD_DIR), $(notdir $(addsuffix .o,$(notdir $(S_FILES) $(C_FILES)))))
 
+ifdef MUSIC
+	BUILD_OBJS += $(MUSIC)
+endif
+
 # read QEMU_MACHINE from qemu-machine.gitlocal
 ifeq ($(wildcard qemu-machine.gitlocal),)
     QEMU_MACHINE = raspi
