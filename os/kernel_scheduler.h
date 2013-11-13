@@ -58,7 +58,7 @@ kernel_scheduler_init();
  *  - kernel_pause_scheduler() must be called before
  *  - <old_pcb->mState> != PCB_RUN
  */
-void
+void __attribute__((naked))
 kernel_scheduler_yield();
 
 /*

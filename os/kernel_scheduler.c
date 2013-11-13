@@ -24,15 +24,16 @@ kernel_scheduler_init()
     kernel_running_pcb = nullptr;
 }
 
-#define kernel_scheduler_chose_next() \
-    { \
-        uint32_t i = KERNEL_RR_LEVELS - 1; \
-        while (kernel_round_robin_pcbs[i].mFirst == 0) \
-        { \
-            i--; \
-        } \
-        kernel_running_pcb = kernel_round_robin_pcbs[i].mFirst; \
+void
+kernel_scheduler_chose_next()
+{
+    uint32_t i = KERNEL_RR_LEVELS - 1;
+    while (kernel_round_robin_pcbs[i].mFirst == 0)
+    {
+        i--;
     }
+    kernel_running_pcb = kernel_round_robin_pcbs[i].mFirst;
+}
 
 
 /* INTERUPTION ASSERTS
