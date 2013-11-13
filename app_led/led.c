@@ -2,33 +2,27 @@
 #include "../os/api_process.h"
 #include "led.h"
 
-void led_process ( led_state * ledState )
+void led_on_process ()
 {
-	if ( *ledState == LED_ON )
-	{
 		for ( ; ; )
 		{
 			//led_on();
 		}
-	}
-	else if ( *ledState == LED_OFF )
-	{
+}
+
+void led_off_process ()
+{
 		for ( ; ; )
 		{
 			//led_off();
 		}
-	}
 }
 
 void launch_led_process()
 {
-	int i = LED_ON;
-	int j = LED_OFF;
-
-	uint32_t PID_ON = process_create((process_func_t) led_process, (void *) &i);
-	uint32_t PID_OFF = process_create((process_func_t) led_process, (void *) &j);
+	uint32_t PID_ON = process_create((process_func_t) led_on_process, 0);
+	uint32_t PID_OFF = process_create((process_func_t) led_off_process, 0);
 	
 	process_start(PID_ON);
 	process_start(PID_OFF);
-	
 }
