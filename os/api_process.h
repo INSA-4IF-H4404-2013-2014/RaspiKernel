@@ -51,7 +51,7 @@ process_set_rr_priority(uint32_t pid, uint32_t priority);
  *  - 0 otherwise
  */
 uint32_t
-process_set_collabo(uint32_t pid)
+process_set_collabo(uint32_t pid);
 
 /*
  * @infos : pause a process

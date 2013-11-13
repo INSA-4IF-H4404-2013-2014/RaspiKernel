@@ -53,7 +53,7 @@ process_set_collabo(uint32_t pid)
         return 0;
     }
 
-    kernel_pcb_set_scheduler(kernel_collabo_pcb, pcb);
+    kernel_pcb_set_scheduler(&kernel_collabo_pcb, pcb);
 
     kernel_resume_scheduler();
 
