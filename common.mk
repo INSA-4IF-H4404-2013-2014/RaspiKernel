@@ -9,7 +9,7 @@ rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
 TARGET = kernel
 
-CC_FLAGS = -Wall -Wextra -Werror -nostdlib -fomit-frame-pointer -mno-apcs-frame -nostartfiles -ffreestanding -g -march=armv6z -marm
+CC_FLAGS = $(MUSIC_CC) -Wall -Wextra -Werror -nostdlib -fomit-frame-pointer -mno-apcs-frame -nostartfiles -ffreestanding -g -march=armv6z -marm
 AS_FLAGS = -g -march=armv6z
 
 GDB_DEFAULT = gdb/default.gdb
@@ -37,8 +37,9 @@ BUILD_DIR = build/
 BUILD_TARGET = $(addprefix $(BUILD_DIR), $(TARGET))
 BUILD_OBJS = $(addprefix $(BUILD_DIR), $(notdir $(addsuffix .o,$(notdir $(S_FILES) $(C_FILES)))))
 
-ifdef MUSIC
-	BUILD_OBJS += $(MUSIC)
+ifeq ($(MUSIC),)
+	LD_FLAGS = $(MUSIC_LIB)
+	CC_FLAGS += $(MUSIC_INCLUDES)
 endif
 
 # read QEMU_MACHINE from qemu-machine.gitlocal
@@ -134,7 +135,7 @@ $(BUILD_DIR)%.s.o: $$(call rwildcard,./,*%.s) $(THIS)
 
 $(BUILD_TARGET).elf : $(MEMORY_MAP_FILE) $(BUILD_OBJS)
 	$(CMD_ECHO) "# file <$@>"
-	$(CMD_LD) -o $@ -T $< $(BUILD_OBJS)
+	$(CMD_LD) -o $@ -T $< $(BUILD_OBJS) $(LD_FLAGS)
 	$(CMD_OBJDUMP) -D $@ > $(BUILD_TARGET).list
 
 $(BUILD_TARGET).bin : $(BUILD_TARGET).elf
