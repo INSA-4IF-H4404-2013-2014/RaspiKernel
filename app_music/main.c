@@ -1,40 +1,17 @@
-
 #include "os/api_process.h"
 #include "os/api_sync_sem.h"
+#include "music.h"
 
-
-static void
-sub_process(sync_sem_t * sem_array)
+void play_music_test()
 {
-    uint32_t i = 1;
-
-    for ( ; ; )
-    {
-        sync_sem_wait(sem_array + 0);
-        i += 2;
-        sync_sem_post(sem_array + 1, 1);
-    }
+	play_music();
 }
 
-void
-main_process(void)
+void main_process(void)
 {
-    sync_sem_t sem_array[2];
-
-    sync_sem_init(&sem_array[0], 0);
-    sync_sem_init(&sem_array[1], 0);
-
-    uint32_t i = 0;
-
-    uint32_t PID = process_create((process_func_t) sub_process, sem_array);
+	music_init();
+    uint32_t PID = process_create((process_func_t) play_music_test, 0);
 
     process_start(PID);
-
-    for ( ; ; )
-    {
-        i += 2;
-        sync_sem_post(sem_array + 0, 1);
-        sync_sem_wait(sem_array + 1);
-    }
 }
 
