@@ -68,13 +68,7 @@ kernel_scheduler_handler()
 
     __asm("mov sp, %0" : : "r"(kernel_running_pcb->mSP));
     __asm("pop {r0 - r12, lr}");
-    __asm("add sp, #8");
-
-    __asm("ldr r0, [sp, #-4]");
-    __asm("msr cpsr, r0");
-    __asm("ldr r0, [sp, #-64]");
-
-    __asm("ldr pc, [sp, #-8]");
+    __asm("rfefd sp!");
 }
 
 void
@@ -84,7 +78,6 @@ kernel_scheduler_yield()
     __asm("mrs r0, cpsr");
     __asm("push {r0}");
     __asm("push {lr}");
-    __asm("srsdb sp!, #0x13");
     __asm("push {r0 - r12, lr}");
     __asm("mov %0, sp" : "=r"(kernel_running_pcb->mSP));
 
@@ -92,13 +85,7 @@ kernel_scheduler_yield()
 
     __asm("mov sp, %0" : : "r"(kernel_running_pcb->mSP));
     __asm("pop {r0 - r12, lr}");
-    __asm("add sp, #8");
-
-    __asm("ldr r0, [sp, #-4]");
-    __asm("msr cpsr, r0");
-    __asm("ldr r0, [sp, #-64]");
-
-    __asm("ldr pc, [sp, #-8]");
+    __asm("rfefd sp!");
 }
 
 void __attribute__((noreturn))
@@ -108,13 +95,7 @@ kernel_scheduler_yield_noreturn()
 
     __asm("mov sp, %0" : : "r"(kernel_running_pcb->mSP));
     __asm("pop {r0 - r12, lr}");
-    __asm("add sp, #8");
-
-    __asm("ldr r0, [sp, #-4]");
-    __asm("msr cpsr, r0");
-    __asm("ldr r0, [sp, #-64]");
-
-    __asm("ldr pc, [sp, #-8]");
+    __asm("rfefd sp!");
 
     __builtin_unreachable();
 }
