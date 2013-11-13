@@ -77,6 +77,7 @@ kernel_scheduler_yield()
     __asm("str r0, [sp, #-64]");
     __asm("mrs r0, cpsr");
     __asm("push {r0}");
+    __asm("ldr r0, [sp, #-60]");
     __asm("push {lr}");
     __asm("push {r0 - r12, lr}");
     __asm("mov %0, sp" : "=r"(kernel_running_pcb->mSP));
