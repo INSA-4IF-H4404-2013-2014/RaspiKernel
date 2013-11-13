@@ -40,6 +40,26 @@ process_set_rr_priority(uint32_t pid, uint32_t priority)
     return 1;
 }
 
+uint32_t
+process_set_collabo(uint32_t pid)
+{
+    kernel_pause_scheduler();
+
+    kernel_pcb_t * pcb = kernel_pcb_global_by_pid(pid);
+
+    if (pcb == 0)
+    {
+        kernel_resume_scheduler();
+        return 0;
+    }
+
+    kernel_pcb_set_scheduler(kernel_collabo_pcb, pcb);
+
+    kernel_resume_scheduler();
+
+    return 1;
+}
+
 process_state_t
 process_get_state(uint32_t pid)
 {

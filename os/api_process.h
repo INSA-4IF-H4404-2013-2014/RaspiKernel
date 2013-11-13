@@ -42,6 +42,18 @@ uint32_t
 process_set_rr_priority(uint32_t pid, uint32_t priority);
 
 /*
+ * @infos: sets the process scheduler on the collaborative level
+ *
+ * @param <pid>: the process's PID
+ *
+ * @return:
+ *  - 1 if succed
+ *  - 0 otherwise
+ */
+uint32_t
+process_set_collabo(uint32_t pid)
+
+/*
  * @infos : pause a process
  *
  * @param <pid> : the process's PID
