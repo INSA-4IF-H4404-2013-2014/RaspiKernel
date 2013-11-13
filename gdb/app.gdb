@@ -15,3 +15,6 @@ si
 si
 si
 n
+b kernel_scheduler.c:62
+b kernel_scheduler.c:84
+b kernel_scheduler.c:100
