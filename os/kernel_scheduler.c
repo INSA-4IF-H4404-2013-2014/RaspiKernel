@@ -80,8 +80,10 @@ kernel_scheduler_handler()
 void
 kernel_scheduler_yield()
 {
-    //__asm("push {cpsr}");
-    //__asm("push {lr}");
+    __asm("str r0, [sp, #-64]");
+    __asm("mrs r0, cpsr");
+    __asm("push {r0}");
+    __asm("push {lr}");
     __asm("srsdb sp!, #0x13");
     __asm("push {r0 - r12, lr}");
     __asm("mov %0, sp" : "=r"(kernel_running_pcb->mSP));
