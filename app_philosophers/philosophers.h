@@ -20,10 +20,10 @@
 	#define phi_id pthread_t
 #endif
 
-#define PHILOSOPHERS_NUMBER 5
 #define MAX_ITERATIONS 1000
 #define MAX_EATING_TIME 1
 #define MAX_THINKING_TIME 1
+#define PHILOSOPHERS_NUMBER 5
 
 /*
  * Five silent philosophers sit at a table around a bowl of spaghetti. A fork is placed between each pair of adjacent philosophers.
@@ -36,7 +36,7 @@
  * Eating is not limited by the amount of spaghetti left: assume an infinite supply.
 */
 
-//gcc -W -Wall -o phil philosophers.c -lpthread
+//gcc -W -Wall -o phil main.c philosophers.c -lpthread
 
 //Forks used by the philosophers
 phi_mutex forks[PHILOSOPHERS_NUMBER];
