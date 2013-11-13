@@ -5,4 +5,7 @@
 
 #define nullptr 0
 
+#define _macro_value_str(VAR) #VAR
+#define macro_value_str(VAR) _macro_value_str(VAR)
+
 #endif

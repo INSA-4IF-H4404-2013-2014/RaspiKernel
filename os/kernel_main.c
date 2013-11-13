@@ -1,30 +1,23 @@
 
 #include "kernel_scheduler.h"
-#include "kernel_process.h"
+#include "kernel_action.h"
 #include "hw.h"
 
 
 void
 main_process(void);
 
-int
+void __attribute__((noreturn))
 kernel_main(void)
 {
-    // create kernel process
-    process_create((process_func_t)0, (void *)0);
-
-    // create the main process
-    uint32_t main_process_PID = process_create((process_func_t) main_process, 0);
-    process_start(main_process_PID);
+    kernel_scheduler_init();
 
     init_hw();
 
-    ENABLE_IRQ();
+    kernel_pcb_t * pcb = kernel_pcb_create((void *) main_process, nullptr);
 
-    while ( 1 )
-    {
-        //process_yield();
-    }
+    kernel_pcb_enable_irq(pcb);
+    kernel_pcb_start(pcb);
 
-    return 0;
+    kernel_scheduler_yield_noreturn();
 }
