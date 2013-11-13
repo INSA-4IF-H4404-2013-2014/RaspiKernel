@@ -13,9 +13,9 @@ TARGET = kernel
 # TODO: add -Werror flag in CC_FLAGS
 ####################################
 
-CC_FLAGS = -Wall -Wextra -Werror -nostdlib -fomit-frame-pointer -mno-apcs-frame -nostartfiles -ffreestanding -g -march=armv6z -marm
+CC_FLAGS = -std=c99 -Wall -Wextra -nostdlib -fomit-frame-pointer -mno-apcs-frame -nostartfiles -ffreestanding -g -march=armv6z -marm
 AS_FLAGS = -g -march=armv6z
-INCLUDES_FLAGS = -Iapp_music/music -Ios -Iapp_music/music/includes -Iapp_music/music/includes/posix -D$(PLATFORM)
+INCLUDES_FLAGS = -Imusic -Ios -Imusic/includes -Imusic/includes/posix -DRASPBERRY_PI
 
 CC_FLAGS += $(INCLUDES_FLAGS)
 

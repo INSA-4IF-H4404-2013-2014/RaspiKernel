@@ -86,7 +86,7 @@ kernel_arm_mode();
 #define KERNEL_ARM_CPSR_MASK_IRQ 0x80
 
 #define kernel_arm_enable_irq() \
-  asm("mrs r0,cpsr\n\t" \
+  __asm("mrs r0,cpsr\n\t" \
       "bic r0,r0,#" macro_value_str(KERNEL_ARM_CPSR_MASK_IRQ) "\n\t" \
       "msr cpsr_c,r0\n\t" \
       "pop {r0}" \
@@ -95,7 +95,7 @@ kernel_arm_mode();
       : "r0");
 
 #define kernel_arm_disable_irq() \
-  asm("\tpush {r0}\n\t"	\
+  __asm("\tpush {r0}\n\t"	\
       "mrs r0,cpsr\n\t"	\
       "orr r0,r0,#" macro_value_str(KERNEL_ARM_CPSR_MASK_IRQ) "\n\t" \
       "msr cpsr_c,r0\n\t" \

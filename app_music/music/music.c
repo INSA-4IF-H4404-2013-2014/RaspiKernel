@@ -2,13 +2,14 @@
 #include <stddef.h>
 #include <malloc.h>
 #include <unistd.h>
-#include <config.h>
+#include "config.h"
 
 #include <lv2/lv2plug.in/ns/ext/atom/forge.h>
 
 #include <audio.h>
 #include <uart.h>
 #include <hw.h>
+#include <kernel_arm.h>
 
 #include <mf_read.h>
 #include <lv2.h>
@@ -29,7 +30,7 @@ void play_music()
     const Lv2Plugin *plugin;
     plugin = lv2_world->plugin_list;
 
-    DISABLE_IRQ();
+    kernel_arm_disable_irq();
 
     lv2_port *output_left = new_lv2_port(lv2_audio_port, 1);
     lv2_port *output_right = new_lv2_port(lv2_audio_port, 2);
@@ -48,7 +49,7 @@ void play_music()
     
     while (1) {
 
-		DISABLE_IRQ();
+		kernel_arm_disable_irq();
 
         if (!buffer_processed) 
         {
@@ -72,6 +73,6 @@ void play_music()
             buffer_processed = 0;
             counter++;
         }
-		ENABLE_IRQ();
+		kernel_arm_enable_irq();
     }
 }
