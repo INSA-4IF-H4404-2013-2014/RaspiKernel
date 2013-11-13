@@ -29,6 +29,19 @@ uint32_t
 process_create(process_func_t f, void * args);
 
 /*
+ * @infos: sets the process scheduler on a specified round robin level
+ *
+ * @param <pid>: the process's PID
+ * @param <priority>: the round robin priority
+ *
+ * @return:
+ *  - 1 if succed
+ *  - 0 otherwise
+ */
+uint32_t
+process_set_rr_priority(uint32_t pid, uint32_t priority);
+
+/*
  * @infos : pause a process
  *
  * @param <pid> : the process's PID
