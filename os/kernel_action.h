@@ -39,6 +39,15 @@ process_state_t
 kernel_pcb_get_state(kernel_pcb_t * pcb);
 
 /*
+ * @infos: set a <pcb>'s scheduler list
+ *
+ * @param <scheduler_list>: the new scheduler list to set
+ * @param <pcb>: the PCB
+ */
+void
+kernel_pcb_set_scheduler(kernel_pcb_list_t * scheduler_list, kernel_pcb_t * pcb);
+
+/*
  * @infos: start a <pcb>
  *
  * @param <pcb>: a PCB to switch state to READY
