@@ -30,6 +30,12 @@ reset:
     ldmia r0!,{r2,r3,r4,r5,r6,r7,r8,r9}
     stmia r1!,{r2,r3,r4,r5,r6,r7,r8,r9}
 
+    ;@ force the bit 0 (M) of the control register 1 to 0
+    ;@ doc_arm_specs.pdf chapter B3.4
+    mrc p15, #0, r0, c1, c0, 0
+    bic r0, #1
+    mcr p15, #0, r0, c1, c0, 0
+
     ;@ (PSR_IRQ_MODE|PSR_FIQ_DIS|PSR_IRQ_DIS)
     mov r0,#0xD2
     msr cpsr_c,r0

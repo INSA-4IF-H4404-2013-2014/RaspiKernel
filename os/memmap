@@ -9,6 +9,7 @@ SECTIONS
     _text_start = .;
     .text :
     {
+        *kernel_boot.s.o (.text)
         KEEP(*(.text.boot))
         *(.text)
     }

@@ -1,107 +1,131 @@
 #ifndef _H_KERNEL_PCB
 #define _H_KERNEL_PCB
 
-#include "standart.h"
-
-
-// ----------------------------------------------------------------- PCB DEFINES
-
-#define STACK_SIZE 1024 * 32
-#define REGISTER_COUNT 13
+#include "kernel_forward.h"
+#include "kernel_arm.h"
 
 
 // ------------------------------------------------------------------- PCB TYPES
 
-typedef void (*pcb_func_t)(void);
-
-typedef enum {PCB_PAUSE, PCB_READY, PCB_RUN} pcb_state;
-
-typedef struct pcb_s
+/*
+ * @infos: PCB structure
+ */
+struct kernel_pcb_s
 {
-	// State
-	pcb_state mState;
+    // Process ID
+    uint32_t mPID;
 
-	// Process ID
-	uint32_t mPID;
+    // stack head
+    uint32_t * mStack;
 
-	// PC = program counter
-	uint32_t mPC;
+    // SP = stack counter
+    uint32_t * mSP;
 
-	// stack head
-	uint32_t * mStack;
+    // next in list containing all PCBs
+    kernel_pcb_t * mGlobalNext;
 
-	// SP = stack counter
-	uint32_t * mSP;
+    // next pcb in a list
+    kernel_pcb_t * mNext;
 
-	// next pcb
-	struct pcb_s * mNext;
-} _pcb_s;
+    // ptr on the list where it is
+    kernel_pcb_list_t * mParentList;
+
+    // scheduler list
+    kernel_pcb_list_t * mSchedulerList;
+};
+
+/* Stack storage when PCB is not running:
+ *
+ * mSP ->   r0
+ *          r1
+ *          r2
+ *          r3
+ *          r4
+ *          r5
+ *          r6
+ *          r7
+ *          r8
+ *          r9
+ *          r10
+ *          r11
+ *          r12
+ *          r14 (lr)
+ *          r15 (pc)
+ *          cpsr
+ *          . CALL STACK...
+ *          .
+ *          .
+ */
 
 
 // --------------------------------------------------------------- PCB FUNCTIONS
 
 /*
- * @infos : Init a PCB :
- *  - the pcb's state will be set to PCB_PAUSE
- *  - mPID will be assigned (0 is reserved for the kernel)
- *  - alloc the stack
- *  - pcb->mNext == pcb
+ * @infos : Accesses a non-running pcb's register's value
  *
- * @param <pcb> : a valid pcb pointer
- * @param <f> : the start address
- * @param <stack_size> : stack's size
+ * @param <pcb> : the non-running pcb
+ * @param <N> : the register's id
+ *
+ * @return: uint32_t reference
  *
  * @asserts
  *  - <pcb> != 0
- *  - <pcb> has not been initialized before
- *  - <stack_size> != 0
+ *  - 0 <= <N> < REGISTER_COUNT
  */
-void
-pcb_init(struct pcb_s* pcb, pcb_func_t f, uint32_t stack_size);
+#define kernel_pcb_rN(pcb,N) \
+    ((pcb)->mSP[(N)])
 
-/*
- * @infos : Release a PCB :
- *  - release the stack
- *
- * @param <pcb> : the released pcb
- *
- * @asserts
- *  - <pcb> != 0
- *  - <has> been initialized before
- */
-void
-pcb_release(struct pcb_s* pcb);
+#define kernel_pcb_lr(pcb) \
+    ((pcb)->mSP[13])
 
-/*
- * @infos : Switch to another PCB :
- *  - save the current execution in <oldPcb> and switch to the <newPcb>
- *
- * @param <old_pcb> : the pcb to save the current execution
- * @param <new_pcb> : the pcb to switch to
- *
- * @asserts
- *  - <new_pcb> != 0
- */
-void
-pcb_switch_to(struct pcb_s* old_pcb, struct pcb_s* new_pcb);
+#define kernel_pcb_pc(pcb) \
+    ((pcb)->mSP[14])
+
+#define kernel_pcb_cpsr(pcb) \
+    ((pcb)->mSP[15])
 
 /*
  * @infos : Set a non-running pcb's register's value
  *
  * @param <pcb> : the non-running pcb
- * @param <register_id> : the register's id
+ * @param <N> : the register's id
  * @param <value> : the register's value to set
  *
  * @asserts
  *  - <pcb> != 0
- *  - 0 <= <register_id> < REGISTER_COUNT
- *
- * @external : ARM documentation on multiple pushes/pops
- *  The registers are stored in sequence, the lowest-numbered register to the
- *  lowest memory address (start_address), through to the highest-numbered
- *  register to the highest memory address (end_address)
+ *  - 0 <= <N> < REGISTER_COUNT
  */
-#define pcb_set_register(pcb,register_id,value) \
-    (pcb)->mSP[- REGISTER_COUNT + (register_id)] = (uint32_t)(value)
+#define kernel_pcb_set_rN(pcb,N,value) \
+    kernel_pcb_rN(pcb,N) = (uint32_t)(value)
+
+#define kernel_pcb_set_lr(pcb,value) \
+    kernel_pcb_lr(pcb) = (uint32_t)(value)
+
+#define kernel_pcb_set_pc(pcb,value) \
+    kernel_pcb_pc(pcb) = (uint32_t)(value)
+
+
+/*
+ * @infos: Inherits the current CPSR's value to the <pcb>'s CPSR
+ *
+ * @asserts
+ *  - <pcb> != 0
+ */
+#define kernel_pcb_inherit_cpsr(pcb) \
+    kernel_pcb_cpsr(pcb) = kernel_arm_get_cpsr()
+
+
+/*
+ * @infos: enables/disables IRQ ona <pcb>
+ *
+ * @asserts
+ *  - <pcb> != 0
+ */
+#define kernel_pcb_enable_irq(pcb) \
+    kernel_pcb_cpsr(pcb) = (~KERNEL_ARM_CPSR_MASK_IRQ) & kernel_pcb_cpsr(pcb)
+
+#define kernel_pcb_disable_irq(pcb) \
+    kernel_pcb_cpsr(pcb) = KERNEL_ARM_CPSR_MASK_IRQ | kernel_pcb_cpsr(pcb)
+
 
 #endif
