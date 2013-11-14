@@ -3,6 +3,15 @@
 
 #include "standart.h"
 
+
+/*
+ * @infos: Kernel heap structure
+ *
+ * @members:
+ * - mpNext: pointer to the next memory element
+ * - mpPrevious: pointer to the previous memory element
+ * - mSize: size (in bytes) of the following user space
+ */
 typedef struct _kernel_heap_part_s
 {
 	struct _kernel_heap_part_s * mpNext;
