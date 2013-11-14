@@ -10,7 +10,7 @@ static const void *
 	KERNEL_HEAP_ADDR_MIN = kernel_memory_heap + 2 * sizeof(kernel_heap_part_s);
 
 static const void *
-	KERNEL_HEAP_ADDR_MAX = (void *) KERNEL_HEAP_SIZE;
+	KERNEL_HEAP_ADDR_MAX = (void *) KERNEL_HEAP_SIZE - sizeof(kernel_heap_part_s);
 
 
 void kernel_memory_init()
