@@ -6,6 +6,7 @@
 
 kernel_pcb_list_t kernel_round_robin_pcbs[KERNEL_RR_LEVELS];
 kernel_pcb_list_t kernel_pause_pcb;
+kernel_pcb_list_t kernel_sleeping_pcbs;
 
 kernel_pcb_t * kernel_running_pcb;
 

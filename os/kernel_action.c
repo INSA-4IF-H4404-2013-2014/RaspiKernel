@@ -124,6 +124,21 @@ kernel_pcb_pause(kernel_pcb_list_t * pause_list, kernel_pcb_t * pcb)
 }
 
 void
+kernel_pcb_sleep(kernel_pcb_t * pcb, uint32_t duration)
+{
+    kernel_pcb_list_remove(pcb->mParentList, pcb);
+
+    pcb->mStartDate = kernel_arm_timer_clock() + duration;
+
+    kernel_pcb_list_sorted_insert(&kernel_sleeping_pcbs, pcb);
+
+    if (pcb == kernel_running_pcb)
+    {
+        kernel_scheduler_yield();
+    }
+}
+
+void
 kernel_pcb_destroy(kernel_pcb_t * pcb)
 {
     kernel_pcb_list_remove(pcb->mParentList, pcb);

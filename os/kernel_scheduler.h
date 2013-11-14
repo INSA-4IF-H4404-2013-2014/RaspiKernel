@@ -28,6 +28,12 @@ extern kernel_pcb_list_t kernel_pause_pcb;
 
 
 /*
+ * @infos: sleeping PCBs
+ */
+extern kernel_pcb_list_t kernel_sleeping_pcbs;
+
+
+/*
  * @infos: gets the default scheduler
  *
  * @return: a pointer on the default scheduler
