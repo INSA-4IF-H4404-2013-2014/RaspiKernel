@@ -90,12 +90,12 @@ gdb : update
 	$(BUILD_PREFIX_HIDE)gdb $(BUILD_TARGET).elf -x gdbinit.gdb
 
 send2 :
-	$(CMD_ECHO) "# remote update..."
+	$(CMD_ECHO) "# updating remote $(REMOTE):$(REMOTE_FOLDER)..."
 ifndef REMOTE_USERNAME
 	$(error "Please first set REMOTE_USERNAME variable in $(OPTIONSFILE)!")
 else
-	@rsync -haPq --exclude=.git --exclude=build --exclude=pdfs --delete . $(REMOTE):$(REMOTE_FOLDER) > /dev/null 2>&1
-	$(CMD_ECHO) "# remote update finished in $(REMOTE):$(REMOTE_FOLDER)!"
+	@rsync -haP --exclude=.git --exclude=build --exclude=pdfs --delete . $(REMOTE):$(REMOTE_FOLDER)
+	$(CMD_ECHO)
 endif
 
 #------------------------------------------------------------------------------- DYNAMIC RULES
