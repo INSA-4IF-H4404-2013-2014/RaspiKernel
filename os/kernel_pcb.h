@@ -32,6 +32,10 @@ struct kernel_pcb_s
 
     // scheduler list
     kernel_pcb_list_t * mSchedulerList;
+	
+#ifdef MUTEX_SECURE
+	kernel_mutex_list_t * mMutexPossessed;
+#endif
 };
 
 /* Stack storage when PCB is not running:

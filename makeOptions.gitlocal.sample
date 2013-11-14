@@ -17,6 +17,6 @@
 
 
 #Choose of which mutex implementation must be used
-#Default value: SEM
-#MTX = SEM
-#MTX = MUTEX
+#Default value: MUTEX_STANDARD
+#MUTEX = MUTEX_STANDARD
+#MUTEX = MUTEX_SECURE

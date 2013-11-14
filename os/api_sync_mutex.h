@@ -1,7 +1,10 @@
 #ifndef _H_API_SYNC_MUTEX
 #define _H_API_SYNC_MUTEX
 
+#ifdef MUTEX_SECURE
+//---------------------------------------------------------------- MUTEX SECURE
 #include "api_sync_sem.h"
+#include "kernel_mutex_list.h"
 
 //Boolean type
 typedef enum {false, true} bool;
@@ -12,22 +15,46 @@ typedef enum {false, true} bool;
 typedef struct sync_mutex_s
 {
     kernel_pcb_list_t mProcessBlocked;
+	
     bool mToken;
 } sync_mutex_t;
 
 /*
- * @infos: PCB struct linked with a possessed mutex list
+ * @infos: initialises a <mutex>
+ *
+ * @param <mutex>: a uninitialized mutex
  */
-typedef struct kernel_pcb_mtx_s
-{
-	uint32_t mPID;
-	
-	//List of the mutex possessed by the current process
-    sync_mutex_t *
-} kernel_pcb_mtx_t;
+void
+sync_mutex_init(sync_mutex_t * mutex);
 
-kernel_pcb_list_t mGlobalProcessBlocked;
+/*
+ * @infos: lock the <mutex>
+ *
+ * @param <mutex>: an initialised mutex
+ */
+void
+sync_mutex_lock(sync_mutex_t * mutex);
 
+/*
+ * @infos: lock the <mutex> if this
+ *         lock do not create a deadlock
+ *
+ * @param <mutex>: an initialised mutex
+ * @return: 0 if the lock has been done, -1 else (deadlock prevention)
+ */
+void
+sync_mutex_lock_secure(sync_mutex_t * mutex);
+
+/*
+ * @infos: unlock the <mutex>
+ *
+ * @param <mutex>: an initialised mutex
+ */
+ void
+sync_mutex_unlock(sync_mutex_t * mutex);
+
+#else
+//-------------------------------------------------------------- MUTEX STANDARD
 
 /*
  * @infos: initialises a <mutex>
@@ -46,26 +73,6 @@ kernel_pcb_list_t mGlobalProcessBlocked;
     sync_sem_wait(mutex)
 
 /*
- * @infos: consume one coin in a <semaphore>
- *         if this consumption do not create a deadlock
- *
- * @param <semaphore>: an initialised semaphore
- * @return: 0 if a coin has been taken, -1 else (deadlock prevention)
- */
-int
-sync_sem_wait_secure(sync_sem_t * semaphore)
-
-/*
- * @infos: lock the <mutex> if this
- *         lock do not create a deadlock
- *
- * @param <mutex>: an initialised mutex
- * @return: 0 if the lock has been done, -1 else (deadlock prevention)
- */
-#define sync_mutex_lock_secure(mutex) \
-    sync_sem_wait_secure(mutex)
-
-/*
  * @infos: unlock the <mutex>
  *
  * @param <mutex>: an initialised mutex
@@ -73,4 +80,5 @@ sync_sem_wait_secure(sync_sem_t * semaphore)
 #define sync_mutex_unlock(mutex) \
     sync_sem_post(mutex, 1)
 
+#endif
 #endif
