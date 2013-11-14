@@ -35,7 +35,7 @@ kernel_pcb_list_remove(kernel_pcb_list_t * list, kernel_pcb_t * pcb)
         parent = parent->mNext;
     }
 
-    parent->mNext = nullptr;
+    parent->mNext = pcb->mNext;
 
     if (pcb == list->mLast)
     {

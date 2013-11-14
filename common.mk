@@ -1,4 +1,5 @@
 THIS := $(lastword $(MAKEFILE_LIST)) #This MUST BE at the top of the file!
+MAKEFLAGS += --no-print-directory
 
 #------------------------------------------------------------------------------- FUNCTIONS
 
@@ -14,9 +15,10 @@ AS_FLAGS = -g -march=armv6z
 
 GDB_DEFAULT = gdb/default_run.gdb
 
-OPTIONSFILE = makeOptions.gitlocal
+#makeOptions.gitlocal
+OPTIONSFILE ?= makeOptions.gitlocal
 -include $(OPTIONSFILE)
-REMOTE_MACHINE = iftpserv2.insa-lyon.fr
+REMOTE_MACHINE ?= iftpserv2.insa-lyon.fr
 REMOTE = $(REMOTE_USERNAME)@$(REMOTE_MACHINE)
 REMOTE_FOLDER ?= ~/RaspSandbox
 SQUEDULER ?= KERNEL_STRATEGY_ROUNDROBIN_ONE
@@ -76,7 +78,7 @@ CMD_RM = $(HIDE_CMD)rm
 
 #------------------------------------------------------------------------------- STATIC RULES
 
-.PHONY: update clean full run gdb
+.PHONY: update clean full run gdb send2
 
 update : $(BUILD_DIR) $(BUILD_TARGET).hex $(BUILD_TARGET).bin $(BUILD_TARGET).img
 	$(CMD_ECHO) "# build finished"
@@ -98,12 +100,12 @@ gdb : update
 	$(BUILD_PREFIX_HIDE)gdb $(BUILD_TARGET).elf -x gdbinit.gdb
 
 send2 :
-	$(CMD_ECHO) "# remote update..."
+	$(CMD_ECHO) "# updating remote $(REMOTE):$(REMOTE_FOLDER)..."
 ifndef REMOTE_USERNAME
 	$(error "Please first set REMOTE_USERNAME variable in $(OPTIONSFILE)!")
 else
-	@rsync -haPq --exclude=.git --exclude=build --exclude=pdfs --delete . $(REMOTE):$(REMOTE_FOLDER) > /dev/null 2>&1
-	$(CMD_ECHO) "# remote update finished in $(REMOTE):$(REMOTE_FOLDER)!"
+	@rsync -haP --exclude=.git --exclude=build --exclude=pdfs --delete . $(REMOTE):$(REMOTE_FOLDER)
+	$(CMD_ECHO)
 endif
 
 #------------------------------------------------------------------------------- DYNAMIC RULES
