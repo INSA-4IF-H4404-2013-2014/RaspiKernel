@@ -23,7 +23,7 @@ void philosophers_process(void)
 		phi_data[i].phi_id = i;
 		
 #ifdef OS_RASP
-		sync_sem_init(&(phi_data[i]->sem_id), 0);
+		sync_sem_init(&(phi_data[i].sem_id), 0);
 		
 		//Starting process
 		phi_data[i].process_id = process_create(&sync_philosopher, &phi_data[i]);
@@ -75,7 +75,7 @@ void sync_philosopher(void * args)
 		think();
 	}
 #ifdef OS_RASP
-	sync_sem_post(&(phi_data[i]->sem_id));
+	sync_sem_post(&(phi_data->sem_id), 1);
 #endif
 }
 
