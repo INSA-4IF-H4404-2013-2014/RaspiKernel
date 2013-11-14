@@ -3,7 +3,6 @@
 #REMOTE_USERNAME=yourlogin
 
 
-
 #Please uncomment the OS for which you want to compile
 #Default value: OS_RASP
 #OS = OS_RASP
@@ -15,3 +14,9 @@
 #SQUEDULER = KERNEL_STRATEGY_ROUNDROBIN_MONO
 #SQUEDULER = KERNEL_STRATEGY_ROUNDROBIN_MULTI
 #SQUEDULER = KERNEL_STRATEGY_COLLABO
+
+
+#Choose of which mutex implementation must be used
+#Default value: SEM
+#MTX = SEM
+#MTX = MUTEX

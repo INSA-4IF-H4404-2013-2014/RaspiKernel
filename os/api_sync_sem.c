@@ -52,3 +52,12 @@ sync_sem_wait(sync_sem_t * semaphore)
     kernel_resume_scheduler();
 }
 
+int
+sync_sem_wait_secure(sync_sem_t * semaphore)
+{
+	//TODO
+
+	sync_sem_wait(semaphore);
+	return 0;
+}
+
