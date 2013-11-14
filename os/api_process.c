@@ -121,6 +121,35 @@ process_start(uint32_t pid)
 }
 
 uint32_t
+process_sleep(uint32_t pid, uint32_t duration)
+{
+    kernel_pause_scheduler();
+
+    kernel_pcb_t * pcb = kernel_pcb_global_by_pid(pid);
+
+    if (pcb == 0)
+    {
+        kernel_resume_scheduler();
+        return 0;
+    }
+
+    if (pcb->mParentList != pcb->mSchedulerList)
+    {
+        /*
+         * We don't want to sleep a PCB that is not in the ready/run state
+         */
+        kernel_resume_scheduler();
+        return 0;
+    }
+
+    kernel_pcb_sleep(pcb, duration);
+
+    kernel_resume_scheduler();
+
+    return 1;
+}
+
+uint32_t
 process_get_pid()
 {
     return kernel_running_pcb->mPID;

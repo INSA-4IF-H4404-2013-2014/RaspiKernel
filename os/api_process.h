@@ -59,11 +59,24 @@ process_pause(uint32_t pid);
  * @param <pid> : the process's PID
  *
  * @return
- *  - 1 if succed (the process has just been created before)
+ *  - 1 if succed
  *  - 0 elsewhere
  */
 uint32_t
 process_start(uint32_t pid);
+
+/*
+ * @infos: sleep a process
+ *
+ * @param <pid>: the process's PID to sleep
+ * @param <duration>: the desired sleep duration
+ *
+ * @return
+ *  - 1 if succed
+ *  - 0 elsewhere
+ */
+uint32_t
+process_sleep(uint32_t pid, uint32_t duration);
 
 /*
  * @infos : get the current process's PID
