@@ -32,7 +32,29 @@ void kernel_memory_init()
 
 void * kernel_allocate_memory(uint32_t size)
 {
-	return (void *)0;
+	// Overflow check
+	if(size >= (~0 - sizeof(kernel_heap_part_s)))
+	{
+		return 0;
+	}
+
+	kernel_heap_part_s * current = (kernel_heap_part_s *) kernel_memory_heap;
+	while(current->mpNext)
+	{
+		// If there is space between current and next one
+		if
+		(
+			((uint32_t) current->mpNext) -
+				((uint32_t)((char *)(current + 1)) + current->mSize)
+			>= sizeof(kernel_heap_part_s) + size
+		)
+		{
+
+		}
+	}
+
+	// We didn't find any space :'(
+	return 0;
 }
 
 void kernel_deallocate_memory(void * address)
@@ -66,4 +88,19 @@ void kernel_deallocate_memory(void * address)
 	{
 		heap_part_head->mpNext->mpPrevious = heap_part_head->mpPrevious;
 	}
+}
+
+// ASSERT
+// pPrevious HAS TO be valid. There is no check
+void kernel_private_allocate_memory(uint32_t size, kernel_heap_part_s * pPrevious)
+{
+	kernel_heap_part_s * new =
+		(kernel_heap_part_s *)
+			(((char*)pPrevious) + sizeof(kernel_heap_part_s) + pPrevious->mSize);
+	new->mpPrevious = pPrevious;
+	new->mpNext = pPrevious->mpNext;
+	new->mSize = size;
+
+	pPrevious->mpNext->mpPrevious = new;
+	pPrevious->mpNext = new;
 }
