@@ -4,11 +4,19 @@
 #include "kernel_arm.h"
 #include "kernel_scheduler.h"
 
+
 kernel_pcb_list_t kernel_round_robin_pcbs[KERNEL_RR_LEVELS];
 kernel_pcb_list_t kernel_pause_pcb;
 kernel_pcb_list_t kernel_sleeping_pcbs;
 
 kernel_pcb_t * kernel_running_pcb;
+
+static kernel_pcb_t kernel_idle_pcb;
+
+
+static void __attribute__((naked, noreturn))
+kernel_idle_process();
+
 
 void
 kernel_scheduler_init()
@@ -19,7 +27,13 @@ kernel_scheduler_init()
     {
         kernel_pcb_list_init(kernel_round_robin_pcbs + i);
     }
+
     kernel_pcb_list_init(&kernel_pause_pcb);
+
+    kernel_idle_pcb.mPID = ~0x0;
+    kernel_pcb_set_lr(&kernel_idle_pcb, kernel_idle_process);
+    kernel_pcb_inherit_cpsr(&kernel_idle_pcb);
+    kernel_pcb_enable_irq(&kernel_idle_pcb);
 
     kernel_running_pcb = nullptr;
 }
@@ -28,11 +42,19 @@ void
 kernel_scheduler_chose_next()
 {
     uint32_t i = KERNEL_RR_LEVELS - 1;
-    while (kernel_round_robin_pcbs[i].mFirst == 0)
+
+    while (i)
     {
+        if (kernel_round_robin_pcbs[i].mFirst)
+        {
+            kernel_running_pcb = kernel_round_robin_pcbs[i].mFirst;
+            return;
+        }
+
         i--;
     }
-    kernel_running_pcb = kernel_round_robin_pcbs[i].mFirst;
+
+    kernel_running_pcb = &kernel_idle_pcb;
 }
 
 
@@ -98,6 +120,14 @@ kernel_scheduler_yield_noreturn()
     __asm("mov sp, %0" : : "r"(kernel_running_pcb->mSP));
     __asm("pop {r0 - r12, lr}");
     __asm("rfefd sp!");
+
+    __builtin_unreachable();
+}
+
+void
+kernel_idle_process()
+{
+    for ( ; ; );
 
     __builtin_unreachable();
 }
