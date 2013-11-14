@@ -7,6 +7,7 @@
 
 kernel_pcb_list_t kernel_round_robin_pcbs[KERNEL_RR_LEVELS];
 kernel_pcb_list_t kernel_pause_pcb;
+kernel_pcb_list_t kernel_collabo_pcb;
 
 kernel_pcb_t * kernel_running_pcb;
 
@@ -20,19 +21,29 @@ kernel_scheduler_init()
         kernel_pcb_list_init(kernel_round_robin_pcbs + i);
     }
     kernel_pcb_list_init(&kernel_pause_pcb);
+    kernel_pcb_list_init(&kernel_collabo_pcb);
+    
 
     kernel_running_pcb = nullptr;
 }
 
+
 void
 kernel_scheduler_chose_next()
 {
-    uint32_t i = KERNEL_RR_LEVELS - 1;
-    while (kernel_round_robin_pcbs[i].mFirst == 0)
-    {
-        i--;
-    }
-    kernel_running_pcb = kernel_round_robin_pcbs[i].mFirst;
+    if(kernel_collabo_pcb.mFirst != 0)
+		{
+			kernel_running_pcb = kernel_collabo_pcb.mFirst;
+		}
+        else
+        {
+			uint32_t i = KERNEL_RR_LEVELS - 1;
+			while (kernel_round_robin_pcbs[i].mFirst == 0)
+			{
+				i--;
+			}
+			kernel_running_pcb = kernel_round_robin_pcbs[i].mFirst;
+		} 
 }
 
 
