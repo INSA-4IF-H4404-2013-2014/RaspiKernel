@@ -50,26 +50,25 @@ void philosophers_process(void)
 
 void sync_philosopher(void * args)
 {
-	int i;
+	int i, first_fork, second_fork, phi_id;
 	philosopher_data * phi_data = (philosopher_data *) args;
-	int first_fork;
-	int second_fork;
+	phi_id = phi_data->phi_id;
 
 	//printf("Philosopher %d created\n", philosopherId);
 
 	for(i = 0; i < MAX_ITERATIONS; ++i)
 	{
 		//Choosing forks order
-		chooseForks(phi_data->phi_id, &first_fork, &second_fork);
+		chooseForks(phi_id, &first_fork, &second_fork);
 
 		//Taking / waiting forks
-		takeForks(phi_data->phi_id, first_fork, second_fork);
+		takeForks(phi_id, first_fork, second_fork);
 
 		//Eating
 		eat();
 
 		//Releasing forks
-		releaseFork(phi_data->phi_id, first_fork, second_fork);
+		releaseFork(phi_id, first_fork, second_fork);
 		
 		//Thniking
 		think();
