@@ -15,7 +15,7 @@ remote sdcopy umount:
 else
 
 remote:
-	@ssh $(REMOTE) 'make -C $(REMOTE_FOLDER)/$(APP_NAME)'
+	@ssh $(REMOTE) 'make --no-print-directory -C $(REMOTE_FOLDER)/$(APP_NAME)'
 
 ifndef SDCARD
 sdcopy umount:

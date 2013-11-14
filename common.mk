@@ -1,4 +1,5 @@
 THIS := $(lastword $(MAKEFILE_LIST)) #This MUST BE at the top of the file!
+MAKEFLAGS += --no-print-directory
 
 #------------------------------------------------------------------------------- FUNCTIONS
 
