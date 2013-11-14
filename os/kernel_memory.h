@@ -1,7 +1,11 @@
 #ifndef _H_KERNEL_MEMORY
 #define _H_KERNEL_MEMORY
 
-void * kernel_allocate_memory();
-void * kernel_deallocate_memory();
+#include "standart.h"
+
+void kernel_memory_init();
+
+void * kernel_allocate_memory(uint32_t size);
+void * kernel_deallocate_memory(void * address);
 
 #endif
