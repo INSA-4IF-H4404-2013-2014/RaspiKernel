@@ -14,9 +14,10 @@ AS_FLAGS = -g -march=armv6z
 
 GDB_DEFAULT = gdb/default_run.gdb
 
-OPTIONSFILE = makeOptions.gitlocal
+#makeOptions.gitlocal
+OPTIONSFILE ?= makeOptions.gitlocal
 -include $(OPTIONSFILE)
-REMOTE_MACHINE = iftpserv2.insa-lyon.fr
+REMOTE_MACHINE ?= iftpserv2.insa-lyon.fr
 REMOTE = $(REMOTE_USERNAME)@$(REMOTE_MACHINE)
 REMOTE_FOLDER ?= ~/RaspSandbox
 SQUEDULER ?= KERNEL_STRATEGY_ROUNDROBIN_ONE
@@ -66,7 +67,7 @@ CMD_RM = $(HIDE_CMD)rm
 
 #------------------------------------------------------------------------------- STATIC RULES
 
-.PHONY: update clean full run gdb
+.PHONY: update clean full run gdb send2
 
 update : $(BUILD_DIR) $(BUILD_TARGET).hex $(BUILD_TARGET).bin $(BUILD_TARGET).img
 	$(CMD_ECHO) "# build finished"
