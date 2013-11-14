@@ -3,7 +3,6 @@
 
 #include "kernel_arm.h"
 #include "kernel_scheduler.h"
-#include "hw.h"
 
 kernel_pcb_list_t kernel_round_robin_pcbs[KERNEL_RR_LEVELS];
 kernel_pcb_list_t kernel_pause_pcb;
@@ -65,7 +64,7 @@ kernel_scheduler_handler()
 
     kernel_scheduler_chose_next();
 
-    set_next_tick_and_enable_timer_irq();
+    kernel_scheduler_set_next_timer();
 
     __asm("mov sp, %0" : : "r"(kernel_running_pcb->mSP));
     __asm("pop {r0 - r12, lr}");

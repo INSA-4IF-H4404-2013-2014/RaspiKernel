@@ -6,6 +6,7 @@
 
 #include "kernel_config.h"
 #include "kernel_pcb_list.h"
+#include "kernel_arm_timer.h"
 #include "kernel_arm.h"
 
 
@@ -47,6 +48,17 @@ extern kernel_pcb_t * const kernel_running_pcb;
  */
 void
 kernel_scheduler_init();
+
+/*
+ * @infos:
+ */
+#define kernel_scheduler_set_next_timer() \
+    { \
+        kernel_arm_timer_slot(KERNEL_SCHEDULER_TIMER_SLOT) = \
+            kernel_arm_timer_clock() + KERNEL_SCHEDULER_TIMER_PERIODE; \
+        kernel_arm_timer_enable(KERNEL_SCHEDULER_TIMER_SLOT); \
+    }
+
 
 /*
  * @infos: yield switch to another PCB

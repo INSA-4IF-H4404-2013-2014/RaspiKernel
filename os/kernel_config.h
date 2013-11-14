@@ -18,5 +18,15 @@
 #error "KERNEL_RR_LEVELS must be positive."
 #endif
 
+/*
+ * @infos: defines the scheduler's timer slot
+ */
+#define KERNEL_SCHEDULER_TIMER_SLOT 1
+
+/*
+ * @infos: defines the scheduler interupt periode
+ */
+#define KERNEL_SCHEDULER_TIMER_PERIODE 0x00080000
+
 
 #endif
