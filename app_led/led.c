@@ -6,7 +6,7 @@ void led_on_process ()
 {
 		for ( ; ; )
 		{
-			//led_on();
+			led_on();
 		}
 }
 
@@ -14,7 +14,7 @@ void led_off_process ()
 {
 		for ( ; ; )
 		{
-			//led_off();
+			led_off();
 		}
 }
 
