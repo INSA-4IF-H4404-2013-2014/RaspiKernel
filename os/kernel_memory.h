@@ -6,6 +6,6 @@
 void kernel_memory_init();
 
 void * kernel_allocate_memory(uint32_t size);
-void * kernel_deallocate_memory(void * address);
+void kernel_deallocate_memory(void * address);
 
 #endif

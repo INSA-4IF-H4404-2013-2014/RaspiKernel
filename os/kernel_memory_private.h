@@ -5,8 +5,8 @@
 
 typedef struct _kernel_heap_part_s
 {
-	struct _kernel_heap_part_s * mNextPart;
-	struct _kernel_heap_part_s * mPreviousPart;
+	struct _kernel_heap_part_s * mpNext;
+	struct _kernel_heap_part_s * mpPrevious;
 	uint32_t mSize;
 } kernel_heap_part_s;
 
