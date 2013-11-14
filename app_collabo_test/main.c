@@ -22,7 +22,6 @@ main_process(void)
     int param1 = 3;
     int param2 = 0; 
     int param3 = 7;
-    int i=0;
 
     uint32_t PID1 = process_create((process_func_t) sub_process, &param1);
     uint32_t PID2 = process_create((process_func_t) sub_process, &param2);
