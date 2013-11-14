@@ -19,5 +19,7 @@ kernel_main(void)
     kernel_pcb_enable_irq(pcb);
     kernel_pcb_start(pcb);
 
+    set_next_tick_and_enable_timer_irq();
+
     kernel_scheduler_yield_noreturn();
 }
