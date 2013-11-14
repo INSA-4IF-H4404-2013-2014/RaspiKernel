@@ -1,7 +1,7 @@
 #include "os/api_process.h"
 
 int param1 = 3;
-int param2 = 0; 
+int param2 = 1; 
 int param3 = 7;
 
 static void
@@ -9,14 +9,10 @@ sub_process(int * top)
 {
 	int i;
 	//the last process have to run forever because kernel doesn t know how to kill him
-	if(*top <= 0)
-	{
-		for ( ; ; );
-	}
-	else
-	{
-		for ( i = 0 ; i < *top ; i++);
-	}
+	for ( i = 0 ; i < *top ; i++) 
+    {
+        process_yield();
+    }
 }
 
 

@@ -66,7 +66,7 @@ uint32_t
 process_pause(uint32_t pid);
 
 /*
- * @infos : start a process
+ * @infos : start a process 
  *
  * @param <pid> : the process's PID
  *
@@ -76,6 +76,12 @@ process_pause(uint32_t pid);
  */
 uint32_t
 process_start(uint32_t pid);
+
+/*
+ * @info : make the running process yield the hand to the next process with the hihest priority 
+ */
+void
+process_yield();
 
 /*
  * @infos : get the current process's PID

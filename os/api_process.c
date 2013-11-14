@@ -140,6 +140,17 @@ process_start(uint32_t pid)
     return 1;
 }
 
+void
+process_yield()
+{
+    kernel_pause_scheduler();
+
+    kernel_pcb_list_rotatel(kernel_running_pcb->mSchedulerList);
+    kernel_scheduler_yield();
+
+    kernel_resume_scheduler();
+}
+
 uint32_t
 process_get_pid()
 {
