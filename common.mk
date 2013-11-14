@@ -62,6 +62,7 @@ ifeq ($(MUSIC),)
 else
 	CMD_LD = $(BUILD_PREFIX_HIDE)ld
 endif
+
 CMD_AS = $(BUILD_PREFIX_HIDE)as
 CMD_CC = $(BUILD_PREFIX_HIDE)gcc
 CMD_OBJDUMP = $(BUILD_PREFIX_HIDE)objdump
