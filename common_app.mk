@@ -1,4 +1,4 @@
 include ../common.mk
 
 send:
-	make -C ../ send
+	@make -C ../ send
