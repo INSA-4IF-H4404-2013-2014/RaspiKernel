@@ -11,10 +11,10 @@ send:
 remote:
 	@ssh $(REMOTE) 'make -C $(REMOTE_FOLDER)/$(APP_NAME)'
 
-release:
+sdcopy:
 	@scp $(REMOTE):$(REMOTE_FOLDER)/$(APP_NAME)/$(BUILD_DIR)kernel.img $(SDCARD)
 
 umount:
 	@umount $(SDCARD)
 
-autorelease: send remote release umount
+deploy: send remote sdcopy umount
