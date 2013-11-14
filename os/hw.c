@@ -43,17 +43,4 @@ init_hw()
     ra|=1<<18;
     PUT32(GPFSEL1,ra);
     PUT32(GPSET0,1<<16);
-
-    /* Enable interrupt *line* */
-    /* (doc1:p116):
-     * 0x2000B210 = Enable IRQs 1 (doc1:p116)
-     * 0x2000B214 = Enable IRQs 2
-     * 0x2000B218 = Enable Basics IRQs
-     * 0x2000B21C = Disable IRQs 1
-     * 0x2000B220 = Disable IRQs 2
-     * 0x2000B224 = Disable Basics IRQs
-     *
-     * Diference betwen {Enable,Disable} IRGs 1 ??????????g
-     */
-    kernel_arm_addr32(0x2000B210) = 0x00000002;
 }

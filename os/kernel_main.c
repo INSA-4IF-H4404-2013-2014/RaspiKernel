@@ -1,4 +1,5 @@
 
+#include "kernel_arm_timer.h"
 #include "kernel_scheduler.h"
 #include "kernel_action.h"
 #include "hw.h"
@@ -10,6 +11,8 @@ main_process(void);
 void __attribute__((noreturn))
 kernel_main(void)
 {
+    kernel_arm_timer_init();
+
     kernel_scheduler_init();
 
     init_hw();
