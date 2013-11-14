@@ -12,7 +12,7 @@ TARGET = kernel
 CC_FLAGS = $(MUSIC_CC) -Wall -Wextra -Werror -nostdlib -fomit-frame-pointer -mno-apcs-frame -nostartfiles -ffreestanding -g -march=armv6z -marm
 AS_FLAGS = -g -march=armv6z
 
-GDB_DEFAULT = gdb/default.gdb
+GDB_DEFAULT = gdb/default_run.gdb
 
 OPTIONSFILE = makeOptions.gitlocal
 -include $(OPTIONSFILE)

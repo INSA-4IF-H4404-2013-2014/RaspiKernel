@@ -27,6 +27,7 @@ kernel_pcb_create(void * f, void * args)
     pcb->mSchedulerList = kernel_default_scheduler();
 
     kernel_pcb_inherit_cpsr(pcb);
+    kernel_pcb_enable_irq(pcb);
     kernel_pcb_set_pc(pcb, kernel_pcb_startup);
     kernel_pcb_set_rN(pcb, 0, f);
     kernel_pcb_set_rN(pcb, 1, args);
@@ -106,7 +107,7 @@ kernel_pcb_set_scheduler(kernel_pcb_list_t * scheduler_list, kernel_pcb_t * pcb)
 void
 kernel_pcb_start(kernel_pcb_t * pcb)
 {
-    kernel_pcb_list_remove(&kernel_pause_pcb, pcb);
+    kernel_pcb_list_remove(pcb->mParentList, pcb);
     kernel_pcb_list_pushb(pcb->mSchedulerList, pcb);
 }
 
