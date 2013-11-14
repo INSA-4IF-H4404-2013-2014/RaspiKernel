@@ -50,8 +50,19 @@ sync_mutex_lock_secure(sync_mutex_t * mutex);
  *
  * @param <mutex>: an initialised mutex
  */
- void
+void
 sync_mutex_unlock(sync_mutex_t * mutex);
+
+/*
+ * @infos: check if the lock of the <mutex> by the current running
+ * process will create a deadlock
+ *
+ * @param <mutex>: an initialised mutex
+ * @return: 0 if the mutex can be securely locked, -1 if locking the mutex
+ *          will create a deadlock
+ */
+int
+kernel_deadlock_check(sync_mutex_t * mutex);
 
 #else
 //-------------------------------------------------------------- MUTEX STANDARD

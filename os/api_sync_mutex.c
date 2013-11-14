@@ -32,14 +32,17 @@ sync_mutex_lock(sync_mutex_t * mutex)
 int
 sync_mutex_lock_secure(sync_mutex_t * mutex)
 {
-	//TODO : deadlocks algorithm
+	if(kernel_deadlock_check(mutex) == -1)
+	{
+		return -1;
+	}
 	
 	sync_mutex_lock(sync_mutex_t * mutex);
 	
 	return 0;
 }
 
- void
+void
 sync_mutex_unlock(sync_mutex_t * mutex)
 {
     kernel_pause_scheduler();
@@ -58,5 +61,19 @@ sync_mutex_unlock(sync_mutex_t * mutex)
     mutex->token = true;
 
     kernel_resume_scheduler();
+}
+
+int
+kernel_deadlock_check(sync_mutex_t * mutex)
+{
+	//No deadlock if the mutex is unlocked or if the current process owns no mutex
+	if(mutex->token || kernel_running_pcb->mMutexPossessed == 0)
+	{
+		return 0;
+	}
+	
+	
+
+	return -1;
 }
 #endif
