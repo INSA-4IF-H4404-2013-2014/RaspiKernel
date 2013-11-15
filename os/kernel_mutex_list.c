@@ -1,11 +1,11 @@
 #ifdef MUTEX_SECURE
 
 #include "kernel_mutex_list.h"
-#include "allocateMemory.h"
+#include "kernel_memory.h"
 
 kernel_mutex_list_t * kernel_mutex_list_insert ( kernel_mutex_list_t * list, sync_mutex_t * mutex )
 {
-	kernel_mutex_list_t * newMaillon = (kernel_mutex_list_t * ) AllocateMemory ( sizeof ( kernel_mutex_list_t) );
+	kernel_mutex_list_t * newMaillon = (kernel_mutex_list_t * ) kernel_allocate_memory ( sizeof ( kernel_mutex_list_t) );
 	newMaillon->mutex = mutex;
 	if ( list )
 	{
