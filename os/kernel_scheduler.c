@@ -53,12 +53,17 @@ kernel_scheduler_chose_next()
         return;
     }
 
-    while (i)
+    for ( ; ; )
     {
         if (kernel_round_robin_pcbs[i].mFirst)
         {
             kernel_running_pcb = kernel_round_robin_pcbs[i].mFirst;
             return;
+        }
+
+        if (i == 0)
+        {
+            break;
         }
 
         i--;
