@@ -15,6 +15,12 @@
 #define KERNEL_TIMER_FREQUENCY_DIVISOR 70
 
 /*
+ * @infos: defines the total kernel heap size
+ */
+#define KERNEL_HEAP_SIZE \
+    (256 * 1024 * 1024)
+
+/*
  * @infos: defines the standart PCB stack size
  */
 #define KERNEL_STACK_SIZE \
