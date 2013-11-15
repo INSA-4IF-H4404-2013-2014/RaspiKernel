@@ -2,6 +2,13 @@
 #define _H_KERNEL_CONFIG
 
 /*
+ * @infos: defines the total kernel heap size
+ */
+#define KERNEL_HEAP_SIZE \
+    (256 * 1024 * 1024)
+
+
+/*
  * @infos: defines the standart PCB stack size
  */
 #define KERNEL_STACK_SIZE \

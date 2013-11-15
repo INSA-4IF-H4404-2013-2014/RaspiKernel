@@ -1,7 +1,9 @@
 #Indicate here the remote parameters
+#REMOTE_USERNAME = INDICATE-YOUR-LOGIN
+#REMOTE_MACHINE = iftpserv2.insa-lyon.fr
 #REMOTE_FOLDER = ~/RaspSandbox
-#REMOTE_USERNAME=yourlogin
 
+#SDCARD=/INDICATE/SDCARD/PATH
 
 #Please uncomment the OS for which you want to compile
 #Default value: OS_RASP
