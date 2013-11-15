@@ -29,6 +29,7 @@ kernel_scheduler_init()
     }
 
     kernel_pcb_list_init(&kernel_pause_pcb);
+    kernel_pcb_list_init(&kernel_sleeping_pcb);
 
     kernel_idle_pcb.mPID = ~0x0;
     kernel_pcb_set_lr(&kernel_idle_pcb, kernel_idle_process);
