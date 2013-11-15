@@ -2,15 +2,16 @@ MAKEFLAGS += --no-print-directory
 
 APPS=$(dir $(wildcard */makefile))
 
-.PHONY: update clean all
+.PHONY: default clean all send remote
 .PHONY: $(APPS)
 
-$(APPS):
-	@echo "# compiling $@" ;\
-	make -C "$@" ;
-
-update: $(APPS)
-	@echo "# all builds succeeded" ;
+default:
+	@for APP in $(APPS) ;\
+        do\
+			echo "# compiling $$APP" ;\
+            make -C "$$APP" ;\
+			echo "" ;\
+        done;
 
 clean:
 	@for APP in $(APPS) ;\
