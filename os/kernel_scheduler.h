@@ -25,6 +25,11 @@ extern kernel_pcb_list_t kernel_round_robin_pcbs[KERNEL_RR_LEVELS];
  */
 extern kernel_pcb_list_t kernel_pause_pcb;
 
+/*
+ * @infos: list all ready collaborative PCBs
+ */
+extern kernel_pcb_list_t kernel_collabo_pcb;
+
 
 /*
  * @infos: gets the default scheduler
@@ -79,10 +84,13 @@ kernel_scheduler_yield_noreturn();
     kernel_arm_disable_irq()
 
 /*
- * @infos: resume scheduler
+ * @infos: resume scheduler if we are not in collaborative mode
  */
 #define kernel_resume_scheduler() \
-    kernel_arm_enable_irq()
+	if(kernel_running_pcb->mSchedulerList != &kernel_collabo_pcb) \
+	{ \
+		kernel_arm_enable_irq(); \
+	}
 
 
 #endif
