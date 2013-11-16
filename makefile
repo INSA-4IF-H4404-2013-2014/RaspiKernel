@@ -57,7 +57,6 @@ endif
 	@echo
 	@for APP in $(APPS) ;\
         do\
-			echo "# re-making $$APP" ;\
             make -C "$$APP" all ;\
 			echo "" ;\
         done;

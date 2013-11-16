@@ -44,6 +44,20 @@ ifeq ($(TARGET), remote)
 endif
 endif
 
+all:
+ifeq ($(TARGET), local)
+ifneq ($(DEPART), true)
+	@echo "# locally cleaning and re-making $(APP_NAME)..."
+else
+	@echo "# remotely cleaning and re-making $(APP_NAME)..."
+endif
+	@make --no-print-dir -f ../common.mk $@
+else
+ifeq ($(TARGET), remote)
+	@echo "# remotely cleaning and re-making $(APP_NAME)..."
+	$(call remotelaunch, $@)
+endif
+endif
 
 
 
