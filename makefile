@@ -40,7 +40,6 @@ endif
 	@echo
 	@for APP in $(APPS) ;\
         do\
-			echo "# cleaning $$APP" ;\
             make -C "$$APP" clean ;\
         done;
 else

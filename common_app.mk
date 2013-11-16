@@ -30,7 +30,20 @@ endif
 endif
 
 clean:
+ifeq ($(TARGET), local)
+ifneq ($(DEPART), true)
+	@echo "# locally cleaning $(APP_NAME)..."
+else
+	@echo "# remotely cleaning $(APP_NAME)..."
+endif
 	@make --no-print-dir -f ../common.mk $@
+else
+ifeq ($(TARGET), remote)
+	@echo "# remotely cleaning $(APP_NAME)..."
+	$(call remotelaunch, $@)
+endif
+endif
+
 
 
 
