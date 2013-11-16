@@ -4,7 +4,7 @@ include $(PARSERFILE)
 
 APP_NAME=$(notdir $(shell pwd | sed 's/ /\\/g'))
 
-.PHONY: default send
+.PHONY: default send clean all all_ sdcopy umount _deploy deploy
 
 define remotelaunch
 	@echo "  * remote: $(REMOTE)"; \
@@ -13,7 +13,7 @@ define remotelaunch
 	ssh $(REMOTE) 'make --no-print-directory -C $(REMOTE_FOLDER)/$(APP_NAME) $1 MODE=local DEPART=true'
 endef
 
-default:
+default: send
 ifeq ($(MODE), local)
 ifneq ($(DEPART), true)
 	@echo "# locally compiling $(APP_NAME)..."
@@ -44,23 +44,30 @@ ifeq ($(MODE), remote)
 endif
 endif
 
-all:
+all: send all_
+
+all_:
 ifeq ($(MODE), local)
 ifneq ($(DEPART), true)
 	@echo "# locally cleaning and re-making $(APP_NAME)..."
 else
 	@echo "# remotely cleaning and re-making $(APP_NAME)..."
 endif
-	@make --no-print-dir -f ../common.mk $@
+	@make --no-print-dir -f ../common.mk all
 else
 ifeq ($(MODE), remote)
 	@echo "# remotely cleaning and re-making $(APP_NAME)..."
-	$(call remotelaunch, $@)
+	@echo "  * remote: $(REMOTE)"; \
+	echo "  * folder: $(REMOTE_FOLDER)"; \
+	echo ""; \
+	ssh $(REMOTE) 'make --no-print-directory -C $(REMOTE_FOLDER)/$(APP_NAME) -f ../common.mk all MODE=local DEPART=true'
 endif
 endif
 
 send:
+ifeq ($(MODE), remote)
 	@make --no-print-dir -C ../ send
+endif
 
 sdcopy:
 ifeq ($(MODE), local)
