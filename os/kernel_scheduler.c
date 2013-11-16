@@ -46,6 +46,21 @@ kernel_scheduler_init()
 void
 kernel_scheduler_chose_next()
 {
+    uint32_t current_clock = kernel_arm_timer_clock();
+
+    while (kernel_sleeping_pcbs.mFirst)
+    {
+        if (kernel_sleeping_pcbs.mFirst->mStartDate > current_clock)
+        {
+            break;
+        }
+
+        kernel_pcb_t * current;
+
+        kernel_pcb_list_popf(&kernel_sleeping_pcbs, current);
+        kernel_pcb_list_pushb(current->mSchedulerList, current);
+    }
+
     uint32_t i = KERNEL_RR_LEVELS - 1;
 
     if (kernel_collabo_pcb.mFirst)

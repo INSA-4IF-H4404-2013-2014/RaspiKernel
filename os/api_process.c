@@ -173,7 +173,7 @@ process_sleep(uint32_t pid, uint32_t duration)
         return 0;
     }
 
-    kernel_pcb_sleep(pcb, duration);
+    kernel_pcb_sleep(pcb, duration * KERNEL_SCHEDULER_TIMER_PERIODE);
 
     kernel_resume_scheduler();
 
