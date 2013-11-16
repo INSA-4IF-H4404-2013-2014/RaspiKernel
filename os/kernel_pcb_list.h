@@ -54,6 +54,15 @@
     }
 
 /*
+ * @infos: insert in a sorted <list>
+ *
+ * @param <list>: list to insert to
+ * @param <pcb>: the PCB to insert
+ */
+void
+kernel_pcb_list_sorted_insert(kernel_pcb_list_t * list, kernel_pcb_t * pcb);
+
+/*
  * @infos: pop front a <list>
  *
  * @param <list>: a PCB list

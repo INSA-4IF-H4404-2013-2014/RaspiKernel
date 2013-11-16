@@ -3,13 +3,21 @@
 
 #include "kernel_arm.h"
 #include "kernel_scheduler.h"
-#include "hw.h"
+
 
 kernel_pcb_list_t kernel_round_robin_pcbs[KERNEL_RR_LEVELS];
-kernel_pcb_list_t kernel_pause_pcb;
 kernel_pcb_list_t kernel_collabo_pcb;
+kernel_pcb_list_t kernel_pause_pcb;
+kernel_pcb_list_t kernel_sleeping_pcbs;
 
 kernel_pcb_t * kernel_running_pcb;
+
+static kernel_pcb_t kernel_idle_pcb;
+
+
+static void __attribute__((naked, noreturn))
+kernel_idle_process();
+
 
 void
 kernel_scheduler_init()
@@ -20,9 +28,16 @@ kernel_scheduler_init()
     {
         kernel_pcb_list_init(kernel_round_robin_pcbs + i);
     }
-    kernel_pcb_list_init(&kernel_pause_pcb);
+
     kernel_pcb_list_init(&kernel_collabo_pcb);
-    
+    kernel_pcb_list_init(&kernel_pause_pcb);
+    kernel_pcb_list_init(&kernel_sleeping_pcbs);
+
+    kernel_idle_pcb.mPID = ~0x0;
+    kernel_idle_pcb.mSP = (void*)0x2000;
+    kernel_pcb_set_pc(&kernel_idle_pcb, kernel_idle_process);
+    kernel_pcb_inherit_cpsr(&kernel_idle_pcb);
+    kernel_pcb_enable_irq(&kernel_idle_pcb);
 
     kernel_running_pcb = nullptr;
 }
@@ -31,19 +46,46 @@ kernel_scheduler_init()
 void
 kernel_scheduler_chose_next()
 {
-    if(kernel_collabo_pcb.mFirst != 0)
-		{
-			kernel_running_pcb = kernel_collabo_pcb.mFirst;
-		}
-        else
+    uint32_t current_clock = kernel_arm_timer_clock();
+
+    while (kernel_sleeping_pcbs.mFirst)
+    {
+        if (kernel_sleeping_pcbs.mFirst->mStartDate > current_clock)
         {
-			uint32_t i = KERNEL_RR_LEVELS - 1;
-			while (kernel_round_robin_pcbs[i].mFirst == 0)
-			{
-				i--;
-			}
-			kernel_running_pcb = kernel_round_robin_pcbs[i].mFirst;
-		} 
+            break;
+        }
+
+        kernel_pcb_t * current;
+
+        kernel_pcb_list_popf(&kernel_sleeping_pcbs, current);
+        kernel_pcb_list_pushb(current->mSchedulerList, current);
+    }
+
+    uint32_t i = KERNEL_RR_LEVELS - 1;
+
+    if (kernel_collabo_pcb.mFirst)
+    {
+        kernel_running_pcb = kernel_collabo_pcb.mFirst;
+        return;
+    }
+
+    for ( ; ; )
+    {
+        if (kernel_round_robin_pcbs[i].mFirst)
+        {
+            kernel_running_pcb = kernel_round_robin_pcbs[i].mFirst;
+            return;
+        }
+
+        if (i == 0)
+        {
+            break;
+        }
+
+        i--;
+    }
+
+    kernel_running_pcb = &kernel_idle_pcb;
 }
 
 
@@ -76,7 +118,7 @@ kernel_scheduler_handler()
 
     kernel_scheduler_chose_next();
 
-    set_next_tick_and_enable_timer_irq();
+    kernel_scheduler_set_next_timer();
 
     __asm("mov sp, %0" : : "r"(kernel_running_pcb->mSP));
     __asm("pop {r0 - r12, lr}");
@@ -109,6 +151,14 @@ kernel_scheduler_yield_noreturn()
     __asm("mov sp, %0" : : "r"(kernel_running_pcb->mSP));
     __asm("pop {r0 - r12, lr}");
     __asm("rfefd sp!");
+
+    __builtin_unreachable();
+}
+
+void
+kernel_idle_process()
+{
+    for ( ; ; );
 
     __builtin_unreachable();
 }

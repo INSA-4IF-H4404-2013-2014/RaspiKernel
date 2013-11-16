@@ -66,19 +66,32 @@ uint32_t
 process_pause(uint32_t pid);
 
 /*
- * @infos : start a process 
+ * @infos : start a process
  *
  * @param <pid> : the process's PID
  *
  * @return
- *  - 1 if succed (the process has just been created before)
+ *  - 1 if succed
  *  - 0 elsewhere
  */
 uint32_t
 process_start(uint32_t pid);
 
 /*
- * @info : make the running process yield the hand to the next process with the hihest priority 
+ * @infos: sleep a process
+ *
+ * @param <pid>: the process's PID to sleep
+ * @param <duration>: the desired sleep duration in micro seconds
+ *
+ * @return
+ *  - 1 if succed
+ *  - 0 elsewhere
+ */
+uint32_t
+process_sleep(uint32_t pid, uint32_t duration);
+
+/*
+ * @info : make the running process yield the hand to the next process with the hihest priority
  */
 void
 process_yield();
