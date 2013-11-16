@@ -1,10 +1,40 @@
 OPTIONSFILE = ../makeOptions.gitlocal
 PARSERFILE = ../.common_parser.mk
-include ../common.mk
+include $(PARSERFILE)
 
 APP_NAME=$(notdir $(shell pwd | sed 's/ /\\/g'))
 
-.PHONY: release send
+.PHONY: default send
+
+define remotelaunch
+	@echo "  * remote: $(REMOTE)"; \
+	echo "  * folder: $(REMOTE_FOLDER)"; \
+	echo ""; \
+	ssh $(REMOTE) 'make --no-print-directory -C $(REMOTE_FOLDER)/$(APP_NAME) $1 TARGET=local DEPART=true'
+endef
+
+default:
+ifeq ($(TARGET), local)
+ifneq ($(DEPART), true)
+	@echo "# locally compiling $(APP_NAME)..."
+else
+	@echo "# remotely compiling $(APP_NAME)..."
+endif
+	@make --no-print-dir -f ../common.mk
+	@echo ""
+else
+ifeq ($(TARGET), remote)
+	@echo "# remotely compiling $(APP_NAME)..."
+	$(call remotelaunch, $@)
+endif
+endif
+
+clean:
+	@make --no-print-dir -f ../common.mk $@
+
+
+
+
 
 send:
 	@make --no-print-dir -C ../ send

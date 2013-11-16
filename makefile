@@ -22,7 +22,6 @@ endif
 	@echo
 	@for APP in $(APPS) ;\
         do\
-			echo "# compiling $$APP" ;\
             make -C "$$APP" ;\
 			echo "" ;\
         done;

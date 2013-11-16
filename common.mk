@@ -15,8 +15,8 @@ AS_FLAGS = -g -march=armv6z
 
 GDB_DEFAULT = gdb/default_run.gdb
 
-PARSERFILE ?= .common_parser.mk
--include $(PARSERFILE)
+OPTIONSFILE = ../makeOptions.gitlocal
+include ../.common_parser.mk
 
 CC_FLAGS+=$(addprefix -D, $(OS) $(SQUEDULER))
 
