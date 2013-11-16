@@ -79,4 +79,18 @@ umount:
 	@umount $(SDCARD)
 	@echo
 
-deploy: send remote sdcopy umount
+ifeq ($(MODE), local)
+deploy_:
+	@echo "# locally deploying $(APP_NAME)..."
+	@echo
+
+deploy: deploy_ default sdcopy umount
+else
+ifeq ($(MODE), remote)
+deploy_:
+	@echo "# remotely deploying $(APP_NAME)..."
+	@echo
+
+deploy: deploy_ send default sdcopy umount
+endif
+endif
