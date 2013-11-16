@@ -1,9 +1,29 @@
 #ifndef _H_KERNEL_ARM
 #define _H_KERNEL_ARM
 
-#include "standart.h"
+#include "standard.h"
 
 // doc1 : doc_arm_specs.pdf
+
+//------------------------------------------------------------------------------ WRITE
+
+/*
+ * @infos: access to specific memory address
+ *
+ * @return:
+ *  - reference on a uint32_t at this address
+ */
+#define kernel_arm_addr32(ADDR) (*((uint32_t*)(ADDR)))
+
+/*
+ * @infos: access to specific memory array item
+ *
+ * @return:
+ *  - reference on a uint32_t at this address
+ */
+#define kernel_arm_array32(ADDR,i) (((uint32_t*)(ADDR))[i])
+
+
 
 //------------------------------------------------------------------------------ REGISTERS
 
