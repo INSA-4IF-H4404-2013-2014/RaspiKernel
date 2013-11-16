@@ -68,7 +68,7 @@ CMD_RM = $(HIDE_CMD)rm
 
 #------------------------------------------------------------------------------- STATIC RULES
 
-.PHONY: update clean full run gdb send2
+.PHONY: update clean all run gdb send2
 
 update : $(BUILD_DIR) $(BUILD_TARGET).hex $(BUILD_TARGET).bin $(BUILD_TARGET).img
 	$(CMD_ECHO) "# build finished"
@@ -76,7 +76,7 @@ update : $(BUILD_DIR) $(BUILD_TARGET).hex $(BUILD_TARGET).bin $(BUILD_TARGET).im
 clean :
 	$(CMD_RM) -rf $(BUILD_DIR)
 
-full : clean update
+all : clean update
 
 run : $(GDB_DEFAULT)
 
