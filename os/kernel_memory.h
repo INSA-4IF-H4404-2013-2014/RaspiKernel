@@ -1,7 +1,7 @@
 #ifndef _H_KERNEL_MEMORY
 #define _H_KERNEL_MEMORY
 
-#include "standart.h"
+#include "standard.h"
 
 
 /*
