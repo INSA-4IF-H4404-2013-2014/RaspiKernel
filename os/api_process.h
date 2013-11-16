@@ -81,7 +81,7 @@ process_start(uint32_t pid);
  * @infos: sleep a process
  *
  * @param <pid>: the process's PID to sleep
- * @param <duration>: the desired sleep duration
+ * @param <duration>: the desired sleep duration in micro seconds
  *
  * @return
  *  - 1 if succed
