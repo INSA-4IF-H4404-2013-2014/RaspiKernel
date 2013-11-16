@@ -34,7 +34,8 @@ kernel_scheduler_init()
     kernel_pcb_list_init(&kernel_sleeping_pcbs);
 
     kernel_idle_pcb.mPID = ~0x0;
-    kernel_pcb_set_lr(&kernel_idle_pcb, kernel_idle_process);
+    kernel_idle_pcb.mSP = (void*)0x2000;
+    kernel_pcb_set_pc(&kernel_idle_pcb, kernel_idle_process);
     kernel_pcb_inherit_cpsr(&kernel_idle_pcb);
     kernel_pcb_enable_irq(&kernel_idle_pcb);
 
