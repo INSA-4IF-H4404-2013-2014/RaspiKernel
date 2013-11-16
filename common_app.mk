@@ -2,6 +2,8 @@ OPTIONSFILE = ../makeOptions.gitlocal
 PARSERFILE = ../.common_parser.mk
 include $(PARSERFILE)
 
+OS=$(shell uname -s)
+
 APP_NAME=$(notdir $(shell pwd | sed 's/ /\\/g'))
 
 .PHONY: default send clean all all_ sdcopy umount _deploy deploy
@@ -83,7 +85,11 @@ endif
 
 umount:
 	@echo "# unmounting SDCARD..."
+ifeq ($(OS), Darwin)
+	@diskutil unmount $(SDCARD)
+else
 	@umount $(SDCARD)
+endif
 	@echo
 
 ifeq ($(MODE), local)
