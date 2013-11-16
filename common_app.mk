@@ -7,7 +7,7 @@ APP_NAME=$(notdir $(shell pwd | sed 's/ /\\/g'))
 .PHONY: release send
 
 send:
-	@make -C ../ send
+	@make --no-print-dir -C ../ send
 
 ifndef REMOTE_USERNAME
 remote sdcopy umount:

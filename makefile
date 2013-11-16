@@ -71,4 +71,10 @@ endif
 endif
 
 send:
-	@make -f common.mk send2
+	@echo "# updating remote $(REMOTE):$(REMOTE_FOLDER)..."
+ifndef REMOTE_USERNAME
+	$(error "Please first set REMOTE_USERNAME variable in $(OPTIONSFILE)!")
+else
+	@rsync -haP --exclude=.git --exclude=build --exclude=pdfs --delete . $(REMOTE):$(REMOTE_FOLDER)
+	@echo
+endif
