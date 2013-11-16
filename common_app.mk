@@ -75,8 +75,8 @@ endif
 endif
 
 umount:
-	$(CMD_ECHO) "# unmounting SDCARD..."
+	@echo "# unmounting SDCARD..."
 	@umount $(SDCARD)
-	$(CMD_ECHO)
+	@echo
 
 deploy: send remote sdcopy umount
