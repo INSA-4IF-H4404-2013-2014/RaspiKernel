@@ -1,5 +1,5 @@
 
-#ifndef OS_RASP
+#ifdef OS_LINUX
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -11,7 +11,7 @@
 void philosophers_process(void)
 {
 	int i;
-	philosopher_data generic_data[PHILOSOPHERS_NUMBER];
+	philosopher_data phi_data[PHILOSOPHERS_NUMBER];
 
 	//Creating forks
 	for(i = 0; i < PHILOSOPHERS_NUMBER; ++i)
@@ -23,20 +23,20 @@ void philosophers_process(void)
 	for(i = 0; i < PHILOSOPHERS_NUMBER; ++i)
 	{
 		//Initializing the philosopher data structure
-		generic_data[i].phi_id = i;
+		phi_data[i].phi_id = i;
 		
 #ifdef OS_RASP
-		sync_sem_init(&(generic_data[i].sem_id), 0);
+		sync_sem_init(&(phi_data[i].sem_id), 0);
 		
 		//Starting process
-		generic_data[i].process_id = process_create(&sync_philosopher, &generic_data[i]);
-		process_start(generic_data[i].process_id);
+		phi_data[i].process_id = process_create(&sync_philosopher, &phi_data[i]);
+		process_start(phi_data[i].process_id);
 #else
-		generic_data[i].sem_id = semget(IPC_PRIVATE, 1, IPC_CREAT | IPC_EXCL | 0660);
-		semctl(generic_data[i].sem_id, 0, SETVAL, 0);
+		phi_data[i].sem_id = semget(IPC_PRIVATE, 1, IPC_CREAT | IPC_EXCL | 0660);
+		semctl(phi_data[i].sem_id, 0, SETVAL, 0);
 		
 		//Starting process
-		pthread_create(&(generic_data[i].process_id), NULL, &philosopher, &generic_data[i]);
+		pthread_create(&(phi_data[i].process_id), NULL, &philosopher, &phi_data[i]);
 #endif
 	}
 
@@ -44,9 +44,9 @@ void philosophers_process(void)
 	for(i = 0; i < PHILOSOPHERS_NUMBER; ++i)
 	{
 #ifdef OS_RASP
-		sync_sem_wait(&(generic_data[i].sem_id));
+		sync_sem_wait(&(phi_data[i].sem_id));
 #else
-		pthread_join(generic_data[i].process_id, NULL);
+		pthread_join(phi_data[i].process_id, NULL);
 #endif
 	}
 }
@@ -54,8 +54,8 @@ void philosophers_process(void)
 void sync_philosopher(void * args)
 {
 	int i, first_fork, second_fork, phi_id;
-	philosopher_data * generic_data = (philosopher_data *) args;
-	phi_id = generic_data->phi_id;
+	philosopher_data * phi_data = (philosopher_data *) args;
+	phi_id = phi_data->phi_id;
 
 	//printf("Philosopher %d created\n", philosopherId);
 
@@ -77,7 +77,7 @@ void sync_philosopher(void * args)
 		think();
 	}
 #ifdef OS_RASP
-	sync_sem_post(&(generic_data->sem_id), 1);
+	sync_sem_post(&(phi_data->sem_id), 1);
 #endif
 }
 
