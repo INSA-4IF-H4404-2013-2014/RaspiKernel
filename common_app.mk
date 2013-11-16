@@ -1,4 +1,5 @@
 OPTIONSFILE = ../makeOptions.gitlocal
+PARSERFILE = ../.common_parser.mk
 include ../common.mk
 
 APP_NAME=$(notdir $(shell pwd | sed 's/ /\\/g'))

@@ -15,14 +15,8 @@ AS_FLAGS = -g -march=armv6z
 
 GDB_DEFAULT = gdb/default_run.gdb
 
-#makeOptions.gitlocal
-OPTIONSFILE ?= makeOptions.gitlocal
--include $(OPTIONSFILE)
-REMOTE_MACHINE ?= iftpserv2.insa-lyon.fr
-REMOTE = $(REMOTE_USERNAME)@$(REMOTE_MACHINE)
-REMOTE_FOLDER ?= ~/RaspSandbox
-SQUEDULER ?= KERNEL_STRATEGY_ROUNDROBIN_ONE
-OS ?= OS_RASP
+PARSERFILE ?= .common_parser.mk
+-include $(PARSERFILE)
 
 CC_FLAGS+=$(addprefix -D, $(OS) $(SQUEDULER))
 

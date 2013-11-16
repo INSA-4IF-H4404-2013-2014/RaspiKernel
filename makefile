@@ -1,4 +1,5 @@
 MAKEFLAGS += --no-print-directory
+-include .common_parser.mk
 
 APPS=$(dir $(wildcard */makefile))
 
