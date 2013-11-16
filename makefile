@@ -22,7 +22,9 @@ clean:
 all:
 	@for APP in $(APPS) ;\
         do\
+			echo "# compiling $$APP" ;\
             make -C "$$APP" all ;\
+			echo "" ;\
         done;
 
 send:
