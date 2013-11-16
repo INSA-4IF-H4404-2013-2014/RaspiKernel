@@ -8,6 +8,12 @@
 #define MAX_THINKING_TIME 1.5
 #define PHILOSOPHERS_NUMBER 5
 
+#ifdef OS_RASP
+#define philo_func sync_philosopher
+#else
+#define philo_func philosopher
+#endif
+
 /*
  * Five silent philosophers sit at a table around a bowl of spaghetti. A fork is placed between each pair of adjacent philosophers.
  * 

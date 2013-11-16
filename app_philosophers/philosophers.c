@@ -27,17 +27,12 @@ void philosophers_process(void)
 		
 #ifdef OS_RASP
 		sync_sem_init(&(phi_data[i].sem_id), 0);
-		
-		//Starting process
-		phi_data[i].process_id = process_create(&sync_philosopher, &phi_data[i]);
-		process_start(phi_data[i].process_id);
 #else
 		phi_data[i].sem_id = semget(IPC_PRIVATE, 1, IPC_CREAT | IPC_EXCL | 0660);
 		semctl(phi_data[i].sem_id, 0, SETVAL, 0);
-		
-		//Starting process
-		pthread_create(&(phi_data[i].process_id), NULL, &philosopher, &phi_data[i]);
 #endif
+		//Starting process
+		generic_thread_create(&(phi_data[i].process_id), &philo_func, &phi_data[i]);
 	}
 
 	//Waiting for philosophers

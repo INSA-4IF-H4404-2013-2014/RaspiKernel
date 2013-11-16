@@ -9,6 +9,11 @@
 	#define generic_mutex_unlock(mutex) sync_mutex_unlock(mutex)
 
 	#define generic_thread_t uint32_t
+
+	#define generic_thread_create(ptr, func, params) \
+		*ptr = process_create(func, params);\
+		process_start(*ptr);
+
 #else
 	#include <pthread.h>
 	#include <sys/types.h>
@@ -21,5 +26,7 @@
 	#define generic_mutex_unlock(mutex) pthread_mutex_unlock(mutex)
 
 	#define generic_thread_t pthread_t
+
+	#define generic_thread_create(ptr, func, params) pthread_create(ptr, NULL, func, params)
 #endif
 
