@@ -10,11 +10,11 @@ define remotelaunch
 	@echo "  * remote: $(REMOTE)"; \
 	echo "  * folder: $(REMOTE_FOLDER)"; \
 	echo ""; \
-	ssh $(REMOTE) 'make --no-print-directory -C $(REMOTE_FOLDER)/$(APP_NAME) $1 TARGET=local DEPART=true'
+	ssh $(REMOTE) 'make --no-print-directory -C $(REMOTE_FOLDER)/$(APP_NAME) $1 MODE=local DEPART=true'
 endef
 
 default:
-ifeq ($(TARGET), local)
+ifeq ($(MODE), local)
 ifneq ($(DEPART), true)
 	@echo "# locally compiling $(APP_NAME)..."
 else
@@ -23,14 +23,14 @@ endif
 	@make --no-print-dir -f ../common.mk
 	@echo ""
 else
-ifeq ($(TARGET), remote)
+ifeq ($(MODE), remote)
 	@echo "# remotely compiling $(APP_NAME)..."
 	$(call remotelaunch, $@)
 endif
 endif
 
 clean:
-ifeq ($(TARGET), local)
+ifeq ($(MODE), local)
 ifneq ($(DEPART), true)
 	@echo "# locally cleaning $(APP_NAME)..."
 else
@@ -38,14 +38,14 @@ else
 endif
 	@make --no-print-dir -f ../common.mk $@
 else
-ifeq ($(TARGET), remote)
+ifeq ($(MODE), remote)
 	@echo "# remotely cleaning $(APP_NAME)..."
 	$(call remotelaunch, $@)
 endif
 endif
 
 all:
-ifeq ($(TARGET), local)
+ifeq ($(MODE), local)
 ifneq ($(DEPART), true)
 	@echo "# locally cleaning and re-making $(APP_NAME)..."
 else
@@ -53,7 +53,7 @@ else
 endif
 	@make --no-print-dir -f ../common.mk $@
 else
-ifeq ($(TARGET), remote)
+ifeq ($(MODE), remote)
 	@echo "# remotely cleaning and re-making $(APP_NAME)..."
 	$(call remotelaunch, $@)
 endif
@@ -63,12 +63,12 @@ send:
 	@make --no-print-dir -C ../ send
 
 sdcopy:
-ifeq ($(TARGET), local)
+ifeq ($(MODE), local)
 	@echo "# locally deploying kernel.img on SDCARD..."
 	@cp build/kernel.img $(SDCARD)
 else
-ifeq ($(TARGET), remote)
-	@echo "# remotely deploying kernel.img on SDCARD..."
+ifeq ($(MODE), remote)
+	@echo "# remote deploying kernel.img on SDCARD..."
 	@scp $(REMOTE):$(REMOTE_FOLDER)/$(APP_NAME)/build/kernel.img $(SDCARD)
 	@echo
 endif

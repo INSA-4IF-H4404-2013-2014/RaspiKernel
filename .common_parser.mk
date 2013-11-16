@@ -1,7 +1,7 @@
 #makeOptions.gitlocal options parsing
 OPTIONSFILE ?= makeOptions.gitlocal
 -include $(OPTIONSFILE)
-TARGET ?= remote
+MODE ?= remote
 REMOTE_MACHINE ?= iftpserv2.insa-lyon.fr
 REMOTE = $(REMOTE_USERNAME)@$(REMOTE_MACHINE)
 REMOTE_FOLDER ?= ~/RaspSandbox

@@ -11,11 +11,11 @@ define remotelaunch
 	@echo "  * remote: $(REMOTE)"; \
 	echo "  * folder: $(REMOTE_FOLDER)"; \
 	echo ""; \
-	ssh $(REMOTE) 'make --no-print-directory -C $(REMOTE_FOLDER) $1 TARGET=local DEPART=true'
+	ssh $(REMOTE) 'make --no-print-directory -C $(REMOTE_FOLDER) $1 MODE=local DEPART=true'
 endef
 
 default:
-ifeq ($(TARGET), local)
+ifeq ($(MODE), local)
 ifneq ($(DEPART), true)
 	@echo "# locally compiling all apps..."
 endif
@@ -26,14 +26,14 @@ endif
 			echo "" ;\
         done;
 else
-ifeq ($(TARGET), remote)
+ifeq ($(MODE), remote)
 	@echo "# remotely compiling all apps..."
 	$(call remotelaunch, $@)
 endif
 endif
 
 clean:
-ifeq ($(TARGET), local)
+ifeq ($(MODE), local)
 ifneq ($(DEPART), true)
 	@echo "# locally cleaning all apps..."
 endif
@@ -43,14 +43,14 @@ endif
             make -C "$$APP" clean ;\
         done;
 else
-ifeq ($(TARGET), remote)
+ifeq ($(MODE), remote)
 	@echo "# remotely cleaning all apps..."
 	$(call remotelaunch, $@)
 endif
 endif
 
 all:
-ifeq ($(TARGET), local)
+ifeq ($(MODE), local)
 ifneq ($(DEPART), true)
 	@echo " # locally cleaning and re-making all apps..."
 endif
@@ -61,7 +61,7 @@ endif
 			echo "" ;\
         done;
 else
-ifeq ($(TARGET), remote)
+ifeq ($(MODE), remote)
 	@echo " # remotely cleaning and re-making all apps..."
 	$(call remotelaunch, $@)
 endif

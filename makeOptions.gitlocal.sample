@@ -1,5 +1,5 @@
 #Indicate whether to compile locally (local) or remotely (remote)
-#TARGET = remote
+#MODE = remote
 
 #Indicate here the remote parameters
 #REMOTE_USERNAME = INDICATE-YOUR-LOGIN
