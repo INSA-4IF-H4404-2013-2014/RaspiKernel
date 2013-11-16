@@ -3,8 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <unistd.h>
 #endif
+
+#include "../generic/thread.h"
+#include "../generic/sleep.h"
 
 #include "philosophers.h"
 
@@ -122,7 +124,7 @@ void eat()
 {
 #ifndef OS_RASP
 	float time = (rand() % ((int) (MAX_EATING_TIME * 1000))) / 1000.0;
-	sleep(time);
+	generic_sleep(time);
 #endif
 }
 
@@ -130,6 +132,6 @@ void think()
 {
 #ifndef OS_RASP
 	float time = (rand() % ((int) (MAX_THINKING_TIME * 1000))) / 1000.0;
-	sleep(time);
+	generic_sleep(time);
 #endif
 }
