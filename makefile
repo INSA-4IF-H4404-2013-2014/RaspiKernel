@@ -30,10 +30,3 @@ all:
 
 send:
 	@make -f common.mk send2
-
-remote:
-	@for APP in $(APPS) ;\
-        do\
-			echo "# compiling $$APP" ;\
-            make -C "$$APP" remote ;\
-        done;
