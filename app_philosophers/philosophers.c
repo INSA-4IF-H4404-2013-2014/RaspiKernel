@@ -1,10 +1,12 @@
 
-#ifndef OS_RASP
+#ifdef OS_LINUX
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <unistd.h>
 #endif
+
+#include "../generic/thread.h"
+#include "../generic/sleep.h"
 
 #include "philosophers.h"
 
@@ -16,7 +18,7 @@ void philosophers_process(void)
 	//Creating forks
 	for(i = 0; i < PHILOSOPHERS_NUMBER; ++i)
 	{
-		phi_mutex_init(&forks[i]);
+		generic_mutex_init(&forks[i]);
 	}	
 
 	//Starting philosophers threads
@@ -27,17 +29,12 @@ void philosophers_process(void)
 		
 #ifdef OS_RASP
 		sync_sem_init(&(phi_data[i].sem_id), 0);
-		
-		//Starting process
-		phi_data[i].process_id = process_create(&sync_philosopher, &phi_data[i]);
-		process_start(phi_data[i].process_id);
 #else
 		phi_data[i].sem_id = semget(IPC_PRIVATE, 1, IPC_CREAT | IPC_EXCL | 0660);
 		semctl(phi_data[i].sem_id, 0, SETVAL, 0);
-		
-		//Starting process
-		pthread_create(&(phi_data[i].process_id), NULL, &philosopher, &phi_data[i]);
 #endif
+		//Starting process
+		generic_thread_create(&(phi_data[i].process_id), &philo_func, &phi_data[i]);
 	}
 
 	//Waiting for philosophers
@@ -108,8 +105,8 @@ void takeForks(int philosopherId, int first_fork, int second_fork)
 #ifndef OS_RASP
 	printf("(%d) Taking forks %d and %d\n", philosopherId, first_fork, second_fork);
 #endif
-	phi_mutex_lock(&forks[first_fork]);
-	phi_mutex_lock(&forks[second_fork]);
+	generic_mutex_lock(&forks[first_fork]);
+	generic_mutex_lock(&forks[second_fork]);
 }
 
 void releaseFork(int philosopherId, int first_fork, int second_fork)
@@ -119,15 +116,15 @@ void releaseFork(int philosopherId, int first_fork, int second_fork)
 #ifndef OS_RASP
 	printf("(%d) Releasing forks %d and %d\n", philosopherId, second_fork, first_fork);
 #endif
-	phi_mutex_unlock(&forks[second_fork]);
-	phi_mutex_unlock(&forks[first_fork]);
+	generic_mutex_unlock(&forks[second_fork]);
+	generic_mutex_unlock(&forks[first_fork]);
 }
 
 void eat()
 {
 #ifndef OS_RASP
 	float time = (rand() % ((int) (MAX_EATING_TIME * 1000))) / 1000.0;
-	sleep(time);
+	generic_sleep(time);
 #endif
 }
 
@@ -135,6 +132,6 @@ void think()
 {
 #ifndef OS_RASP
 	float time = (rand() % ((int) (MAX_THINKING_TIME * 1000))) / 1000.0;
-	sleep(time);
+	generic_sleep(time);
 #endif
 }
