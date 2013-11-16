@@ -6,6 +6,14 @@ APPS=$(dir $(wildcard */makefile))
 .PHONY: default clean all send remote
 .PHONY: $(APPS)
 
+#$1 is the remote rule to launch (default, clean, all...)
+define remotelaunch
+	@echo "  * remote: $(REMOTE)"; \
+	echo "  * folder: $(REMOTE_FOLDER)"; \
+	echo ""; \
+	ssh $(REMOTE) 'make --no-print-directory -C $(REMOTE_FOLDER) $1 TARGET=local DEPART=true'
+endef
+
 default:
 ifeq ($(TARGET), local)
 ifneq ($(DEPART), true)
@@ -21,10 +29,7 @@ endif
 else
 ifeq ($(TARGET), remote)
 	@echo "# remotely compiling all apps..."
-	@echo "  * remote: $(REMOTE)"
-	@echo "  * folder: $(REMOTE_FOLDER)"
-	@echo
-	@ssh $(REMOTE) 'make $(MAKEFLAGS) -C $(REMOTE_FOLDER) default TARGET=local DEPART=true'
+	$(call remotelaunch, $@)
 endif
 endif
 
@@ -42,9 +47,7 @@ endif
 else
 ifeq ($(TARGET), remote)
 	@echo "# remotely cleaning all apps..."
-	@echo "  * remote: $(REMOTE)"
-	@echo "  * folder: $(REMOTE_FOLDER)"
-	@ssh $(REMOTE) 'make $(MAKEFLAGS) -C $(REMOTE_FOLDER) clean TARGET=local DEPART=true'
+	$(call remotelaunch, $@)
 endif
 endif
 
@@ -62,10 +65,8 @@ endif
         done;
 else
 ifeq ($(TARGET), remote)
-	@echo "# remotely cleaning and re-making all apps..."
-	@echo "  * remote: $(REMOTE)"
-	@echo "  * folder: $(REMOTE_FOLDER)"
-	@ssh $(REMOTE) 'make $(MAKEFLAGS) -C $(REMOTE_FOLDER) all TARGET=local DEPART=true'
+	@echo " # remotely cleaning and re-making all apps..."
+	$(call remotelaunch, $@)
 endif
 endif
 
