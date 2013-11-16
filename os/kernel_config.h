@@ -43,12 +43,10 @@
 #define KERNEL_SCHEDULER_TIMER_SLOT 1
 
 /*
- * @infos: defines the scheduler interupt periode
- *
- * @note:
- *  - depond on CPU frequency and timer frequency divisor
+ * @infos: defines the scheduler interupt periode in
+ *  micro seconds
  */
-#define KERNEL_SCHEDULER_TIMER_PERIODE 1000000
+#define KERNEL_SCHEDULER_TIMER_PERIODE 100000
 
 
 #endif
