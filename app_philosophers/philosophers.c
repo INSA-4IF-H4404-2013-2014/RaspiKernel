@@ -1,7 +1,10 @@
+
+#ifndef OS_RASP
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+#endif
 
 #include "philosophers.h"
 
