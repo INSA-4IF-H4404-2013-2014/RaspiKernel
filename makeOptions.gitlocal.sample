@@ -1,3 +1,6 @@
+#Indicate whether to compile locally (local) or remotely (remote)
+#TARGET = remote
+
 #Indicate here the remote parameters
 #REMOTE_USERNAME = INDICATE-YOUR-LOGIN
 #REMOTE_MACHINE = iftpserv2.insa-lyon.fr
