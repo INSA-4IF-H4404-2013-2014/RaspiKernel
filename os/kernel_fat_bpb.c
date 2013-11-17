@@ -115,3 +115,17 @@ kernel_fat12_cluster_entry(kernel_fat_bpb_t * bpb, uint32_t id)
     return entry;
 }
 
+void
+kernel_fat_file_info(kernel_fat_bpb_t * bpb, uint32_t cluster, uint32_t pos, kernel_fat_file_t * file)
+{
+    void * current = ((char*)bpb->content) + cluster * bpb->BPB_BytsPerSec * bpb->BPB_SecPerClus + pos * 32;
+
+    void_char_read_inc(file->name, 11, current);
+    void_ptr_read_inc(uint8_t, file->attr, current);
+    void_ptr_shift(current, 8);
+    void_ptr_read_inc(uint16_t, file->first_cluster_hi, current);
+    void_ptr_shift(current, 6);
+    void_ptr_read_inc(uint16_t, file->first_cluster_lo, current);
+    void_ptr_read_inc(uint32_t, file->size, current);
+}
+
