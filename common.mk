@@ -10,7 +10,7 @@ rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
 TARGET = kernel
 
-CC_FLAGS = $(MUSIC_CC) -Wall -Wextra -Werror -nostdlib -fomit-frame-pointer -mno-apcs-frame -nostartfiles -ffreestanding -g -march=armv6z -marm
+CC_FLAGS = -Wall -Wextra -Werror -nostdlib -fomit-frame-pointer -mno-apcs-frame -nostartfiles -ffreestanding -g -march=armv6z -marm
 AS_FLAGS = -g -march=armv6z
 
 GDB_DEFAULT = gdb/default_run.gdb
@@ -40,7 +40,7 @@ ifeq ($(MUSIC), yes)
 	MUSIC_QUEMU = -soundhw all
 
 	LD_FLAGS = $(MUSIC_LIB)
-	CC_FLAGS += $(MUSIC_INCLUDES)
+	CC_FLAGS += $(MUSIC_CC) $(MUSIC_INCLUDES)
 endif
 
 # read QEMU_MACHINE from qemu-machine.gitlocal
