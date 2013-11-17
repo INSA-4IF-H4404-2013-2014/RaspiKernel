@@ -1,16 +1,16 @@
 #include <stdint.h>
 
-#include "timer.h"
+#include "../os/kernel_arm.h"
+#include "timertest.h"
 #include "registers.h"
 
-extern unsigned int GET32 (unsigned int );
 
 static uint32_t timer_ms_base; // 'zero' time
 
 uint32_t get_timer_ms()
 {
     // Return ms elapsed since timer_ms_base. This is currently approximate - should do the math properly.
-    return ((((uint64_t)GET32(SYSTIMERCHI) << 32) | (uint64_t)GET32(SYSTIMERCLO)) >> 10) - timer_ms_base;
+    return ((((uint64_t)kernel_arm_addr32(SYSTIMERCHI) << 32) | (uint64_t)kernel_arm_addr32(SYSTIMERCLO)) >> 10) - timer_ms_base;
 }
 
 
