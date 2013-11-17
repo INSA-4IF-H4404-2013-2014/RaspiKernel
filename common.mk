@@ -33,7 +33,12 @@ BUILD_DIR = build/
 BUILD_TARGET = $(addprefix $(BUILD_DIR), $(TARGET))
 BUILD_OBJS = $(addprefix $(BUILD_DIR), $(notdir $(addsuffix .o,$(notdir $(S_FILES) $(C_FILES)))))
 
-ifeq ($(MUSIC),)
+ifeq ($(MUSIC), yes)
+	MUSIC_LIB = -L. -L/lib -L/opt/4if-LS/arm-none-eabi-gcc/arm-none-eabi/lib -L/opt/4if-LS/arm-none-eabi-gcc/lib/gcc/arm-none-eabi/4.7.1 -lmusic -lm -lgcc -lc
+	MUSIC_INCLUDES = -Iaudio-hw
+	MUSIC_CC = -std=c99 -nostartfiles
+	MUSIC_QUEMU = -soundhw all
+
 	LD_FLAGS = $(MUSIC_LIB)
 	CC_FLAGS += $(MUSIC_INCLUDES)
 endif
@@ -55,7 +60,7 @@ BUILD_PREFIX_HIDE = $(HIDE_CMD)$(BUILD_PREFIX)
 GDB_CMD ?= $(BUILD_PREFIX)gdb
 CMD_GDB = $(HIDE_CMD)$(GDB_CMD)
 
-ifeq ($(MUSIC),)
+ifeq ($(MUSIC), yes)
 	CMD_LD = $(BUILD_PREFIX_HIDE)gcc
 else
 	CMD_LD = $(BUILD_PREFIX_HIDE)ld

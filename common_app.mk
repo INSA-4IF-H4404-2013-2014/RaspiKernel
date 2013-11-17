@@ -22,7 +22,7 @@ ifneq ($(DEPART), true)
 else
 	@echo "# remotely compiling $(APP_NAME)..."
 endif
-	@make --no-print-dir -f ../common.mk
+	@make --no-print-dir -f ../common.mk MUSIC=$(MUSIC)
 	@echo ""
 else
 ifeq ($(MODE), remote)
@@ -55,14 +55,14 @@ ifneq ($(DEPART), true)
 else
 	@echo "# remotely cleaning and re-making $(APP_NAME)..."
 endif
-	@make --no-print-dir -f ../common.mk all
+	@make --no-print-dir -f ../common.mk all MUSIC=$(MUSIC)
 else
 ifeq ($(MODE), remote)
 	@echo "# remotely cleaning and re-making $(APP_NAME)..."
 	@echo "  * remote: $(REMOTE)"; \
 	echo "  * folder: $(REMOTE_FOLDER)"; \
 	echo ""; \
-	ssh $(REMOTE) 'make --no-print-directory -C $(REMOTE_FOLDER)/$(APP_NAME) -f ../common.mk all MODE=local DEPART=true'
+	ssh $(REMOTE) 'make --no-print-directory -C $(REMOTE_FOLDER)/$(APP_NAME) -f ../common.mk all MODE=local DEPART=true MUSIC=$(MUSIC)'
 endif
 endif
 
