@@ -6,6 +6,15 @@
 static kernel_fat_bpb_t kernel_bpb;
 
 
+/*
+ * @infos: only call by kernel_main()
+ */
+void
+kernel_directory_api_init()
+{
+    kernel_bpb.type = 0;
+}
+
 uint32_t
 directory_mount_fat_mem(void * memory)
 {
