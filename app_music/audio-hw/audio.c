@@ -89,7 +89,7 @@ audio_init(void)
 
     // In theory this should be divided by 2 again for the two channels, but
     // that seems to lead to the wrong rate. TODO: investigate
-    uint32_t samplerate = 500000000.0 / idiv / range;
+    uint32_t samplerate = 500000000 / idiv / range;
 
     PUT32(CLOCK_BASE + 4*BCM2835_PWMCLK_DIV, PM_PASSWORD | (idiv<<12));
     
@@ -131,7 +131,7 @@ audio_init(void)
     
     /* This instruction makes qemu running in infinite loop */
 #ifndef QEMU
-    PUT32(DMA5_CNTL_BASE + BCM2708_DMA_CS, 0x10880001);  // go, mid priority, wait for outstanding writes
+    //PUT32(DMA5_CNTL_BASE + BCM2708_DMA_CS, 0x10880001);  // go, mid priority, wait for outstanding writes
 #endif
 
 //    printf("audio init done\r\n");
