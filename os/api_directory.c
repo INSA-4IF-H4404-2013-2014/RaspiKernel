@@ -31,3 +31,32 @@ directory_mount_fat_mem(void * memory)
     return 1;
 }
 
+uint32_t
+directory_exists(const char * path)
+{
+    if (path[0] != '/')
+    {
+        return 0;
+    }
+
+    kernel_pause_scheduler();
+
+    if (!kernel_bpb.type)
+    {
+        kernel_resume_scheduler();
+        return 0;
+    }
+
+    if (path[1] == 0)
+    {
+        kernel_resume_scheduler();
+        return 1;
+    }
+
+    uint32_t found = kernel_fat_bpb_find(&kernel_bpb, nullptr, path + 1);
+
+    kernel_resume_scheduler();
+
+    return found;
+}
+

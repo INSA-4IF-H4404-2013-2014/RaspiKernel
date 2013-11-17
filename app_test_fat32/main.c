@@ -12,6 +12,8 @@ main_process(void)
 {
     directory_mount_fat_mem(fat32_content);
 
+    directory_exists("/hello.txt");
+
     for ( ; ; )
     {
         led_on();

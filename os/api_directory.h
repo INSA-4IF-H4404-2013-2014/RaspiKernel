@@ -10,5 +10,17 @@
 uint32_t
 directory_mount_fat_mem(void * memory);
 
+/*
+ * @infos: test a file exists
+ *
+ * @param <path>: path to test
+ *
+ * @return:
+ *  - 1 if exists
+ *  - 0 elsewhere
+ */
+uint32_t
+directory_exists(const char * path);
+
 
 #endif
