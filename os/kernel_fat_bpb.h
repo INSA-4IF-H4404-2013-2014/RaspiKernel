@@ -4,6 +4,14 @@
 #include "standard.h"
 #include "kernel_math.h"
 
+typedef enum
+{
+    KERNEL_FAT_UNKNOWN = 0,
+    KERNEL_FAT12,
+    KERNEL_FAT16,
+    KERNEL_FAT32 // not yet
+} kernel_fat_type_t;
+
 
 /*
  * @definition BPB: BIOS Parameter Block
@@ -11,6 +19,9 @@
  */
 typedef struct kernel_fat_bpb_s
 {
+    kernel_fat_type_t type;
+    void * content;
+
     uint32_t BS_jmpBoot; // uint24_t !!!
     char BS_OEMName[9];
     uint16_t BPB_BytsPerSec;
@@ -89,12 +100,6 @@ kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content);
  */
 #define kernel_fat_count_data_clusters(bpb) \
     kernel_math_divide_PO2(kernel_fat_count_data_sectors(bpb), (bpb)->BPB_SecPerClus)
-
-/*
- * @infos: determines the FAT type (FAT12, FAT16 or FAT32)
- */
-uint32_t
-kernel_fat_bpb_type(const kernel_fat_bpb_t * bpb);
 
 
 #endif

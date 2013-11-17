@@ -74,23 +74,23 @@ kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content)
     void_char_read_inc(bpb->BS_VolLab, 11, current);
     void_char_read_inc(bpb->BS_FilSysType, 8, current);
 
-    return 1;
-}
-
-uint32_t
-kernel_fat_bpb_type(const kernel_fat_bpb_t * bpb)
-{
     uint32_t cluster_count = kernel_fat_count_data_clusters(bpb);
 
     if (cluster_count < 4085)
     {
-        return 12;
+        bpb->type = KERNEL_FAT12;
     }
     else if (cluster_count < 65525)
     {
-        return 16;
+        bpb->type = KERNEL_FAT16;
+    }
+    else
+    {
+        bpb->type = KERNEL_FAT32;
     }
 
-    return 32;
+    bpb->content = first_sector_content;
+
+    return 1;
 }
 
