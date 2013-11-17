@@ -4,6 +4,8 @@
 #include <registers.h>
 #include <config.h>
 
+#include "../../generic/sleep.h"
+
 extern void PUT32 (uint32_t, uint32_t);
 extern uint32_t GET32 (uint32_t);
 extern void dummy (uint32_t);
@@ -40,13 +42,13 @@ void uart_init() {
     PUT32(GPFSEL1,ra);
 
     PUT32(GPPUD,0);
-    usleep(1);
+    generic_usleep(1);
     PUT32(GPPUDCLK0,(1<<14)|(1<<15));
-    usleep(1);
+    generic_usleep(1);
     PUT32(GPPUDCLK0,0);
 
     PUT32(AUX_MU_CNTL_REG,3);
-    usleep(5);
+    generic_usleep(5);
 }
 
 

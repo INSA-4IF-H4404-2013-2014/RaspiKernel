@@ -1,9 +1,10 @@
 #include <malloc.h>
 #include <stdio.h>
 #include <stdint.h>
-#include <unistd.h>
 #include <registers.h>
 #include <config.h>
+
+#include "../../generic/sleep.h"
 
 #define RINGBUFFER_SIZE 4096
 
@@ -79,7 +80,7 @@ audio_init(void)
     uint32_t idiv = 12;
     SET_GPIO_ALT(40, 0); // set pins 40/45 (aka phone jack) to pwm function
     SET_GPIO_ALT(45, 0);
-    usleep(10); // I don't know if all these usleeps are really necessary
+    generic_usleep(10); // I don't know if all these usleeps are really necessary
 
     PUT32(CLOCK_BASE + 4*BCM2835_PWMCLK_CNTL, PM_PASSWORD | BCM2835_PWMCLK_CNTL_KILL);
     PUT32(PWM_BASE + 4*BCM2835_PWM_CONTROL, 0);
@@ -94,21 +95,21 @@ audio_init(void)
                                 PM_PASSWORD | 
                                 BCM2835_PWMCLK_CNTL_ENABLE |
                                 BCM2835_PWMCLK_CNTL_PLLD);
-    usleep(1);
+    generic_usleep(1);
     PUT32(PWM_BASE + 4*BCM2835_PWM0_RANGE, range);
     PUT32(PWM_BASE + 4*BCM2835_PWM1_RANGE, range);
-    usleep(1);
+    generic_usleep(1);
 
     buf->dma_cb->info   = BCM2708_DMA_S_INC | BCM2708_DMA_WAIT_RESP | BCM2708_DMA_D_DREQ | BCM2708_DMA_PER_MAP(5);
     buf->dma_cb->src = (uint32_t)(buf->buffer);
     buf->dma_cb->dst = ((PWM_BASE+4*BCM2835_PWM_FIFO) & 0x00ffffff) | 0x7e000000; // physical address of fifo
     buf->dma_cb->length = sizeof(uint32_t) * buf->buffer_sz;
     buf->dma_cb->next = (uint32_t)buf->dma_cb;
-    usleep(1);
+    generic_usleep(1);
     PUT32(PWM_BASE + 4*BCM2835_PWM_DMAC, PWMDMAC_ENAB | PWMDMAC_THRSHLD);
-    usleep(1);
+    generic_usleep(1);
     PUT32(PWM_BASE + 4*BCM2835_PWM_CONTROL, PWMCTL_CLRF);
-    usleep(1);
+    generic_usleep(1);
 
     PUT32(PWM_BASE + 4*BCM2835_PWM_CONTROL,
           BCM2835_PWM1_USEFIFO | 
@@ -120,11 +121,11 @@ audio_init(void)
 
 
     PUT32(DMA5_CNTL_BASE + BCM2708_DMA_CS, BCM2708_DMA_RESET);
-    usleep(10);
+    generic_usleep(10);
     PUT32(DMA5_CNTL_BASE + BCM2708_DMA_CS, BCM2708_DMA_INT | BCM2708_DMA_END);
     PUT32(DMA5_CNTL_BASE + BCM2708_DMA_ADDR, (uint32_t)buf->dma_cb);
     PUT32(DMA5_CNTL_BASE + BCM2708_DMA_DEBUG, 7); // clear debug error flags
-    usleep(10);
+    generic_usleep(10);
     
     /* This instruction makes qemu running in infinite loop */
 #ifndef QEMU
@@ -132,7 +133,7 @@ audio_init(void)
 #endif
 
 //    printf("audio init done\r\n");
-    usleep(1);
+    generic_usleep(1);
     return samplerate;
 }
 
