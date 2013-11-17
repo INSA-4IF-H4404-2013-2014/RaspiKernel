@@ -1,8 +1,8 @@
 #ifndef _H_KERNEL_FAT_BPB
 #define _H_KERNEL_FAT_BPB
 
-#include "standard.h"
 #include "kernel_math.h"
+#include "kernel_fat_file.h"
 
 typedef enum
 {
@@ -63,43 +63,6 @@ typedef struct kernel_fat_bpb_s
     (KERNEL_FAT_ATTR_READ_ONLY | KERNEL_FAT_ATTR_HIDDEN | KERNEL_FAT_ATTR_SYSTEM | KERNEL_FAT_ATTR_VOLUME_ID)
 
 
-/*
- * @infos: define an FAT file info
- */
-typedef struct kernel_fat_file_s
-{
-    /*
-     * @infos: name of the file
-     */
-    char name[12];
-
-    /*
-     * @infos: bitfield of KERNEL_FAT_ATTR_*
-     */
-    uint8_t attr;
-
-    /*
-     * @infos: size of the file
-     */
-    uint32_t size;
-
-    /*
-     * @infos: first cluster id
-     */
-    union
-    {
-        uint32_t first_cluster;
-
-        struct
-        {
-            uint16_t first_cluster_lo;
-            uint16_t first_cluster_hi;
-        };
-    };
-
-} kernel_fat_file_t;
-
-
 uint32_t
 kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content);
 
@@ -155,11 +118,8 @@ kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content);
     kernel_math_divide_PO2(kernel_fat_count_data_sectors(bpb), (bpb)->BPB_SecPerClus)
 
 
-/*
- * @infos: Fetches <file>'s info at a given <pos> in a given <sector>
- */
-void
-kernel_fat_file_info(kernel_fat_bpb_t * bpb, uint32_t sector, uint32_t pos, kernel_fat_file_t * file);
+uint32_t
+kernel_fat_bpb_find(const kernel_fat_bpb_t * bpb, kernel_fat_file_t * file, const char * path);
 
 
 #endif
