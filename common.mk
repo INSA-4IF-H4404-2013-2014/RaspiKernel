@@ -12,13 +12,11 @@ TARGET = kernel
 
 CC_FLAGS = -Wall -Wextra -Werror -nostdlib -fomit-frame-pointer -mno-apcs-frame -nostartfiles -ffreestanding -g -march=armv6z -marm
 AS_FLAGS = -g -march=armv6z
-LD_FLAGS =
 
 GDB_DEFAULT = gdb/default_run.gdb
 
 OPTIONSFILE = ../makeOptions.gitlocal
 include ../.common_parser.mk
--include config.mk
 
 CC_FLAGS+=$(addprefix -D, $(OS) $(SQUEDULER))
 
@@ -29,7 +27,7 @@ S_FILES = $(call rwildcard,./,*.s)
 D_FILES = $(call rwildcard,./,*.d)
 
 SD_CARD_DIR = SD_Card/
-MEMORY_MAP_FILE ?= os/memmap
+MEMORY_MAP_FILE = os/memmap
 
 BUILD_DIR = build/
 BUILD_TARGET = $(addprefix $(BUILD_DIR), $(TARGET))
@@ -121,8 +119,8 @@ $(BUILD_DIR)%.s.o: $$(call rwildcard,./,*%.s) $(THIS)
 #------------------------------------------------------------------------------- TARGET RULES
 
 $(BUILD_TARGET).elf : $(MEMORY_MAP_FILE) $(BUILD_OBJS)
-	$(CMD_ECHO) "# file <$@> (memory map: $<)"
-	$(CMD_LD) -o $@ -T $< $(BUILD_OBJS) $(LD_FLAGS)
+	$(CMD_ECHO) "# file <$@>"
+	$(CMD_LD) -o $@ -T $< $(BUILD_OBJS)
 	$(CMD_OBJDUMP) -D $@ > $(BUILD_TARGET).list
 
 $(BUILD_TARGET).bin : $(BUILD_TARGET).elf

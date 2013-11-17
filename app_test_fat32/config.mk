@@ -1,1 +1,0 @@
-MEMORY_MAP_FILE = memmap
