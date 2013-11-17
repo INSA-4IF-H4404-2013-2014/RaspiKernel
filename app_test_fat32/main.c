@@ -1,17 +1,19 @@
 
 #include "os/api_process.h"
 #include "os/api_led.h"
+#include "os/kernel_fat_bpb.h"
 
 
-extern uint32_t fat32_content[];
+extern uint8_t fat32_content[];
+
+
+static kernel_fat_bpb_t BPB;
+
 
 void
 main_process(void)
 {
-    if (((char*)fat32_content)[0] == 0xEB)
-    {
-        led_on();
-    }
+    kernel_fat_bpb_init(&BPB, fat32_content);
 
     for ( ; ; )
     {
