@@ -20,10 +20,29 @@
         void_ptr_shift(ptr, size); \
     }
 
+#define void_value_at(ptr,offset,type) \
+    *((type*)(((char*)(ptr)) + offset))
+
 uint32_t
 kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content)
 {
     void * current = first_sector_content;
+
+    if (
+        void_value_at(current, 0, uint8_t) != 0xEB &&
+        void_value_at(current, 0, uint8_t) != 0xE9
+    )
+    {
+        // FAT alway begin by a x86 JUMP instruction
+        return 0;
+    }
+
+    if (void_value_at(current, 510, uint16_t) != 0xAA55)
+    {
+        // not a FAT partition
+        return 0;
+    }
+
 
     bpb->BS_jmpBoot = ((uint32_t *)current)[0] & 0x00FFFFFF;
     void_ptr_shift(current, 3);
