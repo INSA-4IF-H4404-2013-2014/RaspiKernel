@@ -45,4 +45,51 @@ uint32_t
 kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content);
 
 
+/*
+ * @infos: count sector used by the root directory
+ */
+#define kernel_fat_root_sector_count(bpb) \
+    ((((bpb)->BPB_RootEntCnt * 32) + ((bpb)->BPB_BytsPerSec – 1)) / (bpb)->BPB_BytsPerSec)
+
+/*
+ * @infos: compute the start of the data region, the first sector of cluster 2
+ *      this offset os relative to the sector 0 (the BPB table)
+ */
+#define kernel_fat_data_offset(bpb) \
+    ((bpb)->BPB_ResvdSecCnt + ((bpb)->BPB_NumFATs * (bpb)->BPB_FATSz16) + kernel_fat_root_sector_count(bpb))
+
+/*
+ * @infos: compute the data sector offset relatively to the data offset
+ */
+#define kernel_fat_data_cluster_offset(bpb,id) \
+    ((id – 2) * (bpb)->BPB_SecPerClus)
+
+/*
+ * @infos: count the number of sector in the data region
+ */
+#define kernel_fat_count_data_sectors(bpb) \
+    ( \
+        (bpb)->BPB_TotSec16 – \
+        ((bpb)->BPB_ResvdSecCnt + ((bpb)->BPB_NumFATs * (bpb)->BPB_FATSz16) + kernel_fat_root_sector_count(bpb)) \
+    )
+
+/*
+ * @infos: count the number of cluster in the data region
+ *
+ *  if (CountofClusters < 4085)
+ *  {
+ *      Volume is FAT12
+ *  }
+ *  else if (CountofClusters < 65525)
+ *  {
+ *      Volume is FAT16
+ *  }
+ *  else
+ *  {
+ *      Volume is FAT32
+ *  }
+ */
+#define kernel_fat_count_data_clusters(bpb) \
+    (kernel_fat_count_data_sectors(bpb) / (bpb)->BPB_SecPerClus)
+
 #endif
