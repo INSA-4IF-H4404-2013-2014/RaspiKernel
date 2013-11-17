@@ -3,9 +3,16 @@
 #include "os/api_led.h"
 
 
+extern uint32_t fat32_content[];
+
 void
 main_process(void)
 {
+    if (((char*)fat32_content)[0] == 0xEB)
+    {
+        led_on();
+    }
+
     for ( ; ; )
     {
         led_on();
