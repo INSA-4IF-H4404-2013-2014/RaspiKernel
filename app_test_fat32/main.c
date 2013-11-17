@@ -15,6 +15,10 @@ main_process(void)
 {
     kernel_fat_bpb_init(&BPB, fat32_content);
 
+    kernel_fat_file_t file;
+
+    kernel_fat_file_info(&BPB, kernel_fat_root_first_sector(&BPB), 3, &file);
+
     for ( ; ; )
     {
         led_on();

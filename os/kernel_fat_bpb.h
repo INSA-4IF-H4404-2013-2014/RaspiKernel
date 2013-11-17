@@ -105,6 +105,12 @@ kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content);
 
 
 /*
+ * @infos: get the first root sector id
+ */
+#define kernel_fat_root_first_sector(bpb) \
+    ((bpb)->BPB_RsvdSecCnt + (bpb)->BPB_NumFATs * (bpb)->BPB_FATSz16)
+
+/*
  * @infos: count sector used by the root directory
  */
 #define kernel_fat_root_sector_count(bpb) \
@@ -150,10 +156,10 @@ kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content);
 
 
 /*
- * @infos: Fetches <file>'s info at a given <pos> in a given <cluster>
+ * @infos: Fetches <file>'s info at a given <pos> in a given <sector>
  */
 void
-kernel_fat_file_info(kernel_fat_bpb_t * bpb, uint32_t cluster, uint32_t pos, kernel_fat_file_t * file);
+kernel_fat_file_info(kernel_fat_bpb_t * bpb, uint32_t sector, uint32_t pos, kernel_fat_file_t * file);
 
 
 #endif
