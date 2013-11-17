@@ -43,4 +43,4 @@ Command pour nettoyer :
   > make clean
 
 Command pour tout recompiler :
-  > make full
+  > make all

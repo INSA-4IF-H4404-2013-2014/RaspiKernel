@@ -2,7 +2,26 @@
 #define _H_KERNEL_CONFIG
 
 /*
- * @infos: defines the standart PCB stack size
+ * @infos; defines the default CPU frequency (Hz)
+ */
+#define KERNEL_CPU_FREQUENCY 700000000
+
+/*
+ * @infos: set the default frequency divisor
+ *
+ * @asssert
+ *  - KERNEL_TIMER_FREQUENCY_DIVISOR < 1024
+ */
+#define KERNEL_TIMER_FREQUENCY_DIVISOR 70
+
+/*
+ * @infos: defines the total kernel heap size
+ */
+#define KERNEL_HEAP_SIZE \
+    (256 * 1024 * 1024)
+
+/*
+ * @infos: defines the standard PCB stack size
  */
 #define KERNEL_STACK_SIZE \
     (1024 * 32)
@@ -17,6 +36,17 @@
 #if KERNEL_RR_LEVELS <= 0
 #error "KERNEL_RR_LEVELS must be positive."
 #endif
+
+/*
+ * @infos: defines the scheduler's timer slot
+ */
+#define KERNEL_SCHEDULER_TIMER_SLOT 1
+
+/*
+ * @infos: defines the scheduler interupt periode in
+ *  micro seconds
+ */
+#define KERNEL_SCHEDULER_TIMER_PERIODE 100000
 
 
 #endif

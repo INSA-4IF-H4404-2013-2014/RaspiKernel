@@ -2,7 +2,7 @@
 #include "kernel_config.h"
 #include "kernel_scheduler.h"
 #include "kernel_action.h"
-#include "allocateMemory.h"
+#include "kernel_memory.h"
 #include "api_process.h"
 
 static kernel_pcb_t * kernel_all_pcb = nullptr;
@@ -17,16 +17,17 @@ kernel_pcb_create(void * f, void * args)
 {
     static uint32_t id = 0;
 
-    kernel_pcb_t * pcb = (kernel_pcb_t *) AllocateMemory(sizeof(kernel_pcb_t));
+    kernel_pcb_t * pcb = (kernel_pcb_t *) kernel_allocate_memory(sizeof(kernel_pcb_t));
 
     pcb->mPID = id++;
-    pcb->mStack = (uint32_t *) AllocateMemory(KERNEL_STACK_SIZE);
+    pcb->mStack = (uint32_t *) kernel_allocate_memory(KERNEL_STACK_SIZE);
     pcb->mSP = pcb->mStack + (KERNEL_STACK_SIZE - 1);
     pcb->mSP[0] = 0;
     pcb->mSP -= 16;
     pcb->mSchedulerList = kernel_default_scheduler();
 
     kernel_pcb_inherit_cpsr(pcb);
+    kernel_pcb_enable_irq(pcb);
     kernel_pcb_set_pc(pcb, kernel_pcb_startup);
     kernel_pcb_set_rN(pcb, 0, f);
     kernel_pcb_set_rN(pcb, 1, args);
@@ -123,6 +124,21 @@ kernel_pcb_pause(kernel_pcb_list_t * pause_list, kernel_pcb_t * pcb)
 }
 
 void
+kernel_pcb_sleep(kernel_pcb_t * pcb, uint32_t duration)
+{
+    kernel_pcb_list_remove(pcb->mParentList, pcb);
+
+    pcb->mStartDate = kernel_arm_timer_clock() + duration;
+
+    kernel_pcb_list_sorted_insert(&kernel_sleeping_pcbs, pcb);
+
+    if (pcb == kernel_running_pcb)
+    {
+        kernel_scheduler_yield();
+    }
+}
+
+void
 kernel_pcb_destroy(kernel_pcb_t * pcb)
 {
     kernel_pcb_list_remove(pcb->mParentList, pcb);
@@ -136,9 +152,9 @@ kernel_pcb_destroy(kernel_pcb_t * pcb)
 
     *it_pcb = pcb->mGlobalNext;
 
-    FreeAllocatedMemory(pcb->mStack);
+    kernel_deallocate_memory(pcb->mStack);
 
-    FreeAllocatedMemory((uint32_t*)pcb);
+    kernel_deallocate_memory((uint32_t*)pcb);
 
     if (pcb == kernel_running_pcb)
     {

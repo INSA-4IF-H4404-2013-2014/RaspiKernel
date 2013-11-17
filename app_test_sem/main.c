@@ -37,4 +37,3 @@ main_process(void)
         sync_sem_wait(sem_array + 1);
     }
 }
-

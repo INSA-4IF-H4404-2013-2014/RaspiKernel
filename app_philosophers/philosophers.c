@@ -1,74 +1,86 @@
+
+#ifdef OS_LINUX
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <unistd.h>
+#endif
+
+#include "../generic/thread.h"
+#include "../generic/sleep.h"
 
 #include "philosophers.h"
 
 void philosophers_process(void)
 {
 	int i;
-	phi_id philosophers_id[PHILOSOPHERS_NUMBER];
-	int philosophers_data[PHILOSOPHERS_NUMBER];
+	philosopher_data phi_data[PHILOSOPHERS_NUMBER];
 
 	//Creating forks
 	for(i = 0; i < PHILOSOPHERS_NUMBER; ++i)
 	{
-		phi_mutex_init(&forks[i]);
+		generic_mutex_init(&forks[i]);
 	}	
 
 	//Starting philosophers threads
 	for(i = 0; i < PHILOSOPHERS_NUMBER; ++i)
 	{
-		philosophers_data[i] = i;
+		//Initializing the philosopher data structure
+		phi_data[i].phi_id = i;
+		
 #ifdef OS_RASP
-		philosophers_id[i] = process_create(&sync_philosopher, &philosophers_data[i]);
-		process_start(philosophers_id[i]);
+		sync_sem_init(&(phi_data[i].sem_id), 0);
 #else
-		pthread_create(&philosophers_id[i], NULL, &philosopher, &philosophers_data[i]);
+		phi_data[i].sem_id = semget(IPC_PRIVATE, 1, IPC_CREAT | IPC_EXCL | 0660);
+		semctl(phi_data[i].sem_id, 0, SETVAL, 0);
 #endif
+		//Starting process
+		generic_thread_create(&(phi_data[i].process_id), &philo_func, &phi_data[i]);
 	}
 
-#ifndef OS_RASP
 	//Waiting for philosophers
 	for(i = 0; i < PHILOSOPHERS_NUMBER; ++i)
 	{
-		pthread_join(philosophers_id[i], NULL);
-	}
+#ifdef OS_RASP
+		sync_sem_wait(&(phi_data[i].sem_id));
+#else
+		pthread_join(phi_data[i].process_id, NULL);
 #endif
+	}
 }
 
-void sync_philosopher(void * id)
+void sync_philosopher(void * args)
 {
-	int i;
-	int philosopherId = *((int *) id);
-	int first_fork;
-	int second_fork;
+	int i, first_fork, second_fork, phi_id;
+	philosopher_data * phi_data = (philosopher_data *) args;
+	phi_id = phi_data->phi_id;
 
 	//printf("Philosopher %d created\n", philosopherId);
 
 	for(i = 0; i < MAX_ITERATIONS; ++i)
 	{
 		//Choosing forks order
-		chooseForks(philosopherId, &first_fork, &second_fork);
+		chooseForks(phi_id, &first_fork, &second_fork);
 
 		//Taking / waiting forks
-		takeForks(philosopherId, first_fork, second_fork);
+		takeForks(phi_id, first_fork, second_fork);
 
 		//Eating
-		eat(philosopherId);
+		eat();
 
 		//Releasing forks
-		releaseFork(philosopherId, first_fork, second_fork);
+		releaseFork(phi_id, first_fork, second_fork);
 		
 		//Thniking
-		think(philosopherId);
+		think();
 	}
+#ifdef OS_RASP
+	sync_sem_post(&(phi_data->sem_id), 1);
+#endif
 }
 
-void * philosopher(void * n)
+void * philosopher(void * args)
 {
-	sync_philosopher(n);
+	sync_philosopher(args);
 	return 0;
 }
 
@@ -93,8 +105,8 @@ void takeForks(int philosopherId, int first_fork, int second_fork)
 #ifndef OS_RASP
 	printf("(%d) Taking forks %d and %d\n", philosopherId, first_fork, second_fork);
 #endif
-	phi_mutex_lock(&forks[first_fork]);
-	phi_mutex_lock(&forks[second_fork]);
+	generic_mutex_lock(&forks[first_fork]);
+	generic_mutex_lock(&forks[second_fork]);
 }
 
 void releaseFork(int philosopherId, int first_fork, int second_fork)
@@ -104,22 +116,22 @@ void releaseFork(int philosopherId, int first_fork, int second_fork)
 #ifndef OS_RASP
 	printf("(%d) Releasing forks %d and %d\n", philosopherId, second_fork, first_fork);
 #endif
-	phi_mutex_unlock(&forks[second_fork]);
-	phi_mutex_unlock(&forks[first_fork]);
+	generic_mutex_unlock(&forks[second_fork]);
+	generic_mutex_unlock(&forks[first_fork]);
 }
 
 void eat()
 {
 #ifndef OS_RASP
-	float time = (rand() % (MAX_EATING_TIME * 1000)) / 1000.0;
-	sleep(time);
+	float time = (rand() % ((int) (MAX_EATING_TIME * 1000))) / 1000.0;
+	generic_sleep(time);
 #endif
 }
 
 void think()
 {
 #ifndef OS_RASP
-	float time = (rand() % (MAX_THINKING_TIME * 1000)) / 1000.0;
-	sleep(time);
+	float time = (rand() % ((int) (MAX_THINKING_TIME * 1000))) / 1000.0;
+	generic_sleep(time);
 #endif
 }

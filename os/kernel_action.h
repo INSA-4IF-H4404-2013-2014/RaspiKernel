@@ -68,6 +68,15 @@ void
 kernel_pcb_pause(kernel_pcb_list_t * pause_list, kernel_pcb_t * pcb);
 
 /*
+ * @infos: let <pcb> go to sleep for a given <duration>
+ *
+ * @param <pcb>: the PCB to sleep
+ * @param <duration>: the <pcb>'s sleeping duration
+ */
+void
+kernel_pcb_sleep(kernel_pcb_t * pcb, uint32_t duration);
+
+/*
  * @infos: destroy a given <pcb>
  *
  * @param <pcb>: PCB to destroy

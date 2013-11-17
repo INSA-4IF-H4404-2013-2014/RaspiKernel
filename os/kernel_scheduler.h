@@ -6,6 +6,7 @@
 
 #include "kernel_config.h"
 #include "kernel_pcb_list.h"
+#include "kernel_arm_timer.h"
 #include "kernel_arm.h"
 
 
@@ -24,6 +25,17 @@ extern kernel_pcb_list_t kernel_round_robin_pcbs[KERNEL_RR_LEVELS];
  * @infos: list all manually paused PCBs
  */
 extern kernel_pcb_list_t kernel_pause_pcb;
+
+/*
+ * @infos: list all ready collaborative PCBs
+ */
+extern kernel_pcb_list_t kernel_collabo_pcb;
+
+
+/*
+ * @infos: sleeping PCBs
+ */
+extern kernel_pcb_list_t kernel_sleeping_pcbs;
 
 
 /*
@@ -47,6 +59,17 @@ extern kernel_pcb_t * const kernel_running_pcb;
  */
 void
 kernel_scheduler_init();
+
+/*
+ * @infos:
+ */
+#define kernel_scheduler_set_next_timer() \
+    { \
+        kernel_arm_timer_slot(KERNEL_SCHEDULER_TIMER_SLOT) = \
+            kernel_arm_timer_clock() + KERNEL_SCHEDULER_TIMER_PERIODE; \
+        kernel_arm_timer_enable(KERNEL_SCHEDULER_TIMER_SLOT); \
+    }
+
 
 /*
  * @infos: yield switch to another PCB
@@ -79,10 +102,13 @@ kernel_scheduler_yield_noreturn();
     kernel_arm_disable_irq()
 
 /*
- * @infos: resume scheduler
+ * @infos: resume scheduler if we are not in collaborative mode
  */
 #define kernel_resume_scheduler() \
-    kernel_arm_enable_irq()
+	if(kernel_running_pcb->mSchedulerList != &kernel_collabo_pcb) \
+	{ \
+		kernel_arm_enable_irq(); \
+	}
 
 
 #endif

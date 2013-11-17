@@ -32,6 +32,15 @@ struct kernel_pcb_s
 
     // scheduler list
     kernel_pcb_list_t * mSchedulerList;
+
+    union
+    {
+        // considareted member when inserting in a sorted list
+        uint32_t mSortedValue;
+
+        // start date when in the sleep list
+        uint32_t mStartDate;
+    };
 };
 
 /* Stack storage when PCB is not running:
