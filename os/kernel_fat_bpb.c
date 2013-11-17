@@ -77,3 +77,20 @@ kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content)
     return 1;
 }
 
+uint32_t
+kernel_fat_bpb_type(const kernel_fat_bpb_t * bpb)
+{
+    uint32_t cluster_count = kernel_fat_count_data_clusters(bpb);
+
+    if (cluster_count < 4085)
+    {
+        return 12;
+    }
+    else if (cluster_count < 65525)
+    {
+        return 16;
+    }
+
+    return 32;
+}
+
