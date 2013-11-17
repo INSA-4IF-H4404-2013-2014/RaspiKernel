@@ -10,6 +10,8 @@ extern void PUT32 (uint32_t, uint32_t);
 extern uint32_t GET32 (uint32_t);
 extern void dummy (uint32_t);
 
+#define PUT32(addr, value) *((uint32_t *)(addr)) = (uint32_t)(value)
+#define GET32(addr) *((uint32_t *)(addr))
 
 void uart_init() {
     //GPIO14  TXD0 and TXD1

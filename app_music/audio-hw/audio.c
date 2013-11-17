@@ -13,6 +13,8 @@ extern uint32_t GET32 (uint32_t);
 
 #define SET_GPIO_ALT(g,a) *((uint32_t*)GPIO_BASE+(((g)/10))) |= (((a)<=3?(a)+4:(a)==4?3:2)<<(((g)%10)*3))
 
+#define PUT32(addr, value) *((uint32_t *)(addr)) = (uint32_t)(value)
+#define GET32(addr) *((uint32_t *)(addr))
 
 typedef struct {
     uint32_t buffer_sz; // in uint32_ts
