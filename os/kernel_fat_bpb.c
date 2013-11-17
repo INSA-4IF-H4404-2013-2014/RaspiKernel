@@ -94,3 +94,24 @@ kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content)
     return 1;
 }
 
+uint16_t
+kernel_fat12_cluster_entry(kernel_fat_bpb_t * bpb, uint32_t id)
+{
+    uint32_t FATOffset = id + id / 2;
+
+    uint32_t global_offset = bpb->BPB_RsvdSecCnt * bpb->BPB_BytsPerSec + FATOffset;
+
+    uint16_t entry = ((uint16_t*)bpb->content)[global_offset];
+
+    if (id & 0x1)
+    {
+        entry = entry >> 4;
+    }
+    else
+    {
+        entry &= 0x0FFF;
+    }
+
+    return entry;
+}
+
