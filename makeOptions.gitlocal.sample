@@ -9,7 +9,7 @@
 #SDCARD=/INDICATE/SDCARD/PATH
 
 
-#BUILD_PREFIX = arm-linux-gnueabi-
+#BUILD_PREFIX = arm-none-eabi-
 #GDB_CMD = $(BUILD_PREFIX)gdb
 
 #Please uncomment the OS for which you want to compile
