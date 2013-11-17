@@ -21,7 +21,7 @@
     (256 * 1024 * 1024)
 
 /*
- * @infos: defines the standart PCB stack size
+ * @infos: defines the standard PCB stack size
  */
 #define KERNEL_STACK_SIZE \
     (1024 * 32)

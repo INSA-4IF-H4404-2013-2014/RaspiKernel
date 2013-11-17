@@ -1,7 +1,7 @@
 #ifndef _H_KERNEL_ARM
 #define _H_KERNEL_ARM
 
-#include "standart.h"
+#include "standard.h"
 
 // doc1 : doc_arm_specs.pdf
 

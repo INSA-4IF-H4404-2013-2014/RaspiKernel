@@ -6,7 +6,7 @@ OS=$(shell uname -s)
 
 APP_NAME=$(notdir $(shell pwd | sed 's/ /\\/g'))
 
-.PHONY: default send clean all all_ sdcopy umount _deploy deploy
+.PHONY: default send clean all all_ sdcopy umount _deploy deploy run
 
 define remotelaunch
 	@echo "  * remote: $(REMOTE)"; \
@@ -105,5 +105,12 @@ deploy_:
 	@echo
 
 deploy: deploy_ send default sdcopy umount
+endif
+endif
+
+run:
+ifeq ($(MODE), local)
+ifneq ($(DEPART), true)
+	@make --no-print-dir -f ../common.mk run
 endif
 endif

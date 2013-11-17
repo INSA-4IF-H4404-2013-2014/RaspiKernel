@@ -1,7 +1,7 @@
 #ifndef _H_API_MEMORY
 #define _H_API_MEMORY
 
-#include "standart.h"
+#include "standard.h"
 
 
 //-------------------------------------------------------------------------------- FUNCTIONS
