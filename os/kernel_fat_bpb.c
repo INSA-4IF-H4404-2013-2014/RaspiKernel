@@ -229,6 +229,26 @@ kernel_fat_bpb_rfind(const kernel_fat_bpb_t * bpb, uint32_t sector, uint32_t sta
             continue;
         }
 
+        const char * next_path = kernel_fat_next_dir(path);
+
+        if (next_path)
+        {
+            kernel_fat_file_t dir;
+
+            kernel_fat_file_fetch(&dir, current);
+
+            if ((dir.attr & KERNEL_FAT_ATTR_DIRECTORY) == 0)
+            {
+                // we are try to access in directory that is not a directory
+                return 0;
+            }
+
+            uint32_t next_sector = kernel_fat_data_cluster_offset(bpb, dir.first_cluster) +
+                kernel_fat_data_offset(bpb);
+
+            return kernel_fat_bpb_rfind(bpb, next_sector, 0, file, next_path);
+        }
+
         if (file)
         {
             kernel_fat_file_fetch(file, current);
