@@ -1,4 +1,5 @@
 
+#include "kernel_plumbing.h"
 #include "kernel_fat.h"
 #include "kernel_fat_bpb.h"
 #include "kernel_fat_file.h"
@@ -115,6 +116,88 @@ kernel_fat12_cluster_entry(kernel_fat_bpb_t * bpb, uint32_t id)
     }
 
     return entry;
+}
+
+uint32_t
+kernel_fat_bpb_next_cluster(const kernel_fat_bpb_t * bpb, uint32_t cluster)
+{
+    uint32_t fat_offset;
+
+    if (bpb->type == KERNEL_FAT12)
+    {
+        fat_offset = cluster + cluster / 2;
+    }
+    else if (bpb->type == KERNEL_FAT16)
+    {
+        fat_offset = cluster * 2;
+    }
+    else if (bpb->type == KERNEL_FAT32)
+    {
+        fat_offset = cluster * 4;
+    }
+    else
+    {
+        kernel_panic();
+    }
+
+    uint32_t partition_offset = bpb->BPB_RsvdSecCnt * bpb->BPB_BytsPerSec + fat_offset;
+
+    uint32_t fat_info = *((uint32_t*)(((uint8_t*) bpb->content) + partition_offset));
+
+    if (bpb->type == KERNEL_FAT12)
+    {
+        if (cluster & 0x1)
+        {
+            fat_info = fat_info >> 4;
+        }
+
+        fat_info &= 0x0FFF;
+
+        if (fat_info >= 0xFF8)
+        {
+            return KERNEL_FAT_CLUSTER_LAST;
+        }
+
+        if (fat_info < 0x002 || fat_info > 0xFEF)
+        {
+            // special cluster
+            return KERNEL_FAT_CLUSTER_ERROR;
+        }
+
+        return fat_info;
+    }
+    else if (bpb->type == KERNEL_FAT16)
+    {
+        fat_info &= 0xFFFF;
+
+        if (fat_info >= 0xFFF8)
+        {
+            return KERNEL_FAT_CLUSTER_LAST;
+        }
+
+        if (fat_info < 0x0002 || fat_info > 0xFFEF)
+        {
+            // special cluster
+            return KERNEL_FAT_CLUSTER_ERROR;
+        }
+
+        return fat_info;
+    }
+
+    fat_info &= 0x0FFFFFFF;
+
+    if (fat_info >= 0xFFFFFF8)
+    {
+        return KERNEL_FAT_CLUSTER_LAST;
+    }
+
+    if (fat_info < 0x0000002 || fat_info > 0xFFFFFEF)
+    {
+        // special cluster
+        return KERNEL_FAT_CLUSTER_ERROR;
+    }
+
+    return fat_info;
 }
 
 static uint32_t

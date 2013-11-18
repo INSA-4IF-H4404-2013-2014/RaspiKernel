@@ -115,7 +115,36 @@ kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content);
 #define kernel_fat_count_data_clusters(bpb) \
     kernel_math_divide_PO2(kernel_fat_count_data_sectors(bpb), (bpb)->BPB_SecPerClus)
 
+/*
+ * @infos: special cases of kernel_fat_bpb_next_cluster()
+ */
+#define KERNEL_FAT_CLUSTER_ERROR 0
+#define KERNEL_FAT_CLUSTER_LAST 1
 
+/*
+ * @infos: get the next cluster
+ *
+ * @param <bpb>: the BPB structure
+ * @paran <cluster>: the cluster ID
+ *
+ * @return:
+ *  - KERNEL_FAT_CLUSTER_ERROR if invalid sector (unused or non existing)
+ *  - KERNEL_FAT_CLUSTER_LAST if do not have any next cluster
+ *  - the next cluster id elsewhere
+ */
+uint32_t
+kernel_fat_bpb_next_cluster(const kernel_fat_bpb_t * bpb, uint32_t cluster);
+
+/*
+ * @infos: find a <file> for a given path
+ *
+ * @param <bpb>: the BPB structure
+ * @param <file>: the file structure to write infos to
+ * @param <path>: the file's path to find
+ *
+ * @assert:
+ *  - path do not begin by /
+ */
 uint32_t
 kernel_fat_bpb_find(const kernel_fat_bpb_t * bpb, kernel_fat_file_t * file, const char * path);
 
