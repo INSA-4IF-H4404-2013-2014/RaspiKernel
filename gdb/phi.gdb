@@ -1,3 +1,5 @@
 source gdb/default.gdb
-b philosophers_process
-b sync_philosopher
+b takeForks
+b releaseForks
+c
+c

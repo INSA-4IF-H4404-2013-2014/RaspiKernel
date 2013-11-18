@@ -5,6 +5,7 @@
 //---------------------------------------------------------------- MUTEX SECURE
 #include "api_sync_sem.h"
 #include "kernel_mutex_list.h"
+#include "kernel_forward.h"
 
 //Boolean type
 typedef enum {false, true} bool;
@@ -42,7 +43,7 @@ sync_mutex_lock(sync_mutex_t * mutex);
  * @param <mutex>: an initialised mutex
  * @return: 0 if the lock has been done, -1 else (deadlock prevention)
  */
-void
+int
 sync_mutex_lock_secure(sync_mutex_t * mutex);
 
 /*
@@ -63,6 +64,13 @@ sync_mutex_unlock(sync_mutex_t * mutex);
  */
 int
 kernel_deadlock_check(sync_mutex_t * mutex);
+
+
+int
+private_kernel_deadlock_check(kernel_pcb_t * processBlocked, sync_mutex_t * mutexSeeked, bool first);
+
+void
+deadlock_detected();
 
 #else
 //-------------------------------------------------------------- MUTEX STANDARD

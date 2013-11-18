@@ -3,6 +3,26 @@
 #include "kernel_mutex_list.h"
 #include "kernel_memory.h"
 
+int kernel_mutex_list_contains ( kernel_mutex_list_t * list, sync_mutex_t * mutex )
+{
+	kernel_mutex_list_t * tmpList = list;
+
+	if(list)
+	{
+		while(tmpList->mutex != mutex && tmpList->next != list)
+		{
+			tmpList = tmpList->next;
+		}
+
+		if(tmpList->mutex == mutex)
+		{
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
 kernel_mutex_list_t * kernel_mutex_list_insert ( kernel_mutex_list_t * list, sync_mutex_t * mutex )
 {
 	kernel_mutex_list_t * newMaillon = (kernel_mutex_list_t * ) kernel_allocate_memory ( sizeof ( kernel_mutex_list_t) );
@@ -27,7 +47,6 @@ kernel_mutex_list_t * kernel_mutex_list_insert ( kernel_mutex_list_t * list, syn
 kernel_mutex_list_t * kernel_mutex_list_remove ( kernel_mutex_list_t * list, sync_mutex_t * toDelete )
 {
 	kernel_mutex_list_t * tmpList = list;
-	kernel_mutex_list_t * maillonToDelete;
 
 	if(list)
 	{
@@ -38,17 +57,17 @@ kernel_mutex_list_t * kernel_mutex_list_remove ( kernel_mutex_list_t * list, syn
 		
 		if(tmpList->mutex == toDelete)
 		{
-			maillonToDelete = tmpList;
+			kernel_mutex_list_t * maillonToDelete = tmpList;
 			list = tmpList->next;
 			tmpList->previous->next = tmpList->next;
-			tmpList->next->previous = tmpList->previous
+			tmpList->next->previous = tmpList->previous;
 			
-			if(list->next = list)
+			if(list->next == list)
 			{
 				list = 0;
 			}
 			
-			FreeAllocatedMemory ( ( uint32_t ) maillonToDelete );
+			kernel_deallocate_memory ( ( void * ) maillonToDelete );
 		}
 	}
 

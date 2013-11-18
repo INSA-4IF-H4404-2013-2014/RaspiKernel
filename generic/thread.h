@@ -1,11 +1,17 @@
 #ifdef OS_RASP
 	#include "../os/api_process.h"
-	#include "../os/api_sync_mutex.h"
 	#include "../os/api_sync_sem.h"
+	#include "../os/api_sync_mutex.h"
 
-	#define generic_mutex sync_mutex_t
+	#ifdef MUTEX_SECURE
+		#define generic_mutex sync_mutex_t
+		#define generic_mutex_lock(mutex) sync_mutex_lock_secure(mutex)
+	#else
+		#define generic_mutex sync_sem_t
+		#define generic_mutex_lock(mutex) sync_mutex_lock(mutex)
+	#endif
+
 	#define generic_mutex_init(mutex) sync_mutex_init(mutex)
-	#define generic_mutex_lock(mutex) sync_mutex_lock(mutex)
 	#define generic_mutex_unlock(mutex) sync_mutex_unlock(mutex)
 
 	#define generic_sem sync_sem_t

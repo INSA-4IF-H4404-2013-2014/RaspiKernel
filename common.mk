@@ -18,7 +18,7 @@ GDB_DEFAULT = gdb/default_run.gdb
 OPTIONSFILE = ../makeOptions.gitlocal
 include ../.common_parser.mk
 
-CC_FLAGS+=$(addprefix -D, $(OS) $(SQUEDULER))
+CC_FLAGS+=$(addprefix -D, $(OS) $(MUTEX) $(SQUEDULER))
 
 #------------------------------------------------------------------------------- AUTOMATED
 

@@ -4,8 +4,6 @@
 #include "../generic/thread.h"
 
 #define MAX_ITERATIONS 1000
-#define MAX_EATING_TIME 1.5
-#define MAX_THINKING_TIME 1.5
 #define PHILOSOPHERS_NUMBER 5
 
 #ifdef OS_RASP
@@ -85,7 +83,7 @@ void takeForks(int philosopherId, int first_fork, int second_fork);
 /*
  * Sleep x random seconds
  */
-void eat();
+void eat(int philosopherId);
 
 /*
  * Unlock the mutex corresponding to the specified forks
@@ -93,11 +91,11 @@ void eat();
  * @param first_fork The seconkd fork to unlock.
  * @param second_fork The first fork to unlock.
  */
-void releaseFork(int philosopherId, int first_fork, int second_fork);
+void releaseForks(int philosopherId, int first_fork, int second_fork);
 
 /*
  * Sleep y random seconds
  */
-void think();
+void think(int philosopherId);
 
 #endif
