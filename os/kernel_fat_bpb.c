@@ -247,6 +247,13 @@ kernel_fat_bpb_rfind(const kernel_fat_bpb_t * bpb, uint32_t cluster, uint32_t st
             continue;
         }
 
+        if (((uint8_t*)current)[11] == KERNEL_FAT_ATTR_LONG_NAME)
+        {
+            // we ignore the long name entry
+            void_ptr_shift(current, 32);
+            continue;
+        }
+
         if (!kernel_fat_cmp_encode_src(encoded_name, current))
         {
             void_ptr_shift(current, 32);
