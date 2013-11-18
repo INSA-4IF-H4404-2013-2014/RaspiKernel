@@ -36,7 +36,7 @@ void kernel_memory_init()
 	pHead->mSize = 0;
 }
 
-void * kernel_allocate_memory(uint32_t size)
+void * kernel_memory_allocate(uint32_t size)
 {
 	// Overflow check
 	if(size >= (~0 - sizeof(kernel_heap_part_s)))
@@ -72,7 +72,7 @@ void * kernel_allocate_memory(uint32_t size)
 	return 0;
 }
 
-void kernel_deallocate_memory(void * address)
+void kernel_memory_deallocate(void * address)
 {
 	// Boudaries check for address
 	if(address < KERNEL_HEAP_ADDR_MIN || address >= KERNEL_HEAP_ADDR_MAX)
