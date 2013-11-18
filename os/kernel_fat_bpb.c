@@ -201,9 +201,18 @@ kernel_fat_bpb_next_cluster(const kernel_fat_bpb_t * bpb, uint32_t cluster)
 }
 
 static uint32_t
-kernel_fat_bpb_rfind(const kernel_fat_bpb_t * bpb, uint32_t sector, uint32_t start_pos, kernel_fat_file_t * file, const char * path)
+kernel_fat_bpb_rfind(const kernel_fat_bpb_t * bpb, uint32_t cluster, uint32_t start_pos, kernel_fat_file_t * file, const char * path)
 {
-    void * current = ((char*)bpb->content) + sector * bpb->BPB_BytsPerSec + start_pos * 32;
+    uint32_t cluster_offset = kernel_fat_data_cluster_offset(bpb, cluster) * bpb->BPB_BytsPerSec;
+    uint32_t global_offset = kernel_fat_data_offset(bpb) * bpb->BPB_BytsPerSec + cluster_offset;
+    void * current = ((char*)bpb->content) + global_offset + start_pos * 32;
+    void * current_end = ((char*)current) + kernel_fat_bpb_cluster_size(bpb);
+
+    if (cluster == 0)
+    {
+        current = ((char*)bpb->content) + kernel_fat_root_first_sector(bpb) * bpb->BPB_BytsPerSec + start_pos * 32;
+        current_end = nullptr;
+    }
 
     char encoded_name[12];
 
@@ -211,6 +220,21 @@ kernel_fat_bpb_rfind(const kernel_fat_bpb_t * bpb, uint32_t sector, uint32_t sta
 
     for ( ; ; )
     {
+        if (current == current_end)
+        {
+            uint32_t cluster = kernel_fat_bpb_next_cluster(bpb, cluster);
+
+            if (cluster == KERNEL_FAT_CLUSTER_ERROR || cluster == KERNEL_FAT_CLUSTER_LAST)
+            {
+                return 0;
+            }
+
+            cluster_offset = kernel_fat_data_cluster_offset(bpb, cluster) * bpb->BPB_BytsPerSec;
+            global_offset = kernel_fat_data_offset(bpb) * bpb->BPB_BytsPerSec + cluster_offset;
+            current = ((char*)bpb->content) + global_offset + start_pos * 32;
+            current_end = ((char*)current) + kernel_fat_bpb_cluster_size(bpb);
+        }
+
         if (((uint8_t*)current)[0] == 0x00)
         {
             break;
@@ -243,10 +267,7 @@ kernel_fat_bpb_rfind(const kernel_fat_bpb_t * bpb, uint32_t sector, uint32_t sta
                 return 0;
             }
 
-            uint32_t next_sector = kernel_fat_data_cluster_offset(bpb, dir.first_cluster) +
-                kernel_fat_data_offset(bpb);
-
-            return kernel_fat_bpb_rfind(bpb, next_sector, 0, file, next_path);
+            return kernel_fat_bpb_rfind(bpb, dir.first_cluster, 0, file, next_path);
         }
 
         if (file)
@@ -263,9 +284,7 @@ kernel_fat_bpb_rfind(const kernel_fat_bpb_t * bpb, uint32_t sector, uint32_t sta
 uint32_t
 kernel_fat_bpb_find(const kernel_fat_bpb_t * bpb, kernel_fat_file_t * file, const char * path)
 {
-    uint32_t root_sector = kernel_fat_root_first_sector(bpb);
-
-    return kernel_fat_bpb_rfind(bpb, root_sector, 1, file, path);
+    return kernel_fat_bpb_rfind(bpb, 0, 1, file, path);
 }
 
 void
