@@ -78,7 +78,7 @@ kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content);
  *  - unit: sector
  */
 #define kernel_fat_data_offset(bpb) \
-    ((bpb)->BPB_RsvdSecCnt + ((bpb)->BPB_NumFATs * (bpb)->BPB_FATSz16) + kernel_fat_root_sector_count(bpb))
+     (((uint32_t)(bpb)->BPB_RsvdSecCnt) + (((uint32_t)(bpb)->BPB_NumFATs) * ((uint32_t)(bpb)->BPB_FATSz16)) + kernel_fat_root_sector_count(bpb))
 
 /*
  * @infos: compute the data sector offset relatively to the data offset
@@ -88,13 +88,13 @@ kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content);
  *  - unit: sector
  */
 #define kernel_fat_data_cluster_offset(bpb,id) \
-    ((id - 2) * (bpb)->BPB_SecPerClus)
+    ((((uint32_t)id) - 2) * ((uint32_t)(bpb)->BPB_SecPerClus))
 
 /*
  * @infos: count the number of sector in the data region
  */
 #define kernel_fat_count_data_sectors(bpb) \
-    ((bpb)->BPB_TotSec16 - ((bpb)->BPB_RsvdSecCnt + ((bpb)->BPB_NumFATs * (bpb)->BPB_FATSz16) + kernel_fat_root_sector_count(bpb)))
+    (((uint32_t)(bpb)->BPB_TotSec16) - (((uint32_t)(bpb)->BPB_RsvdSecCnt) + (((uint32_t)(bpb)->BPB_NumFATs) * ((uint32_t)(bpb)->BPB_FATSz16)) + kernel_fat_root_sector_count(bpb)))
 
 /*
  * @infos: count the number of cluster in the data region
