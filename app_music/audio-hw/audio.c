@@ -1,8 +1,8 @@
 #include <malloc.h>
 #include <stdio.h>
 #include <stdint.h>
-#include <registers.h>
-#include <config.h>
+#include "registers.h"
+#include "config.h"
 
 #include "../../generic/sleep.h"
 
@@ -131,7 +131,7 @@ audio_init(void)
     
     /* This instruction makes qemu running in infinite loop */
 #ifndef QEMU
-    //PUT32(DMA5_CNTL_BASE + BCM2708_DMA_CS, 0x10880001);  // go, mid priority, wait for outstanding writes
+    PUT32(DMA5_CNTL_BASE + BCM2708_DMA_CS, 0x10880001);  // go, mid priority, wait for outstanding writes
 #endif
 
 //    printf("audio init done\r\n");

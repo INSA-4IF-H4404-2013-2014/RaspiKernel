@@ -3,7 +3,7 @@
 #ifndef PI_HARDWARE_H
 #define PI_HARDWARE_H
 
-#include <dma.h>
+#include "dma.h"
 
 /****** BASES ******/
 #define BCM2708_PERI_BASE 0x20000000
