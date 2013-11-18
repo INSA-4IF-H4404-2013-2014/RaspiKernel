@@ -116,6 +116,15 @@ kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content);
     kernel_math_divide_PO2(kernel_fat_count_data_sectors(bpb), (bpb)->BPB_SecPerClus)
 
 /*
+ * @infos: return cluster size
+ *
+ * @return:
+ *  - uint32_t cluster size in bytes
+ */
+#define kernel_fat_bpb_cluster_size(bpb) \
+    (((uint32_t)(bpb)->BPB_SecPerClus) * ((uint32_t)(bpb)->BPB_BytsPerSec))
+
+/*
  * @infos: special cases of kernel_fat_bpb_next_cluster()
  */
 #define KERNEL_FAT_CLUSTER_ERROR 0
