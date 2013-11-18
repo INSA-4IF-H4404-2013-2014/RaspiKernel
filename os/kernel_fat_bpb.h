@@ -53,16 +53,6 @@ typedef struct kernel_fat_bpb_s
 } kernel_fat_bpb_t;
 
 
-#define KERNEL_FAT_ATTR_READ_ONLY 0x01
-#define KERNEL_FAT_ATTR_HIDDEN 0x02
-#define KERNEL_FAT_ATTR_SYSTEM 0x04
-#define KERNEL_FAT_ATTR_VOLUME_ID 0x08
-#define KERNEL_FAT_ATTR_DIRECTORY 0x10
-#define KERNEL_FAT_ATTR_ARCHIVE 0x20
-#define KRENEL_FAT_ATTR_LONG_NAME \
-    (KERNEL_FAT_ATTR_READ_ONLY | KERNEL_FAT_ATTR_HIDDEN | KERNEL_FAT_ATTR_SYSTEM | KERNEL_FAT_ATTR_VOLUME_ID)
-
-
 uint32_t
 kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content);
 
