@@ -4,6 +4,7 @@
 #include "kernel_action.h"
 #include "kernel_memory.h"
 #include "api_process.h"
+#include "kernel_arm_timer.h"
 
 static kernel_pcb_t * kernel_all_pcb = nullptr;
 
@@ -109,6 +110,7 @@ kernel_pcb_start(kernel_pcb_t * pcb)
 {
     kernel_pcb_list_remove(pcb->mParentList, pcb);
     kernel_pcb_list_pushb(pcb->mSchedulerList, pcb);
+    pcb->mDate = kernel_arm_timer_clock();
 }
 
 void

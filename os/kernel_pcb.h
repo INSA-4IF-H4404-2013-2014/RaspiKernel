@@ -40,6 +40,9 @@ struct kernel_pcb_s
 
         // start date when in the sleep list
         uint32_t mStartDate;
+        
+        
+        uint32_t mDate;
     };
 };
 

@@ -39,7 +39,7 @@ kernel_scheduler_init()
     kernel_pcb_inherit_cpsr(&kernel_idle_pcb);
     kernel_pcb_enable_irq(&kernel_idle_pcb);
 
-    kernel_running_pcb = nullptr;
+    kernel_running_pcb = &kernel_idle_pcb;
 }
 
 
@@ -59,13 +59,20 @@ kernel_scheduler_chose_next()
 
         kernel_pcb_list_popf(&kernel_sleeping_pcbs, current);
         kernel_pcb_list_pushb(current->mSchedulerList, current);
+        current->mDate = kernel_arm_timer_clock();
+        
     }
 
     uint32_t i = KERNEL_RR_LEVELS - 1;
+    uint32_t waitingTime;
+    kernel_running_pcb->mDate = kernel_arm_timer_clock();
 
     if (kernel_collabo_pcb.mFirst)
     {
         kernel_running_pcb = kernel_collabo_pcb.mFirst;
+        // calculate waiting time until running
+        waitingTime = kernel_arm_timer_clock() - kernel_running_pcb->mDate;
+        kernel_running_pcb->mDate =waitingTime;
         return;
     }
 
@@ -74,6 +81,9 @@ kernel_scheduler_chose_next()
         if (kernel_round_robin_pcbs[i].mFirst)
         {
             kernel_running_pcb = kernel_round_robin_pcbs[i].mFirst;
+            // calculate waiting time until running
+            waitingTime = kernel_arm_timer_clock() - kernel_running_pcb->mDate;
+            kernel_running_pcb->mDate =waitingTime;
             return;
         }
 
@@ -86,6 +96,11 @@ kernel_scheduler_chose_next()
     }
 
     kernel_running_pcb = &kernel_idle_pcb;
+    // calculate waiting time until running
+    waitingTime = kernel_arm_timer_clock() - kernel_running_pcb->mDate;
+    kernel_running_pcb->mDate =waitingTime;
+    
+    
 }
 
 
