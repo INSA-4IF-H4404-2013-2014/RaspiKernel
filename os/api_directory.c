@@ -106,7 +106,7 @@ file_load(const char * path)
         return nullptr;
     }
 
-    char * content = kernel_allocate_memory(file.size);
+    char * content = kernel_memory_allocate(file.size);
     char * content_cursor = content;
     uint32_t cluster_size = kernel_fat_bpb_cluster_size(&kernel_bpb);
 
