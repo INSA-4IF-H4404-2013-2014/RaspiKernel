@@ -200,7 +200,7 @@ kernel_fat_bpb_next_cluster(const kernel_fat_bpb_t * bpb, uint32_t cluster)
     return fat_info;
 }
 
-static uint32_t
+uint32_t
 kernel_fat_bpb_rfind(const kernel_fat_bpb_t * bpb, uint32_t cluster, uint32_t start_pos, kernel_fat_file_t * file, const char * path)
 {
     uint32_t cluster_offset = kernel_fat_data_cluster_offset(bpb, cluster) * bpb->BPB_BytsPerSec;
@@ -279,12 +279,6 @@ kernel_fat_bpb_rfind(const kernel_fat_bpb_t * bpb, uint32_t cluster, uint32_t st
     }
 
     return 0;
-}
-
-uint32_t
-kernel_fat_bpb_find(const kernel_fat_bpb_t * bpb, kernel_fat_file_t * file, const char * path)
-{
-    return kernel_fat_bpb_rfind(bpb, 0, 1, file, path);
 }
 
 void

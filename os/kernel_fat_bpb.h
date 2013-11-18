@@ -145,17 +145,40 @@ uint32_t
 kernel_fat_bpb_next_cluster(const kernel_fat_bpb_t * bpb, uint32_t cluster);
 
 /*
- * @infos: find a <file> for a given path
+ * @infos: find a <file> for a given <path> in the <bpb>'s directory specified by <cluster>
  *
  * @param <bpb>: the BPB structure
+ * @param <cluster>: directory's first cluster
+ * @param <start_pos>: start_pos in the cluster
  * @param <file>: the file structure to write infos to
  * @param <path>: the file's path to find
+ *
+ * @return:
+ *  - if <path> found
+ *  - 0 elsewhere
  *
  * @assert:
  *  - path do not begin by /
  */
 uint32_t
-kernel_fat_bpb_find(const kernel_fat_bpb_t * bpb, kernel_fat_file_t * file, const char * path);
+kernel_fat_bpb_rfind(const kernel_fat_bpb_t * bpb, uint32_t cluster, uint32_t start_pos, kernel_fat_file_t * file, const char * path);
+
+/*
+ * @infos: find a <file> for a given <path> in the <bpb>'s root
+ *
+ * @param <bpb>: the BPB structure
+ * @param <file>: the file structure to write infos to
+ * @param <path>: the file's path to find
+ *
+ * @return:
+ *  - if <path> found
+ *  - 0 elsewhere
+ *
+ * @assert:
+ *  - path do not begin by /
+ */
+#define kernel_fat_bpb_find(bpb,file,path) \
+    kernel_fat_bpb_rfind(bpb, 0, 1, file, path)
 
 /*
  * @infos: read a <cluster> in a given <size> and <offset>
