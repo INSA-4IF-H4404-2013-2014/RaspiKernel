@@ -27,12 +27,8 @@ void philosophers_process(void)
 		//Initializing the philosopher data structure
 		phi_data[i].phi_id = i;
 		
-#ifdef OS_RASP
-		sync_sem_init(&(phi_data[i].sem_id), 0);
-#else
-		phi_data[i].sem_id = semget(IPC_PRIVATE, 1, IPC_CREAT | IPC_EXCL | 0660);
-		semctl(phi_data[i].sem_id, 0, SETVAL, 0);
-#endif
+		generic_sem_init(&(phi_data[i].sem_id), 0);
+		
 		//Starting process
 		generic_thread_create(&(phi_data[i].process_id), &philo_func, &phi_data[i]);
 	}
@@ -40,9 +36,9 @@ void philosophers_process(void)
 	//Waiting for philosophers
 	for(i = 0; i < PHILOSOPHERS_NUMBER; ++i)
 	{
-#ifdef OS_RASP
-		sync_sem_wait(&(phi_data[i].sem_id));
-#else
+		generic_sem_wait(&(phi_data[i].sem_id));
+
+#ifndef OS_RASP
 		pthread_join(phi_data[i].process_id, NULL);
 #endif
 	}
@@ -73,9 +69,8 @@ void sync_philosopher(void * args)
 		//Thniking
 		think(phi_id);
 	}
-#ifdef OS_RASP
-	sync_sem_post(&(phi_data->sem_id), 1);
-#endif
+
+	generic_sem_post(&(phi_data->sem_id));
 }
 
 void * philosopher(void * args)
@@ -95,6 +90,11 @@ void chooseForks(int philosopherId, int * first_fork, int * second_fork)
 	else
 */
 	*first_fork = (philosopherId + 1) % PHILOSOPHERS_NUMBER;
+	
+#ifdef KERNEL_STRATEGY_COLLABO
+	kernel_scheduler_yield()
+#endif
+	
 	*second_fork = philosopherId;
 }
 

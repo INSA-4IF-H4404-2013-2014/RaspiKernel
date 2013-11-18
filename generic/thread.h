@@ -15,6 +15,9 @@
 	#define generic_mutex_unlock(mutex) sync_mutex_unlock(mutex)
 
 	#define generic_sem sync_sem_t
+	#define generic_sem_init(sem, value) sync_sem_init(sem, value)
+	#define generic_sem_post(sem) sync_sem_post(sem, 1)
+	#define generic_sem_wait(sem) sync_sem_wait(sem)
 
 	#define generic_thread_t uint32_t
 
@@ -32,7 +35,10 @@
 	#define generic_mutex_lock(mutex) pthread_mutex_lock(mutex)
 	#define generic_mutex_unlock(mutex) pthread_mutex_unlock(mutex)
 
-	#define generic_sem int
+	#define generic_sem sem_t
+	#define generic_sem_init(sem, value) sem_init(sem, 0, value)
+	#define generic_sem_post(sem) sem_post(sem)
+	#define generic_sem_wait(sem) sem_wait(sem)
 
 	#define generic_thread_t pthread_t
 
