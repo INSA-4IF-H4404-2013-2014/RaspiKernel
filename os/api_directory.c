@@ -109,8 +109,20 @@ file_load(const char * path)
     }
 
     char * content = kernel_allocate_memory(file.size);
+    char * content_cursor = content;
+    uint32_t cluster_size = kernel_fat_bpb_cluster_size(&kernel_bpb);
 
-    kernel_fat_bpb_read_cluster(&kernel_bpb, content, file.first_cluster, 0, file.size);
+    while (file.size > cluster_size)
+    {
+        kernel_fat_bpb_read_cluster(&kernel_bpb, content_cursor, file.first_cluster, 0, cluster_size);
+
+        file.first_cluster = kernel_fat_bpb_next_cluster(&kernel_bpb, file.first_cluster);
+
+        file.size -= cluster_size;
+        content_cursor += cluster_size;
+    }
+
+    kernel_fat_bpb_read_cluster(&kernel_bpb, content_cursor, file.first_cluster, 0, file.size);
 
     kernel_resume_scheduler();
 
