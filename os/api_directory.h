@@ -22,5 +22,11 @@ directory_mount_fat_mem(void * memory);
 uint32_t
 directory_exists(const char * path);
 
+/*
+ * @infos: load a file's content
+ */
+void *
+file_load(const char * path);
+
 
 #endif

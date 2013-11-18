@@ -2,6 +2,7 @@
 #include "os/api_process.h"
 #include "os/api_led.h"
 #include "os/api_directory.h"
+#include "os/api_memory.h"
 
 
 extern uint8_t fat32_content[];
@@ -12,7 +13,9 @@ main_process(void)
 {
     directory_mount_fat_mem(fat32_content);
 
-    directory_exists("/hello.txt");
+    char * content = (char*) file_load("/hello.txt");
+
+    free(content);
 
     for ( ; ; )
     {

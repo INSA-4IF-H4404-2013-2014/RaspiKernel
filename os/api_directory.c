@@ -2,6 +2,8 @@
 #include "api_directory.h"
 #include "kernel_scheduler.h"
 #include "kernel_fat_bpb.h"
+#include "kernel_memory.h"
+
 
 static kernel_fat_bpb_t kernel_bpb;
 
@@ -58,5 +60,60 @@ directory_exists(const char * path)
     kernel_resume_scheduler();
 
     return found;
+}
+
+void *
+file_load(const char * path)
+{
+#if 0
+    if (path[0] != '/')
+    {
+        return nullptr;
+    }
+
+    {
+        uint32_t i = 0;
+
+        while (path[i + 1])
+        {
+            i++;
+        }
+
+        if (path[i] == 0)
+        {
+            return nullptr;
+        }
+    }
+#endif
+
+    kernel_pause_scheduler();
+
+    if (!kernel_bpb.type)
+    {
+        kernel_resume_scheduler();
+        return nullptr;
+    }
+
+    kernel_fat_file_t file;
+
+    if (!kernel_fat_bpb_find(&kernel_bpb, &file, path + 1))
+    {
+        kernel_resume_scheduler();
+        return nullptr;
+    }
+
+    if ((file.attr & KERNEL_FAT_ATTR_DIRECTORY) || file.size == 0)
+    {
+        kernel_resume_scheduler();
+        return nullptr;
+    }
+
+    char * content = kernel_allocate_memory(file.size);
+
+
+
+    kernel_resume_scheduler();
+
+    return content;
 }
 
