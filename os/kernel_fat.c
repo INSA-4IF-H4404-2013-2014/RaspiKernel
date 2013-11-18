@@ -80,3 +80,21 @@ kernel_fat_encode_name(char encoded[12], const char * path)
     encoded[3] = 0x0;
 }
 
+const char *
+kernel_fat_next_dir(const char * path)
+{
+    while (*path)
+    {
+        if (*path == '/')
+        {
+            path++;
+
+            return path;
+        }
+
+        path++;
+    }
+
+    return 0;
+}
+
