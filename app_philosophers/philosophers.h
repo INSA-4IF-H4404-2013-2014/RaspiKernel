@@ -74,6 +74,7 @@ void chooseForks(int philosopherId, int * first_fork, int * second_fork);
 
 /*
  * Unlock the mutex corresponding to the specified forks
+ * If a deadlock occurs, all forks all released, then relocked
  * @param philosopherId The philosopher id
  * @param first_fork The first fork to lock.
  * @param second_fork The second fork to lock.
@@ -81,7 +82,7 @@ void chooseForks(int philosopherId, int * first_fork, int * second_fork);
 void takeForks(int philosopherId, int first_fork, int second_fork);
 
 /*
- * Sleep x random seconds
+ * Sleep philosopherId seconds
  */
 void eat(int philosopherId);
 
@@ -94,7 +95,7 @@ void eat(int philosopherId);
 void releaseForks(int philosopherId, int first_fork, int second_fork);
 
 /*
- * Sleep y random seconds
+ * Sleep philosopherId seconds
  */
 void think(int philosopherId);
 

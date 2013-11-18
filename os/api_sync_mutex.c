@@ -138,11 +138,12 @@ void deadlock_detected()
 {
 	int i;
 
-	for(i = 0; i < 10; ++i)
+	for(i = 0; i < 20; ++i)
 	{
 		led_on();
 		generic_usleep(100000);
-		led_on();
+		led_off();
+		generic_usleep(100000);
 	}
 	
 }

@@ -15,8 +15,10 @@ typedef enum {false, true} bool;
  */
 typedef struct sync_mutex_s
 {
+	//Process waiting the mutex to be free
     kernel_pcb_list_t mProcessBlocked;
 	
+	//Mutex value
     bool mToken;
 } sync_mutex_t;
 
@@ -65,10 +67,16 @@ sync_mutex_unlock(sync_mutex_t * mutex);
 int
 kernel_deadlock_check(sync_mutex_t * mutex);
 
-
+/*
+ * @infos: check if the lock of the <mutex> by the current running
+ * process will create a deadlock
+ */
 int
 private_kernel_deadlock_check(kernel_pcb_t * processBlocked, sync_mutex_t * mutexSeeked, bool first);
 
+/*
+ * @infos: print a deadlock notification and switch the led on and off ten times in one second
+ */
 void
 deadlock_detected();
 
