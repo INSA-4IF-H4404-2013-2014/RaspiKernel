@@ -2,6 +2,7 @@
 #define _H_KERNEL_PLUMBING
 
 #include "standard.h"
+#include <stdint.h>
 
 
 /*
@@ -15,8 +16,20 @@ kernel_sleep(uint32_t duration);
 /*
  * @infos: emit SOS by the green led indefinitly
  */
-void __attribute__((naked, noreturn))
-kernel_panic();
+#define KERNEL_SOS_DURATION_ON 100000
+#define KERNEL_SOS_DURATION_OFF 1000000
+
+#define KERNEL_USER_SOS_DURATION_ON 1000000
+#define KERNEL_USER_SOS_DURATION_OFF 1500000
+
+#define kernel_panic() \
+	kernel_plumbing_panic(KERNEL_SOS_DURATION_ON, KERNEL_SOS_DURATION_OFF)
+
+#define kernel_user_panic() \
+	kernel_plumbing_panic(KERNEL_USER_SOS_DURATION_ON, KERNEL_USER_SOS_DURATION_OFF)
+
+void __attribute__((noreturn))
+kernel_plumbing_panic(uint32_t on_duration, uint32_t off_duration);
 
 
 #endif
