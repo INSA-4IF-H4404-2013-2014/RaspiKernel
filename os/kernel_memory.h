@@ -22,7 +22,7 @@ void kernel_memory_init();
  *  - pointer to allocated user memory
  *  - 0 if allocation was not possible
  */
-void * kernel_allocate_memory(uint32_t size);
+void * kernel_memory_allocate(uint32_t size);
 
 
 
@@ -31,12 +31,12 @@ void * kernel_allocate_memory(uint32_t size);
  *
  * @assert:
  * - Memory to be deallocated has been previously
- *		allocated by 'kernel_allocate_memory'.
+ *		allocated by 'kernel_memory_allocate'.
  * - Address has to be inside the kernel heap space.
  * Use endless loops to punish if assertion is broken.
  *
  * @return: void
  */
-void kernel_deallocate_memory(void * address);
+void kernel_memory_deallocate(void * address);
 
 #endif
