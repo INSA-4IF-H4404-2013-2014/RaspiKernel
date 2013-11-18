@@ -65,7 +65,6 @@ directory_exists(const char * path)
 void *
 file_load(const char * path)
 {
-#if 0
     if (path[0] != '/')
     {
         return nullptr;
@@ -84,7 +83,6 @@ file_load(const char * path)
             return nullptr;
         }
     }
-#endif
 
     kernel_pause_scheduler();
 
