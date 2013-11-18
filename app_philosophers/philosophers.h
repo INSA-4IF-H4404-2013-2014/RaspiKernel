@@ -1,8 +1,9 @@
-#ifndef PHILOSOPHERS_H
-#define PHILOSOPHERS_H
+#ifndef _H_PHILOSOPHERS
+#define _H_PHILOSOPHERS
 
 #ifdef OS_RASP
 	#include "os/api_process.h"
+	#include "os/api_sync_sem.h"
 	#include "os/api_sync_mutex.h"
 
 	#define phi_mutex sync_mutex_t
