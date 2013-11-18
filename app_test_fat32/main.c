@@ -13,7 +13,7 @@ main_process(void)
 {
     directory_mount_fat_mem(fat32_content);
 
-    char * content = (char*) file_load("/hello.txt");
+    char * content = (char*) file_load("/hello2.txt");
 
     free(content);
 
