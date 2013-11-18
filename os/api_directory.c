@@ -110,7 +110,7 @@ file_load(const char * path)
 
     char * content = kernel_allocate_memory(file.size);
 
-
+    kernel_fat_bpb_read_cluster(&kernel_bpb, content, file.first_cluster, 0, file.size);
 
     kernel_resume_scheduler();
 

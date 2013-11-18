@@ -72,12 +72,20 @@ kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content);
 /*
  * @infos: compute the start of the data region, the first sector of cluster 2
  *      this offset os relative to the sector 0 (the BPB table)
+ *
+ * @return:
+ *  - type: uint32_t
+ *  - unit: sector
  */
 #define kernel_fat_data_offset(bpb) \
     ((bpb)->BPB_RsvdSecCnt + ((bpb)->BPB_NumFATs * (bpb)->BPB_FATSz16) + kernel_fat_root_sector_count(bpb))
 
 /*
  * @infos: compute the data sector offset relatively to the data offset
+ *
+ * @return:
+ *  - type: uint32_t
+ *  - unit: sector
  */
 #define kernel_fat_data_cluster_offset(bpb,id) \
     ((id - 2) * (bpb)->BPB_SecPerClus)
@@ -110,6 +118,18 @@ kernel_fat_bpb_init(kernel_fat_bpb_t * bpb, void * first_sector_content);
 
 uint32_t
 kernel_fat_bpb_find(const kernel_fat_bpb_t * bpb, kernel_fat_file_t * file, const char * path);
+
+/*
+ * @infos: read a <cluster> in a given <size> and <offset>
+ *
+ * @param <bpb>: the BPB structure
+ * @param <output_buffer>: dest buffer to copy to
+ * @param <cluster>: the cluster ID
+ * @param <offset>: offset in the cluster
+ * @param <size>: size of the reading
+ */
+void
+kernel_fat_bpb_read_cluster(const kernel_fat_bpb_t * bpb, void * output_buffer, uint32_t cluster, uint32_t offset, uint32_t size);
 
 
 #endif
