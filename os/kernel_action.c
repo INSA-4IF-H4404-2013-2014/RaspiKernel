@@ -17,10 +17,10 @@ kernel_pcb_create(void * f, void * args)
 {
     static uint32_t id = 0;
 
-    kernel_pcb_t * pcb = (kernel_pcb_t *) kernel_allocate_memory(sizeof(kernel_pcb_t));
+    kernel_pcb_t * pcb = (kernel_pcb_t *) kernel_memory_allocate(sizeof(kernel_pcb_t));
 
     pcb->mPID = id++;
-    pcb->mStack = (uint32_t *) kernel_allocate_memory(KERNEL_STACK_SIZE);
+    pcb->mStack = (uint32_t *) kernel_memory_allocate(KERNEL_STACK_SIZE);
     pcb->mSP = pcb->mStack + (KERNEL_STACK_SIZE - 1);
     pcb->mSP[0] = 0;
     pcb->mSP -= 16;
@@ -152,9 +152,9 @@ kernel_pcb_destroy(kernel_pcb_t * pcb)
 
     *it_pcb = pcb->mGlobalNext;
 
-    kernel_deallocate_memory(pcb->mStack);
+    kernel_memory_deallocate(pcb->mStack);
 
-    kernel_deallocate_memory((uint32_t*)pcb);
+    kernel_memory_deallocate((uint32_t*)pcb);
 
     if (pcb == kernel_running_pcb)
     {
