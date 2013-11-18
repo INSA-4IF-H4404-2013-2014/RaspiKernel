@@ -29,6 +29,7 @@
 	#include <pthread.h>
 	#include <sys/types.h>
 	#include <sys/sem.h>
+	#include <semaphore.h>
 
 	#define generic_mutex pthread_mutex_t
 	#define generic_mutex_init(mutex) pthread_mutex_init(mutex, NULL)

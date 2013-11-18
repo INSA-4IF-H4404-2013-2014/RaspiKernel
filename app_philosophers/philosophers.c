@@ -8,6 +8,7 @@
 #include "../generic/thread.h"
 #include "../generic/sleep.h"
 
+#include "os/api_process.h"
 #include "philosophers.h"
 
 void philosophers_process(void)
@@ -90,11 +91,6 @@ void chooseForks(int philosopherId, int * first_fork, int * second_fork)
 	else
 */
 	*first_fork = (philosopherId + 1) % PHILOSOPHERS_NUMBER;
-	
-#ifdef KERNEL_STRATEGY_COLLABO
-	kernel_scheduler_yield()
-#endif
-	
 	*second_fork = philosopherId;
 }
 
@@ -109,6 +105,10 @@ void takeForks(int philosopherId, int first_fork, int second_fork)
 	int returnCode1, returnCode2;
 
 	returnCode1 = generic_mutex_lock(&forks[first_fork]);
+
+#ifdef KERNEL_STRATEGY_COLLABO
+	process_yield();
+#endif
 
 	while(returnCode1 == -1)
 	{
