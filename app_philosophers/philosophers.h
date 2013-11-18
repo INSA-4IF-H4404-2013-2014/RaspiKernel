@@ -1,34 +1,18 @@
 #ifndef _H_PHILOSOPHERS
 #define _H_PHILOSOPHERS
 
-#ifdef OS_RASP
-	#include "os/api_process.h"
-	#include "os/api_sync_sem.h"
-	#include "os/api_sync_mutex.h"
-
-	#define phi_mutex sync_mutex_t
-	#define phi_sem sync_sem_t
-	#define phi_mutex_init(mutex) sync_mutex_init(mutex)
-	#define phi_mutex_lock(mutex) sync_mutex_lock(mutex)
-	#define phi_mutex_unlock(mutex) sync_mutex_unlock(mutex)
-	#define phi_id uint32_t
-#else
-	#include <pthread.h>
-	#include <sys/types.h>
-	#include <sys/sem.h>
-
-	#define phi_mutex pthread_mutex_t
-	#define phi_sem int
-	#define phi_mutex_init(mutex) pthread_mutex_init(mutex, NULL)
-	#define phi_mutex_lock(mutex) pthread_mutex_lock(mutex)
-	#define phi_mutex_unlock(mutex) pthread_mutex_unlock(mutex)
-	#define phi_id pthread_t
-#endif
+#include "../generic/thread.h"
 
 #define MAX_ITERATIONS 1000
 #define MAX_EATING_TIME 1.5
 #define MAX_THINKING_TIME 1.5
 #define PHILOSOPHERS_NUMBER 5
+
+#ifdef OS_RASP
+	#define philo_func sync_philosopher
+#else
+	#define philo_func philosopher
+#endif
 
 /*
  * Five silent philosophers sit at a table around a bowl of spaghetti. A fork is placed between each pair of adjacent philosophers.
@@ -49,17 +33,17 @@
 typedef struct philosopher_data_t
 {
 	//Process ID used by the system
-	phi_id process_id;
+	generic_thread_t process_id;
 	
 	//Philosopher ID
-	phi_id phi_id;
+	generic_thread_t phi_id;
 	
 	//Semaphore used to notify the parent process of the current process' end
-	phi_sem sem_id;
+	generic_sem sem_id;
 } philosopher_data;
 
 //Forks used by the philosophers
-phi_mutex forks[PHILOSOPHERS_NUMBER];
+generic_mutex forks[PHILOSOPHERS_NUMBER];
 
 /*
  * Initializes n mutex

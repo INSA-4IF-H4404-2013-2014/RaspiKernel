@@ -15,14 +15,8 @@ AS_FLAGS = -g -march=armv6z
 
 GDB_DEFAULT = gdb/default_run.gdb
 
-#makeOptions.gitlocal
-OPTIONSFILE ?= makeOptions.gitlocal
--include $(OPTIONSFILE)
-REMOTE_MACHINE ?= iftpserv2.insa-lyon.fr
-REMOTE = $(REMOTE_USERNAME)@$(REMOTE_MACHINE)
-REMOTE_FOLDER ?= ~/RaspSandbox
-SQUEDULER ?= KERNEL_STRATEGY_ROUNDROBIN_ONE
-OS ?= OS_RASP
+OPTIONSFILE = ../makeOptions.gitlocal
+include ../.common_parser.mk
 
 CC_FLAGS+=$(addprefix -D, $(OS) $(SQUEDULER))
 
@@ -50,9 +44,11 @@ endif
 
 #------------------------------------------------------------------------------- COMMANDS
 
-HIDE_CMD =@
+HIDE_CMD = @
 BUILD_PREFIX ?= arm-none-eabi-
 BUILD_PREFIX_HIDE = $(HIDE_CMD)$(BUILD_PREFIX)
+GDB_CMD ?= $(BUILD_PREFIX)gdb
+CMD_GDB = $(HIDE_CMD)$(GDB_CMD)
 
 CMD_LD = $(BUILD_PREFIX_HIDE)ld
 CMD_AS = $(BUILD_PREFIX_HIDE)as
@@ -68,7 +64,7 @@ CMD_RM = $(HIDE_CMD)rm
 
 #------------------------------------------------------------------------------- STATIC RULES
 
-.PHONY: update clean full run gdb send2
+.PHONY: update clean all run gdb send2
 
 update : $(BUILD_DIR) $(BUILD_TARGET).hex $(BUILD_TARGET).bin $(BUILD_TARGET).img
 	$(CMD_ECHO) "# build finished"
@@ -76,7 +72,7 @@ update : $(BUILD_DIR) $(BUILD_TARGET).hex $(BUILD_TARGET).bin $(BUILD_TARGET).im
 clean :
 	$(CMD_RM) -rf $(BUILD_DIR)
 
-full : clean update
+all : clean update
 
 run : $(GDB_DEFAULT)
 
@@ -87,16 +83,8 @@ emu : update
 
 gdb : update
 	$(CMD_ECHO) "# running gdb..."
-	$(BUILD_PREFIX_HIDE)gdb $(BUILD_TARGET).elf -x gdbinit.gdb
+	$(CMD_GDB) $(BUILD_TARGET).elf -x gdbinit.gdb
 
-send2 :
-	$(CMD_ECHO) "# updating remote $(REMOTE):$(REMOTE_FOLDER)..."
-ifndef REMOTE_USERNAME
-	$(error "Please first set REMOTE_USERNAME variable in $(OPTIONSFILE)!")
-else
-	@rsync -haP --exclude=.git --exclude=build --exclude=pdfs --delete . $(REMOTE):$(REMOTE_FOLDER)
-	$(CMD_ECHO)
-endif
 
 #------------------------------------------------------------------------------- DYNAMIC RULES
 
@@ -119,11 +107,11 @@ $(BUILD_DIR)%.s.o: $$(call rwildcard,./,*%.s) $(THIS)
 	$(CMD_AS) $(AS_FLAGS) $< -o $@
 
 %.gdb : update
-	@qemu-system-arm -kernel $(BUILD_TARGET).elf -cpu arm1176 -m 512 -M $(QEMU_MACHINE) -nographic -no-reboot -serial stdio -append "rw earlyprintk loglevel=8 panic=120 keep_bootcon rootwait dma.dmachans=0x7f35 bcm2708_fb.fbwidth=1024 bcm2708_fb.fbheight=768 bcm2708.boardrev=0xf bcm2708.serial=0xcad0eedf smsc95xx.macaddr=B8:27:EB:D0:EE:DF sdhci-bcm2708.emmc_clock_freq=100000000 vc_mem.mem_base=0x1c000000 vc_mem.mem_size=0x20000000  dwc_otg.lpm_enable=0 kgdboc=ttyAMA0,115200 console=ttyS0 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait" -S -s > $(BUILD_DIR)qemu.stdout 2> $(BUILD_DIR)qemu.stderr & \
+	$(HIDE_CMD)qemu-system-arm -kernel $(BUILD_TARGET).elf -cpu arm1176 -m 512 -M $(QEMU_MACHINE) -nographic -no-reboot -serial stdio -append "rw earlyprintk loglevel=8 panic=120 keep_bootcon rootwait dma.dmachans=0x7f35 bcm2708_fb.fbwidth=1024 bcm2708_fb.fbheight=768 bcm2708.boardrev=0xf bcm2708.serial=0xcad0eedf smsc95xx.macaddr=B8:27:EB:D0:EE:DF sdhci-bcm2708.emmc_clock_freq=100000000 vc_mem.mem_base=0x1c000000 vc_mem.mem_size=0x20000000  dwc_otg.lpm_enable=0 kgdboc=ttyAMA0,115200 console=ttyS0 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait" -S -s > $(BUILD_DIR)qemu.stdout 2> $(BUILD_DIR)qemu.stderr & \
 	QEMU_PID=$$!;                                                           \
 	echo "# running emulator <$(BUILD_TARGET).elf> (-M $(QEMU_MACHINE)) : PID = $$QEMU_PID" ;\
 	echo "# running gdb ($@)..." ;                                          \
-	$(BUILD_PREFIX)gdb $(BUILD_TARGET).elf -x $@ ;                           \
+	$(GDB_CMD) $(BUILD_TARGET).elf -x $@ ;                           \
 	echo "# killing emulator" ;                                             \
 	kill -9 $$QEMU_PID;
 

@@ -36,6 +36,15 @@ struct kernel_pcb_s
 #ifdef MUTEX_SECURE
 	kernel_mutex_list_t * mMutexPossessed;
 #endif
+
+    union
+    {
+        // considareted member when inserting in a sorted list
+        uint32_t mSortedValue;
+
+        // start date when in the sleep list
+        uint32_t mStartDate;
+    };
 };
 
 /* Stack storage when PCB is not running:

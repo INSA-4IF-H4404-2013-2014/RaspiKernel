@@ -1,5 +1,7 @@
+
 #include "kernel_memory.h"
 #include "kernel_memory_private.h"
+#include "kernel_plumbing.h"
 #include "kernel_config.h"
 
 
@@ -75,9 +77,8 @@ void kernel_deallocate_memory(void * address)
 	// Boudaries check for address
 	if(address < KERNEL_HEAP_ADDR_MIN || address >= KERNEL_HEAP_ADDR_MAX)
 	{
-		// KALASHNIKOV
-		for ( ; ; );
-	}
+	    kernel_panic();
+        }
 
 	// We get the kernel memory header pointer
 	kernel_heap_part_s * heap_part_head = &(((kernel_heap_part_s *) address)[-1]);
@@ -86,8 +87,7 @@ void kernel_deallocate_memory(void * address)
 	if(heap_part_head->mpPrevious->mpNext != heap_part_head ||
 		heap_part_head->mpNext->mpPrevious != heap_part_head)
 	{
-		// KALASHNIKOV
-		for ( ; ; );
+	    kernel_panic();
 	}
 
 

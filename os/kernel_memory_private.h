@@ -1,7 +1,7 @@
 #ifndef _H_KERNEL_MEMORY_PRIVATE
 #define _H_KERNEL_MEMORY_PRIVATE
 
-#include "standart.h"
+#include "standard.h"
 
 
 /*
