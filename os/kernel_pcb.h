@@ -3,7 +3,9 @@
 
 #include "kernel_forward.h"
 #include "kernel_arm.h"
+#include "kernel_mutex_list.h"
 
+typedef struct kernel_mutex_list_s kernel_mutex_list_t;
 
 // ------------------------------------------------------------------- PCB TYPES
 
@@ -32,6 +34,10 @@ struct kernel_pcb_s
 
     // scheduler list
     kernel_pcb_list_t * mSchedulerList;
+	
+#ifdef MUTEX_SECURE
+	kernel_mutex_list_t * mMutexPossessed;
+#endif
 
     union
     {

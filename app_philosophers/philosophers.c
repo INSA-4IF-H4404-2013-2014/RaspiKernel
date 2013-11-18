@@ -1,13 +1,13 @@
-
-#ifdef OS_LINUX
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#ifndef OS_RASP
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <time.h>
 #endif
 
 #include "../generic/thread.h"
 #include "../generic/sleep.h"
 
+#include "os/api_process.h"
 #include "philosophers.h"
 
 void philosophers_process(void)
@@ -27,12 +27,8 @@ void philosophers_process(void)
 		//Initializing the philosopher data structure
 		phi_data[i].phi_id = i;
 		
-#ifdef OS_RASP
-		sync_sem_init(&(phi_data[i].sem_id), 0);
-#else
-		phi_data[i].sem_id = semget(IPC_PRIVATE, 1, IPC_CREAT | IPC_EXCL | 0660);
-		semctl(phi_data[i].sem_id, 0, SETVAL, 0);
-#endif
+		generic_sem_init(&(phi_data[i].sem_id), 0);
+		
 		//Starting process
 		generic_thread_create(&(phi_data[i].process_id), &philo_func, &phi_data[i]);
 	}
@@ -40,9 +36,9 @@ void philosophers_process(void)
 	//Waiting for philosophers
 	for(i = 0; i < PHILOSOPHERS_NUMBER; ++i)
 	{
-#ifdef OS_RASP
-		sync_sem_wait(&(phi_data[i].sem_id));
-#else
+		generic_sem_wait(&(phi_data[i].sem_id));
+
+#ifndef OS_RASP
 		pthread_join(phi_data[i].process_id, NULL);
 #endif
 	}
@@ -65,17 +61,16 @@ void sync_philosopher(void * args)
 		takeForks(phi_id, first_fork, second_fork);
 
 		//Eating
-		eat();
+		eat(phi_id);
 
 		//Releasing forks
-		releaseFork(phi_id, first_fork, second_fork);
+		releaseForks(phi_id, first_fork, second_fork);
 		
 		//Thniking
-		think();
+		think(phi_id);
 	}
-#ifdef OS_RASP
-	sync_sem_post(&(phi_data->sem_id), 1);
-#endif
+
+	generic_sem_post(&(phi_data->sem_id));
 }
 
 void * philosopher(void * args)
@@ -100,18 +95,50 @@ void chooseForks(int philosopherId, int * first_fork, int * second_fork)
 
 void takeForks(int philosopherId, int first_fork, int second_fork)
 {
-	//TODO MANAGE DEADLOCKS
-	if(philosopherId) {};
+
 #ifndef OS_RASP
 	printf("(%d) Taking forks %d and %d\n", philosopherId, first_fork, second_fork);
 #endif
+
+#ifdef MUTEX_SECURE
+	int returnCode1, returnCode2;
+
+	returnCode1 = generic_mutex_lock(&forks[first_fork]);
+
+#ifdef KERNEL_STRATEGY_COLLABO
+	process_yield();
+#endif
+
+	while(returnCode1 == -1)
+	{
+		generic_sleep(philosopherId + 1);
+		returnCode1 = generic_mutex_lock(&forks[first_fork]);
+	}
+
+	returnCode2 = generic_mutex_lock(&forks[second_fork]);
+	
+	while(returnCode1 == -1 || returnCode2 == -1)
+	{
+		generic_mutex_unlock(&forks[first_fork]);
+		generic_sleep(philosopherId + 1);
+
+		returnCode1 = generic_mutex_lock(&forks[first_fork]);
+		while(returnCode1 == -1)
+		{
+			generic_sleep(philosopherId + 1);
+			returnCode1 = generic_mutex_lock(&forks[first_fork]);
+		}
+
+		returnCode2 = generic_mutex_lock(&forks[second_fork]);
+	}
+#else	
 	generic_mutex_lock(&forks[first_fork]);
 	generic_mutex_lock(&forks[second_fork]);
+#endif
 }
 
-void releaseFork(int philosopherId, int first_fork, int second_fork)
+void releaseForks(int philosopherId, int first_fork, int second_fork)
 {
-	//TODO MANAGE DEADLOCKS
 	if(philosopherId) {};
 #ifndef OS_RASP
 	printf("(%d) Releasing forks %d and %d\n", philosopherId, second_fork, first_fork);
@@ -120,18 +147,14 @@ void releaseFork(int philosopherId, int first_fork, int second_fork)
 	generic_mutex_unlock(&forks[first_fork]);
 }
 
-void eat()
+void eat(int philosopherId)
 {
-#ifndef OS_RASP
-	float time = (rand() % ((int) (MAX_EATING_TIME * 1000))) / 1000.0;
-	generic_sleep(time);
-#endif
+	int time = philosopherId + 1;	// % ((int) (MAX_EATING_TIME * 1000))) / 1000.0;
+	generic_usleep(time * 10);
 }
 
-void think()
+void think(int philosopherId)
 {
-#ifndef OS_RASP
-	float time = (rand() % ((int) (MAX_THINKING_TIME * 1000))) / 1000.0;
-	generic_sleep(time);
-#endif
+	int time = philosopherId + 1;	// % ((int) (MAX_THINKING_TIME * 1000))) / 1000.0;
+	generic_usleep(time * 10);
 }

@@ -17,8 +17,8 @@ typedef struct sync_sem_s
 /*
  * @infos: initialises a <semaphore>
  *
- * @param <semaphore> : a non initialised semaphore
- * @param <coins> : number of initial coins
+ * @param <semaphore>: a non initialised semaphore
+ * @param <coins>: number of initial coins
  */
 void
 sync_sem_init(sync_sem_t * semaphore, uint32_t coins);
@@ -26,16 +26,16 @@ sync_sem_init(sync_sem_t * semaphore, uint32_t coins);
 /*
  * @infos: posts a given number of <coins> in a <semaphore>
  *
- * @param <semaphore> : an initialised semaphore
- * @param <coins> : number of coins to add
+ * @param <semaphore>: an initialised semaphore
+ * @param <coins>: number of coins to add
  */
 void
 sync_sem_post(sync_sem_t * semaphore, uint32_t coins);
 
 /*
- * @infos: consume one coins in a <semaphore>
+ * @infos: consume one coin in a <semaphore>
  *
- * @param <semaphore> : an initialised semaphore
+ * @param <semaphore>: an initialised semaphore
  */
 void
 sync_sem_wait(sync_sem_t * semaphore);

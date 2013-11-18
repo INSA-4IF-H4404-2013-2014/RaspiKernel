@@ -8,7 +8,6 @@
 
 #SDCARD=/INDICATE/SDCARD/PATH
 
-
 #BUILD_PREFIX = arm-none-eabi-
 #GDB_CMD = $(BUILD_PREFIX)gdb
 
@@ -18,8 +17,15 @@
 #OS = OS_LINUX
 
 
-#Please uncomment the squeduler you want the kernel to use
+#Please uncomment the scheduler you want the kernel to use
 #Default value: KERNEL_STRATEGY_ROUNDROBIN_MONO
 #SQUEDULER = KERNEL_STRATEGY_ROUNDROBIN_MONO
 #SQUEDULER = KERNEL_STRATEGY_ROUNDROBIN_MULTI
 #SQUEDULER = KERNEL_STRATEGY_COLLABO
+
+
+#Choose of which mutex implementation must be used
+#Select MUTEX_SECURE for deadlock detection
+#Default value: MUTEX_STANDARD
+#MUTEX = MUTEX_STANDARD
+#MUTEX = MUTEX_SECURE
