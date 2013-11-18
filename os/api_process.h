@@ -1,5 +1,5 @@
-#ifndef _H_KERNEL_DISPATCHER
-#define _H_KERNEL_DISPATCHER
+#ifndef _H_API_PROCESS
+#define _H_API_PROCESS
 
 // -------------------------------------------------------------------- INCLUDES
 

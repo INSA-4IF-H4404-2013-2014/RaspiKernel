@@ -6,7 +6,10 @@ OS=$(shell uname -s)
 
 APP_NAME=$(notdir $(shell pwd | sed 's/ /\\/g'))
 
-.PHONY: default send clean all all_ sdcopy umount _deploy deploy run
+rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
+GDB_SCRIPTS = $(call rwildcard,gdb/,*.gdb)
+
+.PHONY: default send clean all all_ sdcopy umount _deploy deploy run $(GDB_SCRIPTS)
 
 define remotelaunch
 	@echo "  * remote: $(REMOTE)"; \
@@ -108,9 +111,13 @@ deploy: deploy_ send default sdcopy umount
 endif
 endif
 
-run:
+
 ifeq ($(MODE), local)
 ifneq ($(DEPART), true)
+run:
 	@make --no-print-dir -f ../common.mk run
+
+$(GDB_SCRIPTS):
+	@make --no-print-dir -f ../common.mk $@
 endif
 endif
