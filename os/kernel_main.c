@@ -9,6 +9,9 @@ void
 kernel_led_init();
 
 void
+kernel_directory_api_init();
+
+void
 main_process(void);
 
 void __attribute__((noreturn))
@@ -18,6 +21,7 @@ kernel_main(void)
     kernel_memory_init();
     kernel_arm_timer_init();
     kernel_scheduler_init();
+    kernel_directory_api_init();
 
     kernel_pcb_t * pcb = kernel_pcb_create((void *) main_process, nullptr);
 

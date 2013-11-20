@@ -1,17 +1,15 @@
-#ifndef PHILOSOPHERS_H
-#define PHILOSOPHERS_H
+#ifndef _H_PHILOSOPHERS
+#define _H_PHILOSOPHERS
 
 #include "../generic/thread.h"
 
 #define MAX_ITERATIONS 1000
-#define MAX_EATING_TIME 1.5
-#define MAX_THINKING_TIME 1.5
 #define PHILOSOPHERS_NUMBER 5
 
 #ifdef OS_RASP
-#define philo_func sync_philosopher
+	#define philo_func sync_philosopher
 #else
-#define philo_func philosopher
+	#define philo_func philosopher
 #endif
 
 /*
@@ -76,6 +74,7 @@ void chooseForks(int philosopherId, int * first_fork, int * second_fork);
 
 /*
  * Unlock the mutex corresponding to the specified forks
+ * If a deadlock occurs, all forks all released, then relocked
  * @param philosopherId The philosopher id
  * @param first_fork The first fork to lock.
  * @param second_fork The second fork to lock.
@@ -83,9 +82,9 @@ void chooseForks(int philosopherId, int * first_fork, int * second_fork);
 void takeForks(int philosopherId, int first_fork, int second_fork);
 
 /*
- * Sleep x random seconds
+ * Sleep philosopherId seconds
  */
-void eat();
+void eat(int philosopherId);
 
 /*
  * Unlock the mutex corresponding to the specified forks
@@ -93,11 +92,11 @@ void eat();
  * @param first_fork The seconkd fork to unlock.
  * @param second_fork The first fork to unlock.
  */
-void releaseFork(int philosopherId, int first_fork, int second_fork);
+void releaseForks(int philosopherId, int first_fork, int second_fork);
 
 /*
- * Sleep y random seconds
+ * Sleep philosopherId seconds
  */
-void think();
+void think(int philosopherId);
 
 #endif
