@@ -25,7 +25,7 @@ int kernel_mutex_list_contains ( kernel_mutex_list_t * list, sync_mutex_t * mute
 
 kernel_mutex_list_t * kernel_mutex_list_insert ( kernel_mutex_list_t * list, sync_mutex_t * mutex )
 {
-	kernel_mutex_list_t * newMaillon = (kernel_mutex_list_t * ) kernel_allocate_memory ( sizeof ( kernel_mutex_list_t) );
+	kernel_mutex_list_t * newMaillon = (kernel_mutex_list_t * ) kernel_memory_allocate ( sizeof ( kernel_mutex_list_t) );
 	newMaillon->mutex = mutex;
 	if ( list )
 	{
@@ -67,7 +67,7 @@ kernel_mutex_list_t * kernel_mutex_list_remove ( kernel_mutex_list_t * list, syn
 				list = 0;
 			}
 			
-			kernel_deallocate_memory ( ( void * ) maillonToDelete );
+			kernel_memory_deallocate ( ( void * ) maillonToDelete );
 		}
 	}
 
