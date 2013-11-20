@@ -50,8 +50,6 @@ void sync_philosopher(void * args)
 	philosopher_data * phi_data = (philosopher_data *) args;
 	phi_id = phi_data->phi_id;
 
-	//printf("Philosopher %d created\n", philosopherId);
-
 	for(i = 0; i < MAX_ITERATIONS; ++i)
 	{
 		//Choosing forks order
@@ -81,14 +79,6 @@ void * philosopher(void * args)
 
 void chooseForks(int philosopherId, int * first_fork, int * second_fork)
 {
-/*
-	if(RANDOM_FORKS == 1 && rand() % 2 == 0)
-	{
-			*first_fork = philosopherId;
-			*second_fork = (philosopherId + 1) % PHILOSOPHERS_NUMBER;
-	}
-	else
-*/
 	*first_fork = (philosopherId + 1) % PHILOSOPHERS_NUMBER;
 	*second_fork = philosopherId;
 }
